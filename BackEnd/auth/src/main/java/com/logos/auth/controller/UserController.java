@@ -85,32 +85,32 @@ public class UserController {
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Map<String, Object>> update(@RequestAttribute Long loginMemberId, @RequestBody MemberModifyDto member, HttpSession session) throws Exception {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.OK;
-
-        member.setId(loginMemberId);
-        if (userService.update(member)) {
-            resultMap.put("message", SUCCESS);
-        } else {
-            resultMap.put("message", FAIL);
-        }
-
-        return new ResponseEntity<Map<String, Object>>(resultMap, status);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<Map<String, Object>> delete(@RequestAttribute Long loginMemberId) throws Exception {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.NO_CONTENT;
-
-        if (userService.delete(loginMemberId)) {
-            resultMap.put("message", SUCCESS);
-        } else {
-            resultMap.put("message", FAIL);
-        }
-
-        return new ResponseEntity<Map<String, Object>>(resultMap, status);
-    }
+//    @PutMapping("/update")
+//    public ResponseEntity<Map<String, Object>> update(@RequestAttribute Long loginMemberId, @RequestBody MemberModifyDto member, HttpSession session) throws Exception {
+//        Map<String, Object> resultMap = new HashMap<>();
+//        HttpStatus status = HttpStatus.OK;
+//
+//        member.setId(loginMemberId);
+//        if (userService.update(member)) {
+//            resultMap.put("message", SUCCESS);
+//        } else {
+//            resultMap.put("message", FAIL);
+//        }
+//
+//        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+//    }
+//
+//    @DeleteMapping
+//    public ResponseEntity<Map<String, Object>> delete(@RequestAttribute Long loginMemberId) throws Exception {
+//        Map<String, Object> resultMap = new HashMap<>();
+//        HttpStatus status = HttpStatus.NO_CONTENT;
+//
+//        if (userService.delete(loginMemberId)) {
+//            resultMap.put("message", SUCCESS);
+//        } else {
+//            resultMap.put("message", FAIL);
+//        }
+//
+//        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+//    }
 }
