@@ -9,10 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,7 +78,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody SignUpDto member) throws Exception {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody @Valid SignUpDto member) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.OK;
 
@@ -84,6 +86,7 @@ public class UserController {
 
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
+
 
 //    @PutMapping("/update")
 //    public ResponseEntity<Map<String, Object>> update(@RequestAttribute Long loginMemberId, @RequestBody MemberModifyDto member, HttpSession session) throws Exception {
@@ -113,4 +116,5 @@ public class UserController {
 //
 //        return new ResponseEntity<Map<String, Object>>(resultMap, status);
 //    }
+
 }
