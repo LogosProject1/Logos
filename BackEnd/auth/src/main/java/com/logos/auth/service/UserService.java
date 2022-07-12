@@ -22,10 +22,8 @@ public class UserService {
     public User signUpProcess(SignUpDto signUpDto){
         signUpDto.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
 
-        User newUser = User.createUser(signUpDto.getName(), signUpDto.getEmail()
-                , signUpDto.getPassword(), signUpDto.getPhone());
-
-        userRepository.save(newUser);
+        User newUser = userRepository.save(User.createUser(signUpDto.getName(), signUpDto.getEmail()
+                , signUpDto.getPassword(), signUpDto.getPhone()));
         return newUser;
     }
 
