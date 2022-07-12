@@ -2,6 +2,7 @@ package com.logos.auth.controller;
 
 import com.logos.auth.dto.SignUpDto;
 import com.logos.auth.dto.UserDto;
+import com.logos.auth.service.JwtService;
 import com.logos.auth.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
