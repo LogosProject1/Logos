@@ -7,21 +7,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public User signUpProcess(SignUpDto signUpDto){
         signUpDto.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
 
         User newUser = User.createUser(signUpDto.getName(), signUpDto.getEmail()
                 , signUpDto.getPassword(), signUpDto.getPhone());
 
+        userRepository.save(newUser);
         return newUser;
     }
 
