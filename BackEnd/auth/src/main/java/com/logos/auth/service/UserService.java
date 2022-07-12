@@ -2,6 +2,7 @@ package com.logos.auth.service;
 
 import com.logos.auth.domain.User;
 import com.logos.auth.dto.SignUpDto;
+import com.logos.auth.dto.UserDto;
 import com.logos.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,24 @@ public class UserService {
         User newUser = userRepository.save(User.createUser(signUpDto.getName(), signUpDto.getEmail()
                 , signUpDto.getPassword(), signUpDto.getPhone()));
         return newUser;
+    }
+
+    public UserDto login(UserDto userDto){
+        if(!userInfo(userDto.getEmail())){
+            return null;
+        }
+
+        User user = userRepository.findByEmail(userDto.getEmail());
+
+        if(!passwordEncoder.matches(userDto.getPassword(), user.getPassword())){
+            return null;
+        }
+
+        return UserDto.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .type(user.getType().toString())
+                .build();
     }
 
     public boolean userInfo(String email){
