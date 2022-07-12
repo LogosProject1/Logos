@@ -1,5 +1,7 @@
 package com.logos.auth.controller;
 
+import com.logos.auth.dto.SignUpDto;
+import com.logos.auth.dto.UserDto;
 import com.logos.auth.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +28,16 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(
-            @RequestBody Member member) {
+            @RequestBody UserDto member) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
         try {
-            SignUpDto loginUser = userService.login(member);
+            UserDto loginUser = userService.login(member);
             if (loginUser != null) {
                 Map<String, Object> userInfoMap = new HashMap<>();
-                userInfoMap.put("id", loginUser.getId());
-                userInfoMap.put("memberId", loginUser.getMemberId());
-                userInfoMap.put("role", loginUser.getRole());
+                userInfoMap.put("email", loginUser.getEmail());
+                userInfoMap.put("name", loginUser.getName());
+                userInfoMap.put("type", loginUser.getType());
                 String token = jwtService.create(userInfoMap, "access-token");// key, data, subject
                 logger.debug("로그인 토큰정보 : {}", token);
                 resultMap.put("access-token", token);
@@ -60,9 +62,9 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
-        MemberDto memberDto = userService.userInfo(memberId);
+        boolean isUser = userService.userInfo(memberId);
 
-        if (memberDto == null) {
+        if (isUser) {
             resultMap.put("message", SUCCESS);
         } else {
             resultMap.put("message", FAIL);
@@ -72,11 +74,11 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody Member member) throws Exception {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody SignUpDto member) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.OK;
 
-        userService.register(member);
+        userService.signUpProcess(member);
 
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }

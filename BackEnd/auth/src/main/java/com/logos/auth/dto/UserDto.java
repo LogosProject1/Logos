@@ -7,7 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class SignUpDto {
+public class UserDto {
     @Length(min=1,max=30)
     @NotBlank
     private String name;
@@ -23,5 +23,7 @@ public class SignUpDto {
     @NotBlank
     private String phone;
 
+    @NotBlank
+    private String type;
 
 }
