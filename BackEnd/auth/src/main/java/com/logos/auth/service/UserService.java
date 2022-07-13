@@ -23,6 +23,9 @@ public class UserService {
 
     @Transactional
     public User signUpProcess(SignUpDto signUpDto){
+        if(userInfo(signUpDto.getEmail())){
+            return null;
+        }
         signUpDto.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
 
         User newUser = userRepository.save(User.createUser(signUpDto.getName(), signUpDto.getEmail()

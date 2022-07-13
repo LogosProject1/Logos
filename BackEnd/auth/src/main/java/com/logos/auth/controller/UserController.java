@@ -1,5 +1,6 @@
 package com.logos.auth.controller;
 
+import com.logos.auth.domain.User;
 import com.logos.auth.dto.SignUpDto;
 import com.logos.auth.dto.UserDto;
 import com.logos.auth.dto.UserInfoDto;
@@ -84,7 +85,10 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.OK;
 
-        userService.signUpProcess(member);
+        User user = userService.signUpProcess(member);
+        if(user == null){
+            return new ResponseEntity<>(resultMap,HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
