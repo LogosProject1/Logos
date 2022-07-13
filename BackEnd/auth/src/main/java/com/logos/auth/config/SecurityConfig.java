@@ -26,11 +26,7 @@ public class SecurityConfig{
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .headers().frameOptions().disable()
-                .and()
-                .authorizeRequests()
-                .antMatchers("/", "/register","/login").permitAll()
-                .anyRequest().authenticated();
+                .headers().frameOptions().disable();
         return http.build();
     }
 }

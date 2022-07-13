@@ -129,7 +129,7 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.OK;
 
-        String email = (String) req.getAttribute("email");
+        String email = (String) req.getAttribute("Email");
 
         if (userService.userInfo(email)){
             userService.update(member, email);
@@ -140,12 +140,12 @@ public class UserController {
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/userDelete")
     public ResponseEntity<Map<String, Object>> delete(HttpServletRequest req) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.NO_CONTENT;
 
-        String email = (String) req.getAttribute("email");
+        String email = (String) req.getAttribute("Email");
 
         if (userService.userInfo(email)){
             userService.delete(email);
