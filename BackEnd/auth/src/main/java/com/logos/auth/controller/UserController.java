@@ -143,7 +143,7 @@ public class UserController {
     @DeleteMapping("/userDelete")
     public ResponseEntity<Map<String, Object>> delete(HttpServletRequest req) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.NO_CONTENT;
+        HttpStatus status = HttpStatus.OK;
 
         String email = (String) req.getAttribute("Email");
 
@@ -151,6 +151,7 @@ public class UserController {
             userService.delete(email);
             resultMap.put("message", SUCCESS);
         } else {
+            status = HttpStatus.BAD_REQUEST;
             resultMap.put("message", FAIL);
         }
 

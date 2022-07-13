@@ -77,6 +77,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void delete(String email) {
         userRepository.deleteByEmail(email);
     }
