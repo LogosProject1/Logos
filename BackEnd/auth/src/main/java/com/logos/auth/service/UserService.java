@@ -3,6 +3,8 @@ package com.logos.auth.service;
 import com.logos.auth.domain.User;
 import com.logos.auth.dto.SignUpDto;
 import com.logos.auth.dto.UserDto;
+import com.logos.auth.dto.UserInfoDto;
+import com.logos.auth.dto.UserUpdateDto;
 import com.logos.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -51,5 +53,31 @@ public class UserService {
             return true;
         }
         return false;
+    }
+
+    public UserInfoDto findByEmail(String email){
+
+        User user = userRepository.findByEmail(email);
+
+
+        return UserInfoDto.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .type(user.getType().toString())
+                .build();
+    }
+
+    @Transactional
+    public void update(UserUpdateDto member, String email) {
+        User user = userRepository.findByEmail(email);
+        user.setName(member.getName());
+        user.setPassword(member.getPassword());
+        user.setPhone(member.getPhone());
+        userRepository.save(user);
+    }
+
+    public void delete(String email) {
+        userRepository.deleteByEmail(email);
     }
 }
