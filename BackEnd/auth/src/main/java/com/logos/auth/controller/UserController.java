@@ -2,6 +2,8 @@ package com.logos.auth.controller;
 
 import com.logos.auth.dto.SignUpDto;
 import com.logos.auth.dto.UserDto;
+import com.logos.auth.dto.UserInfoDto;
+import com.logos.auth.dto.UserUpdateDto;
 import com.logos.auth.service.JwtService;
 import com.logos.auth.service.UserService;
 import org.slf4j.Logger;
@@ -59,14 +61,14 @@ public class UserController {
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
-    @GetMapping("/check/{memberId}")
+    @GetMapping("/check/{email}")
     public ResponseEntity<Map<String, Object>> checkId(
-            @PathVariable("memberId") String memberId,
+            @PathVariable("email") String email,
             HttpServletRequest request) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
-        boolean isUser = userService.userInfo(memberId);
+        boolean isUser = userService.userInfo(email);
 
         if (isUser) {
             resultMap.put("message", SUCCESS);
@@ -87,34 +89,72 @@ public class UserController {
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
+    @GetMapping("/info/{email}")
+    public ResponseEntity<Map<String, Object>> getInfo(
+            @PathVariable("email") String email,
+            HttpServletRequest request) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.ACCEPTED;
 
-//    @PutMapping("/update")
-//    public ResponseEntity<Map<String, Object>> update(@RequestAttribute Long loginMemberId, @RequestBody MemberModifyDto member, HttpSession session) throws Exception {
-//        Map<String, Object> resultMap = new HashMap<>();
-//        HttpStatus status = HttpStatus.OK;
-//
-//        member.setId(loginMemberId);
-//        if (userService.update(member)) {
-//            resultMap.put("message", SUCCESS);
-//        } else {
-//            resultMap.put("message", FAIL);
-//        }
-//
-//        return new ResponseEntity<Map<String, Object>>(resultMap, status);
-//    }
-//
-//    @DeleteMapping
-//    public ResponseEntity<Map<String, Object>> delete(@RequestAttribute Long loginMemberId) throws Exception {
-//        Map<String, Object> resultMap = new HashMap<>();
-//        HttpStatus status = HttpStatus.NO_CONTENT;
-//
-//        if (userService.delete(loginMemberId)) {
-//            resultMap.put("message", SUCCESS);
-//        } else {
-//            resultMap.put("message", FAIL);
-//        }
-//
-//        return new ResponseEntity<Map<String, Object>>(resultMap, status);
-//    }
+        if (request.getHeader("Authorization") == null) {
+            logger.error("토큰이 없어요!!!");
+            resultMap.put("message", FAIL);
+            status = HttpStatus.FORBIDDEN;
+            return new ResponseEntity<Map<String, Object>>(resultMap, status);
+        }
+
+        if (jwtService.isUsable(request.getHeader("Authorization").substring(7))) {
+            logger.info("사용 가능한 토큰!!!");
+            try {
+//				로그인 사용자 정보.
+                UserInfoDto userDto = userService.findByEmail(email);
+                resultMap.put("userInfo", userDto);
+                resultMap.put("message", SUCCESS);
+                status = HttpStatus.ACCEPTED;
+            } catch (Exception e) {
+                logger.error("정보조회 실패 : {}", e);
+                resultMap.put("message", e.getMessage());
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+            }
+        } else {
+            logger.error("사용 불가능 토큰!!!");
+            resultMap.put("message", FAIL);
+            status = HttpStatus.ACCEPTED;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Map<String, Object>> update(HttpServletRequest req, @RequestBody UserUpdateDto member, HttpSession session) throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.OK;
+
+        String email = (String) req.getAttribute("email");
+
+        if (userService.userInfo(email)){
+            userService.update(member, email);
+            resultMap.put("message", SUCCESS);
+        } else {
+            resultMap.put("message", FAIL);
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Map<String, Object>> delete(HttpServletRequest req) throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+
+        String email = (String) req.getAttribute("email");
+
+        if (userService.userInfo(email)){
+            userService.delete(email);
+            resultMap.put("message", SUCCESS);
+        } else {
+            resultMap.put("message", FAIL);
+        }
+
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
 }
