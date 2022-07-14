@@ -29,9 +29,9 @@ public class Knowledge {
 
     private Long price;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "knowledge")
-    private List<KnowledgeCategory> category = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     private LocalDateTime created_at;
 
