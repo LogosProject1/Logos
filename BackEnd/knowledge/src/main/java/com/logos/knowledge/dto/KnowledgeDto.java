@@ -15,7 +15,7 @@ public class KnowledgeDto {
 
     private String price;
 
-    private LocalDateTime startTime;
+    private String startTime;
 
-    private LocalDateTime endTime;
+    private String endTime;
 }

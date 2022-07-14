@@ -33,11 +33,10 @@ public class KnowledgeController {
             Knowledge temp = knowledgeService.create(knowledge);
             if (temp != null) {
                 resultMap.put("message", SUCCESS);
-                status = HttpStatus.ACCEPTED;
             } else {
                 resultMap.put("message", FAIL);
-                status = HttpStatus.ACCEPTED;
             }
+            status = HttpStatus.ACCEPTED;
         } catch (Exception e) {
             resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
