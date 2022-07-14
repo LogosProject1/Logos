@@ -8,6 +8,8 @@ import com.logos.knowledge.repository.KnowledgeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class KnowledgeServiceImpl implements KnowledgeService {
     @Autowired
@@ -24,8 +26,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                 .category(category)
                 .price(Long.parseLong(knowledge.getPrice()))
                 .content(knowledge.getContent())
-                .startTime(knowledge.getStartTime())
-                .endTime(knowledge.getEndTime()).build();
+                .startTime(LocalDateTime.parse(knowledge.getStartTime()))
+                .endTime(LocalDateTime.parse(knowledge.getEndTime())).build();
 
 
         knowledgeRepository.save(newKnowledge);
