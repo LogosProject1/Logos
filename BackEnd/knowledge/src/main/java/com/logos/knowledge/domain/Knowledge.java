@@ -1,6 +1,7 @@
 package com.logos.knowledge.domain;
 
 import com.logos.knowledge.dto.KnowledgeDto;
+import com.logos.knowledge.service.UUIDGenerateUtils;
 import lombok.*;
 
 import javax.persistence.*;
@@ -43,7 +44,7 @@ public class Knowledge {
 
     public static Knowledge buildKnowledge(KnowledgeDto knowledgeDto,Category category, User writer){
         return Knowledge.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUIDGenerateUtils.makeLongUUID())
                 .title(knowledgeDto.getTitle())
                 .category(category)
                 .writer(writer)
