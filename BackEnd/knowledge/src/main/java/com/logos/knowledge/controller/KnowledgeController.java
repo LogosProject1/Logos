@@ -3,6 +3,7 @@ package com.logos.knowledge.controller;
 import com.logos.knowledge.domain.Knowledge;
 import com.logos.knowledge.dto.KnowledgeBriefDto;
 import com.logos.knowledge.dto.KnowledgeDto;
+import com.logos.knowledge.dto.KnowledgeUpdateDto;
 import com.logos.knowledge.service.JwtService;
 import com.logos.knowledge.service.KnowledgeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ public class KnowledgeController {
             List<KnowledgeBriefDto> temp = knowledgeService.search(keyword);
             if (temp != null) {
                 resultMap.put("message", SUCCESS);
+                resultMap.put("knowledge_list",temp);
             } else {
                 resultMap.put("message", FAIL);
             }
@@ -71,19 +73,36 @@ public class KnowledgeController {
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
-    @GetMapping("/read")
-    public ResponseEntity<Map<String, Object>> getKnowledge() {
+    @GetMapping("/read/{knowledgeId}")
+    public ResponseEntity<Map<String, Object>> getKnowledge(@PathVariable("knowledgeId") String knowledgeId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
 
+        try {
+            KnowledgeDto knowledge = knowledgeService.read(knowledgeId);
+            if (knowledge != null) {
+                resultMap.put("message", SUCCESS);
+                resultMap.put("knowledge",knowledge);
+            } else {
+                resultMap.put("message", FAIL);
+            }
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
 
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Map<String, Object>> updateKnowledge(HttpServletRequest req, @RequestBody KnowledgeDto knowledge, @RequestBody String knowledgeId) {
+    public ResponseEntity<Map<String, Object>> updateKnowledge(HttpServletRequest req, @RequestBody KnowledgeUpdateDto knowledge) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
         String email = (String) req.getAttribute("Email");
+
         try {
-            Knowledge temp = knowledgeService.update(email,knowledge,knowledgeId);
+            Knowledge temp = knowledgeService.update(email,knowledge);
             if (temp != null) {
                 resultMap.put("message", SUCCESS);
             } else {

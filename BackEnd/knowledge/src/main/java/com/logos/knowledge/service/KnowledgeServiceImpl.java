@@ -5,18 +5,22 @@ import com.logos.knowledge.domain.Knowledge;
 import com.logos.knowledge.domain.User;
 import com.logos.knowledge.dto.KnowledgeBriefDto;
 import com.logos.knowledge.dto.KnowledgeDto;
+import com.logos.knowledge.dto.KnowledgeUpdateDto;
 import com.logos.knowledge.repository.CategoryRepository;
 import com.logos.knowledge.repository.KnowledgeRepository;
 import com.logos.knowledge.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional(readOnly = true)
 public class KnowledgeServiceImpl implements KnowledgeService {
     @Autowired
     private CategoryRepository categoryRepository;
@@ -28,6 +32,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     private UserRepository userRepository;
 
     @Override
+    @Transactional
     public Knowledge create(String email, KnowledgeDto knowledge) {
         User writer = userRepository.findByEmail(email);
 
@@ -35,6 +40,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    @Transactional
     public boolean delete(String email, String knowledgeId) {
         Optional<Knowledge> knowledge = knowledgeRepository.findById(knowledgeId);
 
@@ -50,12 +56,13 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public Knowledge update(String email, KnowledgeDto knowledgeDto, String knowledgeId) {
-        Optional<Knowledge> knowledge = knowledgeRepository.findById(knowledgeId);
+    @Transactional
+    public Knowledge update(String email, KnowledgeUpdateDto knowledgeUpdateDto) {
+        Optional<Knowledge> knowledge = knowledgeRepository.findById(knowledgeUpdateDto.getKnowledgeId());
 
         if(checkWriter(email,knowledge)){
             //지식 업데이트
-            return updateKnowledge(knowledge.get(), knowledgeDto);
+            return updateKnowledge(knowledge.get(), knowledgeUpdateDto);
         }
         else {
             return null;
@@ -64,7 +71,20 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public List<KnowledgeBriefDto> search(String keyword) {
-        return knowledgeRepository.findByTitleContaining(keyword);
+        List<Knowledge> byTitleContaining = knowledgeRepository.findByTitleContains(keyword);
+
+        List<KnowledgeBriefDto> knowledgeList = new ArrayList<>();
+
+        for(Knowledge knowledge : byTitleContaining){
+            knowledgeList.add(KnowledgeBriefDto.builder()
+                    .title(knowledge.getTitle())
+                    .price(String.valueOf(knowledge.getPrice()))
+                    .startTime(knowledge.getStartTime().toString())
+                    .endTime(knowledge.getEndTime().toString())
+                    .build());
+        }
+
+        return knowledgeList;
     }
 
     private Knowledge createKnowledge(User writer, KnowledgeDto knowledge) {
@@ -73,15 +93,32 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return knowledgeRepository.save(Knowledge.buildKnowledge(knowledge, category, writer));
     }
 
-    private Knowledge updateKnowledge(Knowledge knowledge, KnowledgeDto knowledgeDto) {
-        Category category = categoryRepository.findByName(knowledgeDto.getCategory());
+    @Override
+    public KnowledgeDto read(String knowledgeId) {
+        Optional<Knowledge> byId = knowledgeRepository.findById(knowledgeId);
+        if(byId.isPresent()){
+            Knowledge knowledge = byId.get();
+            return KnowledgeDto.builder()
+                    .title(knowledge.getTitle())
+                    .category(knowledge.getCategory().getName())
+                    .content(knowledge.getContent())
+                    .price(knowledge.getPrice().toString())
+                    .startTime(knowledge.getStartTime().toString())
+                    .endTime(knowledge.getEndTime().toString())
+                    .build();
+        }
+        return null;
+    }
 
-        knowledge.setTitle(knowledgeDto.getTitle());
+    private Knowledge updateKnowledge(Knowledge knowledge, KnowledgeUpdateDto knowledgeUpdateDto) {
+        Category category = categoryRepository.findByName(knowledgeUpdateDto.getCategory());
+
+        knowledge.setTitle(knowledgeUpdateDto.getTitle());
         knowledge.setCategory(category);
-        knowledge.setPrice(Long.parseLong(knowledgeDto.getPrice()));
-        knowledge.setContent(knowledgeDto.getContent());
-        knowledge.setStartTime(LocalDateTime.parse(knowledgeDto.getStartTime()));
-        knowledge.setEndTime(LocalDateTime.parse(knowledgeDto.getEndTime()));
+        knowledge.setPrice(Long.parseLong(knowledgeUpdateDto.getPrice()));
+        knowledge.setContent(knowledgeUpdateDto.getContent());
+        knowledge.setStartTime(LocalDateTime.parse(knowledgeUpdateDto.getStartTime()));
+        knowledge.setEndTime(LocalDateTime.parse(knowledgeUpdateDto.getEndTime()));
 
         Knowledge updateKnowledge = knowledgeRepository.save(knowledge);
 

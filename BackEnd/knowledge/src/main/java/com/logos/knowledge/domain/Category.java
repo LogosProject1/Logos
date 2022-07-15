@@ -1,5 +1,6 @@
 package com.logos.knowledge.domain;
 
+import com.logos.knowledge.service.UUIDGenerateUtils;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ public class Category {
 
     public static Category buildCategory(String name){
         return Category.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUIDGenerateUtils.makeShortUUID())
                 .name(name)
                 .build();
     }

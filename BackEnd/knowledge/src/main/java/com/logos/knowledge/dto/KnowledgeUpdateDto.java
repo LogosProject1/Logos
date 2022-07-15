@@ -1,16 +1,16 @@
 package com.logos.knowledge.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class KnowledgeBriefDto {
+public class KnowledgeUpdateDto {
+    private String knowledgeId;
+
     private String title;
+
+    private String category;
+
+    private String content;
 
     private String price;
 
