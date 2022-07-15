@@ -27,11 +27,14 @@ public class KnowledgeController {
     private KnowledgeService knowledgeService;
 
     @PostMapping("/create")
-    public ResponseEntity<Map<String, Object>> createKnowledge(@RequestBody KnowledgeDto knowledge) {
+    public ResponseEntity<Map<String, Object>> createKnowledge(HttpServletRequest req, @RequestBody KnowledgeDto knowledge) {
         Map<String, Object> resultMap = new HashMap<>();
+
+        String email = (String) req.getAttribute("Email");
+
         HttpStatus status = null;
         try {
-            Knowledge temp = knowledgeService.create(knowledge);
+            Knowledge temp = knowledgeService.create(email,knowledge);
             if (temp != null) {
                 resultMap.put("message", SUCCESS);
             } else {

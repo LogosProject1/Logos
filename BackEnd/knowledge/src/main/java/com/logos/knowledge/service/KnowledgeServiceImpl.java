@@ -6,6 +6,7 @@ import com.logos.knowledge.domain.User;
 import com.logos.knowledge.dto.KnowledgeDto;
 import com.logos.knowledge.repository.CategoryRepository;
 import com.logos.knowledge.repository.KnowledgeRepository;
+import com.logos.knowledge.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,11 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Autowired
     private KnowledgeRepository knowledgeRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
-    public Knowledge create(KnowledgeDto knowledge) {
+    public Knowledge create(String email, KnowledgeDto knowledge) {
         Category category = categoryRepository.findByName(knowledge.getCategory());
 
         Knowledge newKnowledge = Knowledge.builder()
