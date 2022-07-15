@@ -60,6 +60,17 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         }
     }
 
+    @Override
+    public Knowledge read(String knowledgeId) {
+        Optional<Knowledge> knowledge = knowledgeRepository.findById(knowledgeId);
+        if(knowledge.isPresent()){
+            return knowledge.get();
+        }
+        else{
+            return null;
+        }
+    }
+
     private Knowledge createKnowledge(User writer, KnowledgeDto knowledge) {
         Category category = categoryRepository.findByName(knowledge.getCategory());
 
@@ -75,6 +86,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         knowledge.setContent(knowledgeDto.getContent());
         knowledge.setStartTime(LocalDateTime.parse(knowledgeDto.getStartTime()));
         knowledge.setEndTime(LocalDateTime.parse(knowledgeDto.getEndTime()));
+        knowledge.setUpdated_at(LocalDateTime.now());
 
         Knowledge updateKnowledge = knowledgeRepository.save(knowledge);
 

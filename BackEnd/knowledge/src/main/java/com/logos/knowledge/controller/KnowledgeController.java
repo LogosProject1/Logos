@@ -48,12 +48,31 @@ public class KnowledgeController {
 
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
-//
-//    @GetMapping("/read")
-//    public ResponseEntity<Map<String, Object>> getKnowledge() {
-//
-//    }
-//
+
+    @GetMapping("/read")
+    public ResponseEntity<Map<String, Object>> getKnowledge(@RequestBody String knowledgeId) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        HttpStatus status = null;
+
+        try {
+            Knowledge knowledge = knowledgeService.read(knowledgeId);
+            if(knowledge != null){
+                resultMap.put("message", SUCCESS);
+                resultMap.put("knowledge",knowledge);
+            }
+            else{
+                resultMap.put("message", FAIL);
+            }
+        }
+        catch (Exception e){
+            resultMap.put("message", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(resultMap,status);
+    }
+
     @PutMapping("/update")
     public ResponseEntity<Map<String, Object>> updateKnowledge(HttpServletRequest req, @RequestBody KnowledgeDto knowledge, @RequestBody String knowledgeId) {
         Map<String, Object> resultMap = new HashMap<>();

@@ -9,4 +9,6 @@ public interface KnowledgeService {
     boolean delete(String email, String knowledgeId);
 
     Knowledge update(String email, KnowledgeDto knowledge, String knowledgeId);
+
+    Knowledge read(String knowledgeId);
 }

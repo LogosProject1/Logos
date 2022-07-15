@@ -50,6 +50,9 @@ public class Knowledge {
                 .price(Long.parseLong(knowledgeDto.getPrice()))
                 .content(knowledgeDto.getContent())
                 .startTime(LocalDateTime.parse(knowledgeDto.getStartTime()))
-                .endTime(LocalDateTime.parse(knowledgeDto.getEndTime())).build();
+                .endTime(LocalDateTime.parse(knowledgeDto.getEndTime()))
+                .created_at(LocalDateTime.now())
+                .updated_at(LocalDateTime.now())
+                .build();
     }
 }
