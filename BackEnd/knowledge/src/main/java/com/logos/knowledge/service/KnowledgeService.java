@@ -1,7 +1,10 @@
 package com.logos.knowledge.service;
 
 import com.logos.knowledge.domain.Knowledge;
+import com.logos.knowledge.dto.KnowledgeBriefDto;
 import com.logos.knowledge.dto.KnowledgeDto;
+
+import java.util.List;
 
 public interface KnowledgeService {
     Knowledge create(String email, KnowledgeDto knowledge);
@@ -9,4 +12,6 @@ public interface KnowledgeService {
     boolean delete(String email, String knowledgeId);
 
     Knowledge update(String email, KnowledgeDto knowledge, String knowledgeId);
+
+    List<KnowledgeBriefDto> search(String keyword);
 }
