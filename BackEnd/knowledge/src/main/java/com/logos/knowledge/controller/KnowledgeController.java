@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,9 +56,27 @@ public class KnowledgeController {
 //
 //    }
 //
-//    @DeleteMapping("/delete")
-//    public ResponseEntity<Map<String, Object>> deleteKnowledge() {
-//
-//    }
+    @DeleteMapping("/delete")
+    public ResponseEntity<Map<String, Object>> deleteKnowledge(HttpServletRequest req, @RequestBody String knowledgeId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        String email = (String) req.getAttribute("Email");
+
+        HttpStatus status = null;
+
+        try {
+            if(knowledgeService.delete(email,knowledgeId)){
+                resultMap.put("message", SUCCESS);
+            }
+            else {
+                resultMap.put("message", FAIL);
+            }
+            status = HttpStatus.OK;
+        } catch (Exception e) {
+            resultMap.put("message", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(resultMap, status);
+    }
 
 }

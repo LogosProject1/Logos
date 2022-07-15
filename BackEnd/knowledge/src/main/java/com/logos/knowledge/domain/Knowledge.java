@@ -14,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Knowledge {
-    @Id @GeneratedValue
-    private Long id;
+    @Id
+    private String id;
 
     private String title;
 
