@@ -51,11 +51,26 @@ public class KnowledgeController {
 //
 //    }
 //
-//    @PutMapping("/update")
-//    public ResponseEntity<Map<String, Object>> updateKnowledge() {
-//
-//    }
-//
+    @PutMapping("/update")
+    public ResponseEntity<Map<String, Object>> updateKnowledge(@RequestBody KnowledgeDto knowledge) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try {
+            Knowledge temp = knowledgeService.update(knowledge);
+            if (temp != null) {
+                resultMap.put("message", SUCCESS);
+            } else {
+                resultMap.put("message", FAIL);
+            }
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<Map<String, Object>> deleteKnowledge(HttpServletRequest req, @RequestBody String knowledgeId) {
         Map<String, Object> resultMap = new HashMap<>();

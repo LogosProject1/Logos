@@ -54,4 +54,23 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         }
         return false;
     }
+
+    @Override
+    public Knowledge update(KnowledgeDto knowledge) {
+        Category category = categoryRepository.findByName(knowledge.getCategory());
+
+        Knowledge newKnowledge = Knowledge.builder()
+                .id(UUID.randomUUID().toString())
+                .title(knowledge.getTitle())
+                .category(category)
+                .price(Long.parseLong(knowledge.getPrice()))
+                .content(knowledge.getContent())
+                .startTime(LocalDateTime.parse(knowledge.getStartTime()))
+                .endTime(LocalDateTime.parse(knowledge.getEndTime())).build();
+
+
+        knowledgeRepository.save(newKnowledge);
+
+        return newKnowledge;
+    }
 }

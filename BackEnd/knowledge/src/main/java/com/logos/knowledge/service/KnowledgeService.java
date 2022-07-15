@@ -7,4 +7,6 @@ public interface KnowledgeService {
     Knowledge create(KnowledgeDto knowledge);
 
     boolean delete(String email, String knowledgeId);
+
+    Knowledge update(KnowledgeDto knowledge);
 }
