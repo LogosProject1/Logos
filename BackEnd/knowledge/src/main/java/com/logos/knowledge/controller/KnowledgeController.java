@@ -55,11 +55,12 @@ public class KnowledgeController {
 //    }
 //
     @PutMapping("/update")
-    public ResponseEntity<Map<String, Object>> updateKnowledge(@RequestBody KnowledgeDto knowledge) {
+    public ResponseEntity<Map<String, Object>> updateKnowledge(HttpServletRequest req, @RequestBody KnowledgeDto knowledge, @RequestBody String knowledgeId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
+        String email = (String) req.getAttribute("Email");
         try {
-            Knowledge temp = knowledgeService.update(knowledge);
+            Knowledge temp = knowledgeService.update(email,knowledge,knowledgeId);
             if (temp != null) {
                 resultMap.put("message", SUCCESS);
             } else {

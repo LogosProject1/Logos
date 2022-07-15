@@ -27,54 +27,68 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public Knowledge create(String email, KnowledgeDto knowledge) {
-        Category category = categoryRepository.findByName(knowledge.getCategory());
+        User writer = userRepository.findByEmail(email);
 
-        Knowledge newKnowledge = Knowledge.builder()
-                .id(UUID.randomUUID().toString())
-                .title(knowledge.getTitle())
-                .category(category)
-                .price(Long.parseLong(knowledge.getPrice()))
-                .content(knowledge.getContent())
-                .startTime(LocalDateTime.parse(knowledge.getStartTime()))
-                .endTime(LocalDateTime.parse(knowledge.getEndTime())).build();
-
-
-        knowledgeRepository.save(newKnowledge);
-
-        return newKnowledge;
+        return createKnowledge(writer,knowledge);
     }
 
     @Override
     public boolean delete(String email, String knowledgeId) {
-        Optional<Knowledge> byId = knowledgeRepository.findById(knowledgeId);
-        if(byId.isPresent()){
-            //작성자인지 확인
-            User writer = byId.get().getWriter();
-            if(!writer.getEmail().equals(email)) return false;
+        Optional<Knowledge> knowledge = knowledgeRepository.findById(knowledgeId);
 
+        if(checkWriter(email, knowledge)){
             //지식 삭제
             knowledgeRepository.deleteById(knowledgeId);
+
             return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public Knowledge update(String email, KnowledgeDto knowledgeDto, String knowledgeId) {
+        Optional<Knowledge> knowledge = knowledgeRepository.findById(knowledgeId);
+
+        if(checkWriter(email,knowledge)){
+            //지식 업데이트
+            return updateKnowledge(knowledge.get(), knowledgeDto);
+        }
+        else {
+            return null;
+        }
+    }
+
+    private Knowledge createKnowledge(User writer, KnowledgeDto knowledge) {
+        Category category = categoryRepository.findByName(knowledge.getCategory());
+
+        return knowledgeRepository.save(Knowledge.buildKnowledge(knowledge, category, writer));
+    }
+
+    private Knowledge updateKnowledge(Knowledge knowledge, KnowledgeDto knowledgeDto) {
+        Category category = categoryRepository.findByName(knowledgeDto.getCategory());
+
+        knowledge.setTitle(knowledgeDto.getTitle());
+        knowledge.setCategory(category);
+        knowledge.setPrice(Long.parseLong(knowledgeDto.getPrice()));
+        knowledge.setContent(knowledgeDto.getContent());
+        knowledge.setStartTime(LocalDateTime.parse(knowledgeDto.getStartTime()));
+        knowledge.setEndTime(LocalDateTime.parse(knowledgeDto.getEndTime()));
+
+        Knowledge updateKnowledge = knowledgeRepository.save(knowledge);
+
+        return updateKnowledge;
+    }
+
+    private boolean checkWriter(String email, Optional<Knowledge> knowledge) {
+        if(knowledge.isPresent()) {
+            //작성자인지 확인
+            User writer = knowledge.get().getWriter();
+            if (!writer.getEmail().equals(email)) return false;
+            else return true;
         }
         return false;
     }
 
-    @Override
-    public Knowledge update(KnowledgeDto knowledge) {
-        Category category = categoryRepository.findByName(knowledge.getCategory());
-
-        Knowledge newKnowledge = Knowledge.builder()
-                .id(UUID.randomUUID().toString())
-                .title(knowledge.getTitle())
-                .category(category)
-                .price(Long.parseLong(knowledge.getPrice()))
-                .content(knowledge.getContent())
-                .startTime(LocalDateTime.parse(knowledge.getStartTime()))
-                .endTime(LocalDateTime.parse(knowledge.getEndTime())).build();
-
-
-        knowledgeRepository.save(newKnowledge);
-
-        return newKnowledge;
-    }
 }

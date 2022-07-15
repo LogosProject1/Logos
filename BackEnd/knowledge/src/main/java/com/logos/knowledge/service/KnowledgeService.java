@@ -8,5 +8,5 @@ public interface KnowledgeService {
 
     boolean delete(String email, String knowledgeId);
 
-    Knowledge update(KnowledgeDto knowledge);
+    Knowledge update(String email, KnowledgeDto knowledge, String knowledgeId);
 }
