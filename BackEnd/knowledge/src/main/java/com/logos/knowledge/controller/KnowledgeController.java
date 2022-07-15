@@ -1,6 +1,7 @@
 package com.logos.knowledge.controller;
 
 import com.logos.knowledge.domain.Knowledge;
+import com.logos.knowledge.dto.KnowledgeBriefDto;
 import com.logos.knowledge.dto.KnowledgeDto;
 import com.logos.knowledge.service.JwtService;
 import com.logos.knowledge.service.KnowledgeService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -49,28 +51,30 @@ public class KnowledgeController {
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
-    @GetMapping("/read")
-    public ResponseEntity<Map<String, Object>> getKnowledge(@RequestBody String knowledgeId) {
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> searchKnowledge(@RequestParam("keyword") String keyword) {
         Map<String, Object> resultMap = new HashMap<>();
-
         HttpStatus status = null;
-
         try {
-            Knowledge knowledge = knowledgeService.read(knowledgeId);
-            if(knowledge != null){
+            List<KnowledgeBriefDto> temp = knowledgeService.search(keyword);
+            if (temp != null) {
                 resultMap.put("message", SUCCESS);
-                resultMap.put("knowledge",knowledge);
-            }
-            else{
+            } else {
                 resultMap.put("message", FAIL);
             }
-        }
-        catch (Exception e){
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
             resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(resultMap,status);
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+    @GetMapping("/read")
+    public ResponseEntity<Map<String, Object>> getKnowledge() {
+
+
     }
 
     @PutMapping("/update")

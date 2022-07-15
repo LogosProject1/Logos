@@ -3,6 +3,7 @@ package com.logos.knowledge.service;
 import com.logos.knowledge.domain.Category;
 import com.logos.knowledge.domain.Knowledge;
 import com.logos.knowledge.domain.User;
+import com.logos.knowledge.dto.KnowledgeBriefDto;
 import com.logos.knowledge.dto.KnowledgeDto;
 import com.logos.knowledge.repository.CategoryRepository;
 import com.logos.knowledge.repository.KnowledgeRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,14 +63,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public Knowledge read(String knowledgeId) {
-        Optional<Knowledge> knowledge = knowledgeRepository.findById(knowledgeId);
-        if(knowledge.isPresent()){
-            return knowledge.get();
-        }
-        else{
-            return null;
-        }
+    public List<KnowledgeBriefDto> search(String keyword) {
+        return knowledgeRepository.findByTitleContaining(keyword);
     }
 
     private Knowledge createKnowledge(User writer, KnowledgeDto knowledge) {
@@ -86,7 +82,6 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         knowledge.setContent(knowledgeDto.getContent());
         knowledge.setStartTime(LocalDateTime.parse(knowledgeDto.getStartTime()));
         knowledge.setEndTime(LocalDateTime.parse(knowledgeDto.getEndTime()));
-        knowledge.setUpdated_at(LocalDateTime.now());
 
         Knowledge updateKnowledge = knowledgeRepository.save(knowledge);
 
