@@ -5,6 +5,7 @@ import com.logos.knowledge.domain.Knowledge;
 import com.logos.knowledge.domain.User;
 import com.logos.knowledge.dto.KnowledgeBriefDto;
 import com.logos.knowledge.dto.KnowledgeDto;
+import com.logos.knowledge.dto.KnowledgeFilterDto;
 import com.logos.knowledge.dto.KnowledgeUpdateDto;
 import com.logos.knowledge.repository.CategoryRepository;
 import com.logos.knowledge.repository.KnowledgeRepository;
@@ -53,6 +54,47 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         else{
             return false;
         }
+    }
+
+    @Override
+    public List<KnowledgeBriefDto> filter(KnowledgeFilterDto knowledgeFilterDto) {
+        String category = "-1";
+        LocalDateTime startTime = LocalDateTime.parse("0000-01-01T00:00:00");
+        LocalDateTime endTime = LocalDateTime.parse("9999-12-31T23:59:59");
+        Long minPrice = 0L;
+        Long maxPrice = Long.MAX_VALUE;
+
+        if(knowledgeFilterDto.getCategory() != null) {
+            Category byName = categoryRepository.findByName(knowledgeFilterDto.getCategory());
+            if(byName != null) category = byName.getId();
+        }
+        if(knowledgeFilterDto.getStartTime() != null){
+            startTime = LocalDateTime.parse(knowledgeFilterDto.getStartTime());
+        }
+        if(knowledgeFilterDto.getEndTime() != null){
+            endTime = LocalDateTime.parse(knowledgeFilterDto.getEndTime());
+        }
+        if(knowledgeFilterDto.getMinPrice() != null){
+            minPrice = Long.parseLong(knowledgeFilterDto.getMinPrice());
+        }
+        if(knowledgeFilterDto.getMaxPrice() != null){
+            maxPrice = Long.parseLong(knowledgeFilterDto.getMaxPrice());
+        }
+
+        List<Knowledge> byFilter = knowledgeRepository.findByFilter(category, startTime, endTime, minPrice, maxPrice);
+
+        List<KnowledgeBriefDto> knowledgeList = new ArrayList<>();
+
+        for(Knowledge knowledge : byFilter){
+            knowledgeList.add(KnowledgeBriefDto.builder()
+                    .title(knowledge.getTitle())
+                    .price(String.valueOf(knowledge.getPrice()))
+                    .startTime(knowledge.getStartTime().toString())
+                    .endTime(knowledge.getEndTime().toString())
+                    .build());
+        }
+
+        return knowledgeList;
     }
 
     @Override

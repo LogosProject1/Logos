@@ -3,7 +3,9 @@ package com.logos.knowledge.controller;
 import com.logos.knowledge.domain.Knowledge;
 import com.logos.knowledge.dto.KnowledgeBriefDto;
 import com.logos.knowledge.dto.KnowledgeDto;
+import com.logos.knowledge.dto.KnowledgeFilterDto;
 import com.logos.knowledge.dto.KnowledgeUpdateDto;
+import com.logos.knowledge.resolver.KnowledgeFilter;
 import com.logos.knowledge.service.JwtService;
 import com.logos.knowledge.service.KnowledgeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +73,23 @@ public class KnowledgeController {
         }
 
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Map<String,Object>> filterKnowledge(@KnowledgeFilter KnowledgeFilterDto knowledgeFilterDto){
+        Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try{
+            List<KnowledgeBriefDto> knowledgeList = knowledgeService.filter(knowledgeFilterDto);
+            resultMap.put("message",SUCCESS);
+            resultMap.put("knowledge_list",knowledgeList);
+            status = HttpStatus.OK;
+        } catch (Exception e) {
+            resultMap.put("message",e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(resultMap,status);
     }
 
     @GetMapping("/read/{knowledgeId}")

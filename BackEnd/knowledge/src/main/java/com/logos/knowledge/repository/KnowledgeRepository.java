@@ -2,11 +2,23 @@ package com.logos.knowledge.repository;
 
 import com.logos.knowledge.domain.Knowledge;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface KnowledgeRepository extends JpaRepository<Knowledge,String> {
     List<Knowledge> findByTitleContains(String keyword);
+
+    @Query("select k from Knowledge k "+
+           "where k.category.id = :category and k.startTime >= :startTime and k.endTime <= :endTime "+
+           "and k.price between :minPrice and :maxPrice")
+    List<Knowledge> findByFilter(@Param("category") String category,
+                                 @Param("startTime") LocalDateTime startTime,
+                                 @Param("endTime") LocalDateTime endTime,
+                                 @Param("minPrice") Long minPrice,
+                                 @Param("maxPrice") Long maxPrice);
 }

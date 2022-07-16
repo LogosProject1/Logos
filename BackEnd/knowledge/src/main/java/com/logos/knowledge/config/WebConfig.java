@@ -20,6 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/knowledge/read/{knowledgeId}"
                         ,"/knowledge/search"
+                        ,"/knowledge/filter"
                         ,"/error");
     }
 
