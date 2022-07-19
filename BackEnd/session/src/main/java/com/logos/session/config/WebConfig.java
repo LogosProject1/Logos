@@ -17,11 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(jwtInterceptor)
                 .order(1)
                 .addPathPatterns("/**")
-                .excludePathPatterns(
-                        "/knowledge/read/{knowledgeId}"
-                        ,"/knowledge/search"
-                        ,"/knowledge/filter"
-                        ,"/error");
+                .excludePathPatterns("/error");
     }
 
     @Override
