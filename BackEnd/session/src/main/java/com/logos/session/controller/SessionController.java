@@ -1,6 +1,9 @@
 package com.logos.session.controller;
 
 
+import com.logos.session.domain.Knowledge;
+import com.logos.session.dto.SessionRemoveUserDto;
+import com.logos.session.repository.KnowledgeRepository;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
@@ -19,12 +23,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SessionController {
     private final OpenVidu openVidu;
 
+    private final KnowledgeRepository knowledgeRepository;
+
     private Map<String, Session> mapSessions = new ConcurrentHashMap<>();
 
     private Map<String, Map<String, OpenViduRole>> mapSessionNamesTokens = new ConcurrentHashMap<>();
 
     @PostMapping("/session")
-    public ResponseEntity<Map<String,Object>> joinSession(@RequestBody String knowledgeId, HttpServletRequest req){
+    public ResponseEntity<Map<String,Object>> joinSession(@RequestBody String knowledgeId, HttpServletRequest req) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {
@@ -33,7 +39,8 @@ public class SessionController {
             return getErrorResponse(e, resultMap);
         }
 
-        OpenViduRole role = OpenViduRole.PUBLISHER;
+
+        OpenViduRole role = checkSessionOwner(knowledgeId,(String)req.getAttribute("Email"));
 
         String serverData = "{\"serverData\": \"" + req.getAttribute("Email") + "\"}";
 
@@ -92,8 +99,20 @@ public class SessionController {
         }
     }
 
+    private OpenViduRole checkSessionOwner(String knowledgeId, String email) throws Exception {
+        Optional<Knowledge> byId = knowledgeRepository.findById(knowledgeId);
+        if(byId.isEmpty()) throw new Exception("Not Exists Knowledge");
+
+        if(byId.get().getWriter().getEmail().equals(email)){
+            return OpenViduRole.PUBLISHER;
+        }
+        else{
+            return OpenViduRole.SUBSCRIBER;
+        }
+    }
+
     @PostMapping("/remove-user")
-    public ResponseEntity<Map<String, Object>> removeUser(@RequestBody String knowledgeId, @RequestBody String token, HttpServletRequest req)
+    public ResponseEntity<Map<String, Object>> removeUser(@RequestBody SessionRemoveUserDto sessionRemoveUserDto, HttpServletRequest req)
             throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
 
@@ -102,17 +121,18 @@ public class SessionController {
         } catch (Exception e) {
             return getErrorResponse(e, resultMap);
         }
-        System.out.println("Removing user | {sessionName, token}=" + knowledgeId + ", " + token);
+        System.out.println("Removing user | {sessionName, token}=" + sessionRemoveUserDto.getKnowledgeId() + ", " + sessionRemoveUserDto.getToken());
 
         // If the session exists
-        if (this.mapSessions.get(knowledgeId) != null && this.mapSessionNamesTokens.get(knowledgeId) != null) {
-
+        if (this.mapSessions.get(sessionRemoveUserDto.getKnowledgeId()) != null
+                && this.mapSessionNamesTokens.get(sessionRemoveUserDto.getKnowledgeId()) != null) {
             // If the token exists
-            if (this.mapSessionNamesTokens.get(knowledgeId).remove(token) != null) {
+            if (this.mapSessionNamesTokens.get(sessionRemoveUserDto.getKnowledgeId())
+                    .remove(sessionRemoveUserDto.getToken()) != null) {
                 // User left the session
-                if (this.mapSessionNamesTokens.get(knowledgeId).isEmpty()) {
+                if (this.mapSessionNamesTokens.get(sessionRemoveUserDto.getKnowledgeId()).isEmpty()) {
                     // Last user left: session must be removed
-                    this.mapSessions.remove(knowledgeId);
+                    this.mapSessions.remove(sessionRemoveUserDto.getKnowledgeId());
                 }
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
