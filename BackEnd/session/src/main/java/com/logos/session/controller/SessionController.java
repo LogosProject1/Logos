@@ -2,6 +2,7 @@ package com.logos.session.controller;
 
 
 import com.logos.session.domain.Knowledge;
+import com.logos.session.dto.SessionJoinDto;
 import com.logos.session.dto.SessionRemoveUserDto;
 import com.logos.session.repository.KnowledgeRepository;
 import io.openvidu.java.client.*;
@@ -30,7 +31,7 @@ public class SessionController {
     private Map<String, Map<String, OpenViduRole>> mapSessionNamesTokens = new ConcurrentHashMap<>();
 
     @PostMapping("/session")
-    public ResponseEntity<Map<String,Object>> joinSession(@RequestBody String knowledgeId, HttpServletRequest req) throws Exception {
+    public ResponseEntity<Map<String,Object>> joinSession(@RequestBody SessionJoinDto sessionJoinDto, HttpServletRequest req) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         
         try {
@@ -40,20 +41,20 @@ public class SessionController {
         }
 
 
-        OpenViduRole role = checkSessionOwner(knowledgeId,(String)req.getAttribute("Email"));
+        OpenViduRole role = checkSessionOwner(sessionJoinDto.getKnowledgeId(), (String)req.getAttribute("Email"));
 
         String serverData = "{\"serverData\": \"" + req.getAttribute("Email") + "\"}";
 
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
 
-        if (this.mapSessions.get(knowledgeId) != null) {
-            System.out.println("Existing session " + knowledgeId);
+        if (this.mapSessions.get(sessionJoinDto.getKnowledgeId()) != null) {
+            System.out.println("Existing session " + sessionJoinDto.getKnowledgeId());
             try {
                 // Generate a new Connection with the recently created connectionProperties
-                String token = this.mapSessions.get(knowledgeId).createConnection(connectionProperties).getToken();
+                String token = this.mapSessions.get(sessionJoinDto.getKnowledgeId()).createConnection(connectionProperties).getToken();
 
                 // Update our collection storing the new token
-                this.mapSessionNamesTokens.get(knowledgeId).put(token, role);
+                this.mapSessionNamesTokens.get(sessionJoinDto.getKnowledgeId()).put(token, role);
 
                 // Prepare the response with the token
                 resultMap.put("token", token);
@@ -66,15 +67,15 @@ public class SessionController {
                 if (404 == e2.getStatus()) {
                     // Invalid sessionId (user left unexpectedly). Session object is not valid
                     // anymore. Clean collections and continue as new session
-                    this.mapSessions.remove(knowledgeId);
-                    this.mapSessionNamesTokens.remove(knowledgeId);
+                    this.mapSessions.remove(sessionJoinDto.getKnowledgeId());
+                    this.mapSessionNamesTokens.remove(sessionJoinDto.getKnowledgeId());
                 }
             }
 
         }
 
         // New session
-        System.out.println("New session " + knowledgeId);
+        System.out.println("New session " + sessionJoinDto.getKnowledgeId());
         try {
 
             // Create a new OpenVidu Session
@@ -83,9 +84,9 @@ public class SessionController {
             String token = session.createConnection(connectionProperties).getToken();
 
             // Store the session and the token in our collections
-            this.mapSessions.put(knowledgeId, session);
-            this.mapSessionNamesTokens.put(knowledgeId, new ConcurrentHashMap<>());
-            this.mapSessionNamesTokens.get(knowledgeId).put(token, role);
+            this.mapSessions.put(sessionJoinDto.getKnowledgeId(), session);
+            this.mapSessionNamesTokens.put(sessionJoinDto.getKnowledgeId(), new ConcurrentHashMap<>());
+            this.mapSessionNamesTokens.get(sessionJoinDto.getKnowledgeId()).put(token, role);
 
             // Prepare the response with the token
             resultMap.put("token", token);
