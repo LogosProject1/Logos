@@ -1,6 +1,6 @@
 package com.logos.session.domain;
 
-import com.logos.knowledge.service.UUIDGenerateUtils;
+import com.logos.session.service.UUIDGenerateUtils;
 import lombok.*;
 
 import javax.persistence.Entity;

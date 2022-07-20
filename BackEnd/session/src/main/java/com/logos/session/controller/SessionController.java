@@ -32,7 +32,7 @@ public class SessionController {
     @PostMapping("/session")
     public ResponseEntity<Map<String,Object>> joinSession(@RequestBody String knowledgeId, HttpServletRequest req) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-
+        
         try {
             checkUserLogged(req);
         } catch (Exception e) {

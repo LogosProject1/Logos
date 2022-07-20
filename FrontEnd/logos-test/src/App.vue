@@ -71,7 +71,7 @@ import UserVideo from "./components/UserVideo";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4MjExNzA1NTAxLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgyMTUzMDUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.PJFB1M7WaZRmtY3IWA3et2QIhVHZxVSNGkki2MBiV6eCTdEbbhw3FX8IDdGzDnaY1j67F6Y9wJXQTRntVtc4GA";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4Mjk1MTM0Njg0LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgyOTg3MzQsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.jmX9N85sjeL9rvC0ArQLDvF1Nc1sb4KrLXttJR0tKkPwgBb1Mpk4e6Z_xDjwiqc3FUQYWZc7gSxaQpxTpCaNDQ";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
