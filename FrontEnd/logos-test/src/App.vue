@@ -37,6 +37,7 @@
     <div id="session" v-if="session">
       <div id="session-header">
         <h1 id="session-title">{{ mySessionId }}</h1>
+        <input type="button" @click="sendMessage" />
         <input
           class="btn btn-large btn-danger"
           type="button"
@@ -71,7 +72,7 @@ import UserVideo from "./components/UserVideo";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4MjExNzA1NTAxLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgyMTUzMDUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.PJFB1M7WaZRmtY3IWA3et2QIhVHZxVSNGkki2MBiV6eCTdEbbhw3FX8IDdGzDnaY1j67F6Y9wJXQTRntVtc4GA";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4Mjk0NTg2MTU2LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgyOTgxODYsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.G2r9efz38nc5o8bnabjoNH8kytIgfnVmyTu5H0kwPlGA496n8GpKeVRxWB_4V1JKO8FCO28T8gFG3EGureXC4Q";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
@@ -88,16 +89,38 @@ export default {
       publisher: undefined,
       token: undefined,
       subscribers: [],
-      mySessionId: "SessionA",
+      mySessionId: "52552152843524282555",
       myUserName: "Participant" + Math.floor(Math.random() * 100),
     };
   },
   methods: {
+    sendMessage() {
+      this.session
+        .signal({
+          data: "하위", // Any string (optional)
+          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+          type: "my-chat", // The type of message (optional)
+        })
+        .then(() => {
+          console.log("Message successfully sent");
+          //채팅서버에도 똑같은 시그널을 보내서 DB에 저장
+          //채팅 내용,유저 이름,세션아이디 시간
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
     joinSession() {
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu();
       // --- Init a session ---
       this.session = this.OV.initSession();
+
+      this.session.on("signal:my-chat", (event) => {
+        console.log(event.data); // Message
+        console.log(event.from); // Connection object of the sender
+        console.log(event.type); // The type of message ("my-chat")
+      });
       // --- Specify the actions when events take place in the session ---
       // On every new Stream received...
       this.session.on("streamCreated", ({ stream }) => {
@@ -172,12 +195,9 @@ export default {
     async getToken(mySessionId) {
       // Video-call chosen by the user
       await axios
-        .post(
-          `${OPENVIDU_API_SERVER_URL}/session`,
-          JSON.stringify({
-            knowledgeId: mySessionId,
-          })
-        )
+        .post(`${OPENVIDU_API_SERVER_URL}/session`, {
+          knowledgeId: mySessionId,
+        })
         .then((response) => response.data)
         .then((data) => {
           this.token = data.token;
