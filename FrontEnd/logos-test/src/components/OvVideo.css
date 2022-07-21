@@ -3,6 +3,10 @@
     position: relative;
     width: 100%;
     max-width: 600px;
+    transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */
+    /*Mirror code ends*/
   }
 
   .webcam:hover {

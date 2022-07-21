@@ -175,7 +175,7 @@ import ChatMessage from "./components/ChatMessage";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4MzgxMzQxNzIzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgzODQ5NDEsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.M7eVKMZOrNwoxiRk2ORs1LKnhae6qMibcCdwvYy_bVrKRWcoOj7EYsTI0SWiyWf-toZUYYPgMkimY0IhZYZu1w";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4Mzg1NzY4NjM4LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgzODkzNjgsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.Ess81BamauP9jAGnvm541bsH4DoDdxzYJijyP17o9iEsaws0G0-LbRrGN0heX9gwzDq3V5z-2arKpfbmIYJOig";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
@@ -263,7 +263,7 @@ export default {
               resolution: "600x320", // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
-              mirror: true, // Whether to mirror your local video or not
+              mirror: false, // Whether to mirror your local video or not
             });
             this.mainStreamManager = publisher;
             this.publisher = publisher;
