@@ -43,7 +43,7 @@ public class SessionController {
 
         OpenViduRole role = checkSessionOwner(sessionJoinDto.getKnowledgeId(), (String)req.getAttribute("Email"));
 
-        String serverData = "{\"serverData\": \"" + req.getAttribute("Email") + "\"}";
+        String serverData = "{\"serverData\": \"" + req.getAttribute("Name") + "\"}";
 
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
 
