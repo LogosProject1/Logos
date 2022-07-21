@@ -1,8 +1,10 @@
 <template>
   <div v-if="streamManager">
-    <ov-video :username="state.clientData" :stream-manager="streamManager" />
-    <div class="nameTag">
-      <p>{{ state.clientData }}</p>
+    <div class="user-video">
+      <ov-video :username="state.clientData" :stream-manager="streamManager" />
+      <div class="nameTag">
+        <p>{{ state.clientData }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -42,6 +44,9 @@ export default {
 };
 </script>
 <style scoped>
+.user-video {
+  position: relative;
+}
 .nameTag {
   border-radius: 10px;
   padding: 6px 10px;
