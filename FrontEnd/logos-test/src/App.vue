@@ -74,7 +74,7 @@ import UserVideo from "./components/UserVideo";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4Mjk4MjkyMjg5LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgzMDE4OTIsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.U2zUX6DzyJfeU7l0c7Zh5pGUgYtzqryQplVcNczxJ_TMVPujMLu4RlOm4DMr8334cwsp0-ol3qfjAvVg82nUNA";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4MzgxMzQxNzIzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgzODQ5NDEsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.M7eVKMZOrNwoxiRk2ORs1LKnhae6qMibcCdwvYy_bVrKRWcoOj7EYsTI0SWiyWf-toZUYYPgMkimY0IhZYZu1w";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
@@ -153,10 +153,10 @@ export default {
               videoSource: undefined, // The source of video. If undefined default webcam
               publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
               publishVideo: true, // Whether you want to start publishing with your video enabled or not
-              resolution: "320x240", // The resolution of your video
+              resolution: "600x320", // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
-              mirror: false, // Whether to mirror your local video or not
+              mirror: true, // Whether to mirror your local video or not
             });
             this.mainStreamManager = publisher;
             this.publisher = publisher;
