@@ -175,7 +175,7 @@ import ChatMessage from "./components/ChatMessage";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4MzgxMzQxNzIzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgzODQ5NDEsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.M7eVKMZOrNwoxiRk2ORs1LKnhae6qMibcCdwvYy_bVrKRWcoOj7EYsTI0SWiyWf-toZUYYPgMkimY0IhZYZu1w";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4Mzg1Njk4NzU0LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgzODkyOTgsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.gMqSWkvwoM0S2-xQTvB8DQUw8g40VqXBZL1HrCT41tu5eXrMy8cIq6e-T5K0Zgsuh-Pd1-3_ltvCSHIPmUiSuQ";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
