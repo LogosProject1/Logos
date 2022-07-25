@@ -51,13 +51,16 @@ public class SessionController {
             System.out.println("Existing session " + sessionJoinDto.getKnowledgeId());
             try {
                 // Generate a new Connection with the recently created connectionProperties
-                String token = this.mapSessions.get(sessionJoinDto.getKnowledgeId()).createConnection(connectionProperties).getToken();
+                String webCamToken = this.mapSessions.get(sessionJoinDto.getKnowledgeId()).createConnection(connectionProperties).getToken();
+                String screenToken = this.mapSessions.get(sessionJoinDto.getKnowledgeId()).createConnection(connectionProperties).getToken();
 
                 // Update our collection storing the new token
-                this.mapSessionNamesTokens.get(sessionJoinDto.getKnowledgeId()).put(token, role);
+                this.mapSessionNamesTokens.get(sessionJoinDto.getKnowledgeId()).put(webCamToken, role);
+                this.mapSessionNamesTokens.get(sessionJoinDto.getKnowledgeId()).put(screenToken, role);
 
                 // Prepare the response with the token
-                resultMap.put("token", token);
+                resultMap.put("webCamToken", webCamToken);
+                resultMap.put("screenToken", screenToken);
 
                 // Return the response to the client
                 return new ResponseEntity<>(resultMap, HttpStatus.OK);
@@ -81,15 +84,18 @@ public class SessionController {
             // Create a new OpenVidu Session
             Session session = this.openVidu.createSession();
             // Generate a new Connection with the recently created connectionProperties
-            String token = session.createConnection(connectionProperties).getToken();
+            String webCamToken = session.createConnection(connectionProperties).getToken();
+            String screenToken = session.createConnection(connectionProperties).getToken();
 
             // Store the session and the token in our collections
             this.mapSessions.put(sessionJoinDto.getKnowledgeId(), session);
             this.mapSessionNamesTokens.put(sessionJoinDto.getKnowledgeId(), new ConcurrentHashMap<>());
-            this.mapSessionNamesTokens.get(sessionJoinDto.getKnowledgeId()).put(token, role);
+            this.mapSessionNamesTokens.get(sessionJoinDto.getKnowledgeId()).put(webCamToken, role);
+            this.mapSessionNamesTokens.get(sessionJoinDto.getKnowledgeId()).put(screenToken, role);
 
             // Prepare the response with the token
-            resultMap.put("token", token);
+            resultMap.put("webCamToken", webCamToken);
+            resultMap.put("screenToken", screenToken);
 
             // Return the response to the client
             return new ResponseEntity<>(resultMap, HttpStatus.OK);

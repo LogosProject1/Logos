@@ -1,6 +1,6 @@
 <template>
   <div id="main-container" class="container">
-    <div id="join" v-if="!session">
+    <div id="join" v-if="!sessionCamera">
       <div id="img-div">
         <img src="resources/images/openvidu_grey_bg_transp_cropped.png" />
       </div>
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div id="session" v-if="session">
+    <div id="session" v-if="sessionCamera">
       <div id="session-header">
         <h1 id="session-title">{{ mySessionId }}</h1>
         <input
@@ -44,8 +44,20 @@
           @click="leaveSession"
           value="Leave session"
         />
+        <input
+          id="buttonScreenShare"
+          type="button"
+          @click="screenShare"
+          value="screen share"
+        />
       </div>
       <div class="row">
+        <div class="row panel panel-default">
+          <div class="panel-heading">User Screens</div>
+          <div id="screen-share-container">
+            <!--여기에 스크린 쉐어가 들어감-->
+          </div>
+        </div>
         <div id="video-container" class="col-md-8">
           <user-video
             :stream-manager="publisher"
@@ -84,7 +96,6 @@
           >
             <h3 class="panel-title">Chat</h3>
             <button
-              mattooltip="Close"
               aria-describedby="cdk-describedby-message-13"
               cdk-describedby-host="0"
             >
@@ -175,7 +186,7 @@ import ChatMessage from "./components/ChatMessage";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4Mzg1NzY4NjM4LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgzODkzNjgsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.Ess81BamauP9jAGnvm541bsH4DoDdxzYJijyP17o9iEsaws0G0-LbRrGN0heX9gwzDq3V5z-2arKpfbmIYJOig";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4NzMxNzY1NzkzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg3MzUzNjUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ._Xze71ercVgRePCGPkU6_rZ0O4_IxBWGONg3Xweh93PcTDD6ewPGoHoe3N5flgxWTFWbnCBol6mUOPuqrREW1g";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
@@ -187,22 +198,62 @@ export default {
   },
   data() {
     return {
-      OV: undefined,
-      session: undefined,
+      OVCamera: undefined,
+      OVScreen: undefined,
+      sessionCamera: undefined,
+      sessionScreen: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
-      token: undefined,
+      webCamToken: undefined,
+      screenToken: undefined,
       subscribers: [],
+      screenSubscribers: [],
       mySessionId: "52552152843524282555",
       myUserName: "Participant" + Math.floor(Math.random() * 100),
       chatInput: undefined,
+      screensharing: false,
       chatMessageList: [],
     };
   },
   methods: {
+    screenShare() {
+      var publisherScreen = this.OVScreen.initPublisher(
+        "screen-share-container",
+        {
+          videoSource: "screen",
+        }
+      );
+
+      publisherScreen.once("accessAllowed", () => {
+        document.getElementById("buttonScreenShare").style.visibility =
+          "hidden";
+        this.screensharing = true;
+        // It is very important to define what to do when the stream ends.
+        publisherScreen.stream
+          .getMediaStream()
+          .getVideoTracks()[0]
+          .addEventListener("ended", () => {
+            console.log('User pressed the "Stop sharing" button');
+            this.sessionScreen.unpublish(publisherScreen);
+            document.getElementById("buttonScreenShare").style.visibility =
+              "visible";
+
+            this.screensharing = false;
+          });
+        this.sessionScreen.publish(publisherScreen);
+      });
+
+      publisherScreen.on("videoElementCreated", function (event) {
+        event.element["muted"] = true;
+      });
+
+      publisherScreen.once("accessDenied", () => {
+        console.error("Screen Share: Access Denied");
+      });
+    },
     sendMessage() {
       if (this.chatInput === "" || this.chatInput === undefined) return;
-      this.session
+      this.sessionCamera
         .signal({
           data: this.chatInput, // Any string (optional)
           to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
@@ -220,11 +271,14 @@ export default {
     },
     joinSession() {
       // --- Get an OpenVidu object ---
-      this.OV = new OpenVidu();
-      // --- Init a session ---
-      this.session = this.OV.initSession();
+      this.OVCamera = new OpenVidu();
+      this.OVScreen = new OpenVidu();
 
-      this.session.on("signal:my-chat", (event) => {
+      // --- Init a session ---
+      this.sessionCamera = this.OVCamera.initSession();
+      this.sessionScreen = this.OVScreen.initSession();
+
+      this.sessionCamera.on("signal:my-chat", (event) => {
         this.chatMessageList.push(event);
         console.log(event.data); // Message
         console.log(event.from); // Connection object of the sender
@@ -232,30 +286,46 @@ export default {
       });
       // --- Specify the actions when events take place in the session ---
       // On every new Stream received...
-      this.session.on("streamCreated", ({ stream }) => {
-        const subscriber = this.session.subscribe(stream);
-        this.subscribers.push(subscriber);
+      this.sessionCamera.on("streamCreated", (event) => {
+        // Subscribe to the Stream to receive it. HTML video will be appended to element with 'container-cameras' id
+        if (event.stream.typeOfVideo == "CAMERA") {
+          var subscriber = this.sessionCamera.subscribe(
+            event.stream,
+            undefined
+          );
+          this.subscribers.push(subscriber);
+        }
       });
+
+      this.sessionScreen.on("streamCreated", (event) => {
+        // Subscribe to the Stream to receive it. HTML video will be appended to element with 'container-cameras' id
+        if (event.stream.typeOfVideo == "SCREEN") {
+          this.sessionScreen.subscribe(event.stream, "screen-share-container");
+        }
+      });
+
       // On every Stream destroyed...
-      this.session.on("streamDestroyed", ({ stream }) => {
+      this.sessionCamera.on("streamDestroyed", ({ stream }) => {
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
           this.subscribers.splice(index, 1);
         }
       });
       // On every asynchronous exception...
-      this.session.on("exception", ({ exception }) => {
+      this.sessionCamera.on("exception", ({ exception }) => {
         console.warn(exception);
       });
       // --- Connect to the session with a valid user token ---
       // 'getToken' method is simulating what your server-side should do.
       // 'token' parameter should be retrieved and returned by your own backend
       this.getToken(this.mySessionId).then(() => {
-        this.session
-          .connect(this.token, { clientData: this.myUserName })
+        console.log("getCameraToken Successful", this.webCamToken);
+        console.log("getScreenToken Successful", this.screenToken);
+        this.sessionCamera
+          .connect(this.webCamToken, { clientData: this.myUserName })
           .then(() => {
             // --- Get your own camera stream with the desired properties ---
-            let publisher = this.OV.initPublisher(undefined, {
+            let publisher = this.OVCamera.initPublisher(undefined, {
               audioSource: undefined, // The source of audio. If undefined default microphone
               videoSource: undefined, // The source of video. If undefined default webcam
               publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
@@ -268,11 +338,26 @@ export default {
             this.mainStreamManager = publisher;
             this.publisher = publisher;
             // --- Publish your stream ---
-            this.session.publish(this.publisher);
+            this.sessionCamera.publish(this.publisher);
           })
           .catch((error) => {
             console.log(
               "There was an error connecting to the session:",
+              error.code,
+              error.message
+            );
+          });
+
+        this.sessionScreen
+          .connect(this.screenToken, { clientData: this.myUserName })
+          .then(() => {
+            document.getElementById("buttonScreenShare").style.visibility =
+              "visible";
+            console.log("Session screen connected");
+          })
+          .catch((error) => {
+            console.warn(
+              "There was an error connecting to the session for screen share:",
               error.code,
               error.message
             );
@@ -282,8 +367,10 @@ export default {
     },
     leaveSession() {
       // --- Leave the session by calling 'disconnect' method over the Session object ---
-      if (this.session) this.session.disconnect();
-      this.session = undefined;
+      if (this.sessionCamera) this.sessionCamera.disconnect();
+      if (this.sessionScreen) this.sessionScreen.disconnect();
+      this.sessionCamera = undefined;
+      this.sessionScreen = undefined;
       this.mainStreamManager = undefined;
       this.publisher = undefined;
       this.subscribers = [];
@@ -292,7 +379,8 @@ export default {
         `${OPENVIDU_API_SERVER_URL}/remove-user`,
         JSON.stringify({
           knowledgeId: this.mySessionId,
-          token: this.token,
+          webCamToken: this.webCamToken,
+          screenToken: this.screenToken,
         })
       );
       this.chatMessageList = [];
@@ -310,7 +398,8 @@ export default {
         })
         .then((response) => response.data)
         .then((data) => {
-          this.token = data.token;
+          this.webCamToken = data.webCamToken;
+          this.screenToken = data.screenToken;
         });
     },
   },
@@ -409,5 +498,11 @@ export default {
 }
 a:-webkit-any-link {
   color: #1a73e8;
+}
+#screen-share-container video {
+  position: relative;
+  float: left;
+  width: 50%;
+  cursor: pointer;
 }
 </style>
