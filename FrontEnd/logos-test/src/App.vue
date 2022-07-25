@@ -34,8 +34,8 @@
       </div>
     </div>
 
-    <div id="session" v-if="sessionCamera">
-      <div id="session-header">
+    <b-container id="session" v-if="sessionCamera">
+      <b-row id="session-header">
         <h1 id="session-title">{{ mySessionId }}</h1>
         <input
           class="btn btn-large btn-danger"
@@ -45,20 +45,44 @@
           value="Leave session"
         />
         <input
-          id="buttonScreenShare"
+          class="btn btn-large btn-primary"
           type="button"
+          id="buttonScreenShare"
           @click="screenShare"
-          value="screen share"
+          value="Screen Share"
         />
-      </div>
-      <div class="row">
-        <div class="row panel panel-default">
-          <div class="panel-heading">User Screens</div>
-          <div id="screen-share-container">
-            <!--여기에 스크린 쉐어가 들어감-->
-          </div>
+      </b-row>
+      <div class="row panel panel-default">
+        <div class="panel-heading">User Screens</div>
+        <div id="screen-share-container">
+          <!--여기에 스크린 쉐어가 들어감-->
         </div>
-        <div id="video-container" class="col-md-8">
+      </div>
+      <b-row class="row">
+        <b-col
+          cols="12"
+          md="8"
+          id="video-container"
+          :class="{
+            'webcam-container': true,
+            'under-two': this.subscribers.length >= 1,
+            'under-four': this.subscribers.length >= 2,
+            'under-nine': this.subscribers.length >= 4,
+          }"
+        >
+          <div class="subvideo">
+            <div
+              v-for="sub in subscribers"
+              :key="sub.stream.connection.connectionId"
+              class="subcol"
+            >
+              <user-video
+                :stream-manager="sub"
+                @click.native="updateMainVideoStreamManager(sub)"
+              />
+            </div>
+          </div>
+
           <user-video
             :stream-manager="publisher"
             @click.native="updateMainVideoStreamManager(publisher)"
@@ -92,6 +116,7 @@
           >
             <h3 class="panel-title">Chat</h3>
             <button
+              mattooltip="Close"
               aria-describedby="cdk-describedby-message-13"
               cdk-describedby-host="0"
             >
