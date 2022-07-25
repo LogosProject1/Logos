@@ -63,14 +63,10 @@
             :stream-manager="publisher"
             @click.native="updateMainVideoStreamManager(publisher)"
           />
-          <user-video
-            v-for="sub in subscribers"
-            :key="sub.stream.connection.connectionId"
-            :stream-manager="sub"
-            @click.native="updateMainVideoStreamManager(sub)"
-          />
-        </div>
-        <div
+        </b-col>
+        <b-col
+          cols="6"
+          md="4"
           id="chat-container"
           class="panel-container"
           style="
@@ -172,9 +168,9 @@
               ><span class="mat-button-focus-overlay"></span>
             </button>
           </div>
-        </div>
-      </div>
-    </div>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -330,7 +326,7 @@ export default {
               videoSource: undefined, // The source of video. If undefined default webcam
               publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
               publishVideo: true, // Whether you want to start publishing with your video enabled or not
-              resolution: "600x320", // The resolution of your video
+              resolution: "2500x1500", // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
               mirror: false, // Whether to mirror your local video or not
