@@ -34,8 +34,8 @@
       </div>
     </div>
 
-    <div id="session" v-if="session">
-      <div id="session-header">
+    <b-container id="session" v-if="session">
+      <b-row id="session-header">
         <h1 id="session-title">{{ mySessionId }}</h1>
         <input
           class="btn btn-large btn-danger"
@@ -44,21 +44,40 @@
           @click="leaveSession"
           value="Leave session"
         />
-      </div>
-      <div class="row">
-        <div id="video-container" class="col-md-8">
+      </b-row>
+      <b-row class="row">
+        <b-col
+          cols="12"
+          md="8"
+          id="video-container"
+          :class="{
+            'webcam-container': true,
+            'under-two': this.subscribers.length >= 1,
+            'under-four': this.subscribers.length >= 2,
+            'under-nine': this.subscribers.length >= 4,
+          }"
+        >
+          <div class="subvideo">
+            <div
+              v-for="sub in subscribers"
+              :key="sub.stream.connection.connectionId"
+              class="subcol"
+            >
+              <user-video
+                :stream-manager="sub"
+                @click.native="updateMainVideoStreamManager(sub)"
+              />
+            </div>
+          </div>
+
           <user-video
             :stream-manager="publisher"
             @click.native="updateMainVideoStreamManager(publisher)"
           />
-          <user-video
-            v-for="sub in subscribers"
-            :key="sub.stream.connection.connectionId"
-            :stream-manager="sub"
-            @click.native="updateMainVideoStreamManager(sub)"
-          />
-        </div>
-        <div
+        </b-col>
+        <b-col
+          cols="6"
+          md="4"
           id="chat-container"
           class="panel-container"
           style="
@@ -161,9 +180,9 @@
               ><span class="mat-button-focus-overlay"></span>
             </button>
           </div>
-        </div>
-      </div>
-    </div>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -175,7 +194,7 @@ import ChatMessage from "./components/ChatMessage";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4Mzg1Njk4NzU0LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTgzODkyOTgsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.gMqSWkvwoM0S2-xQTvB8DQUw8g40VqXBZL1HrCT41tu5eXrMy8cIq6e-T5K0Zgsuh-Pd1-3_ltvCSHIPmUiSuQ";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4NzI5Nzg5MjM4LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg3MzMzODksInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.BQtCT5NLVq1suUXtmbAstMhNPUucAKdCgKYSq8UZdOFqITRzvmqQzR4QOWDXM3VEVtvnkVxFGqbgYw4XCH3CYg";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
@@ -260,7 +279,7 @@ export default {
               videoSource: undefined, // The source of video. If undefined default webcam
               publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
               publishVideo: true, // Whether you want to start publishing with your video enabled or not
-              resolution: "600x320", // The resolution of your video
+              resolution: "2500x1500", // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
               mirror: false, // Whether to mirror your local video or not
@@ -409,5 +428,51 @@ export default {
 }
 a:-webkit-any-link {
   color: #1a73e8;
+}
+
+/* .video-container {
+  min-width: 400px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(30px);
+  border-radius: 30px 0px 0px 30px;
+}
+
+.chat-container {
+  min-width: 220px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 0px 30px 30px 0px;
+} */
+
+/* @media (max-width: 900px) {
+  .under-two {
+    grid-template-columns: 1fr;
+  }
+  .under-four {
+    grid-template-columns: 1fr;
+  }
+  .under-nine {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1115px) {
+  .under-nine {
+    grid-template-columns: 1fr 1fr;
+  }
+} */
+
+.subvideo {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.subvideo > .subcol {
+  display: inline-block;
+  width: 200px;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 </style>
