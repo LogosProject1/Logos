@@ -53,12 +53,6 @@
         />
       </b-row>
       <b-row class="row">
-        <div class="row panel panel-default">
-          <div class="panel-heading">User Screens</div>
-          <div id="screen-share-container">
-            <!--여기에 스크린 쉐어가 들어감-->
-          </div>
-        </div>
         <b-col
           cols="12"
           md="8"
@@ -85,8 +79,10 @@
 
           <user-video
             :stream-manager="publisher"
+            id="main-screen"
             @click.native="updateMainVideoStreamManager(publisher)"
           />
+          <ov-video :stream-manager="mainStreamManager" id="test" />
         </b-col>
         <b-col
           cols="6"
@@ -194,6 +190,12 @@
             </button>
           </div>
         </b-col>
+        <div class="row panel panel-default">
+          <div class="panel-heading">User Screens</div>
+          <div id="screen-share-container">
+            <!--여기에 스크린 쉐어가 들어감-->
+          </div>
+        </div>
       </b-row>
     </b-container>
   </div>
@@ -207,7 +209,7 @@ import ChatMessage from "./components/ChatMessage";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4ODE3NzY0NzUxLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg4MjEzNjQsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.IsIG4IFJXz-VfnvKbzcgpJFrd-YBDcPO-vtrwFPtZWgSv2XimgUoGHQA_Zn_LM-ii8CJoZliNY76HS5SEnyRGQ";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4ODE5NjU3MzI5LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg4MjMyNTcsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.iisYDC87YR_x486tF1KLy6sifKpLdL4tbxy4CxVoQtPTlFauScWMV5s37LKoMF3lLlMrBRHG4aiAHekJVqzaeA";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
@@ -265,7 +267,8 @@ export default {
         this.sessionScreen.publish(publisherScreen);
       });
 
-      publisherScreen.on("videoElementCreated", function (event) {
+      publisherScreen.on("videoElementCreated", (event) => {
+        this.addClickListener(event);
         event.element["muted"] = true;
       });
 
@@ -302,9 +305,6 @@ export default {
 
       this.sessionCamera.on("signal:my-chat", (event) => {
         this.chatMessageList.push(event);
-        console.log(event.data); // Message
-        console.log(event.from); // Connection object of the sender
-        console.log(event.type); // The type of message ("my-chat")
       });
       // --- Specify the actions when events take place in the session ---
       // On every new Stream received...
@@ -368,6 +368,7 @@ export default {
             this.publisher = publisher;
             // --- Publish your stream ---
             this.sessionCamera.publish(this.publisher);
+            this.subscribers.push(this.publisher);
           })
           .catch((error) => {
             console.log(
@@ -416,8 +417,10 @@ export default {
       window.removeEventListener("beforeunload", this.leaveSession);
     },
     updateMainVideoStreamManager(stream) {
-      if (this.mainStreamManager === stream) return;
+      console.log("mainvideo stream man");
+      console.log("이전:", this.mainStreamManager);
       this.mainStreamManager = stream;
+      console.log("이후:", this.mainStreamManager);
     },
     async getToken(mySessionId) {
       // Video-call chosen by the user
@@ -430,6 +433,13 @@ export default {
           this.webCamToken = data.webCamToken;
           this.screenToken = data.screenToken;
         });
+    },
+    addClickListener(event) {
+      event.element.addEventListener("click", () => {
+        console.log("click event listener ON");
+        console.log(event);
+        this.updateMainVideoStreamManager(event.target);
+      });
     },
   },
 };
