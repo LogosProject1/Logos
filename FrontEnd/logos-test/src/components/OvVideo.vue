@@ -2,7 +2,6 @@
   <video
     :id="username"
     ref="myWebCam"
-    @mouseover="showVideoMenu"
     :class="{
       webcam: true,
       'selected-border': isSelected,

@@ -82,7 +82,7 @@
             id="main-screen"
             @click.native="updateMainVideoStreamManager(publisher)"
           />
-          <ov-video :stream-manager="mainStreamManager" id="test" />
+          <user-video :stream-manager="mainStreamManager" id="test" />
         </b-col>
         <b-col
           cols="6"
@@ -417,10 +417,12 @@ export default {
       window.removeEventListener("beforeunload", this.leaveSession);
     },
     updateMainVideoStreamManager(stream) {
+      // if (this.mainStreamManager === stream) return;
       console.log("mainvideo stream man");
       console.log("이전:", this.mainStreamManager);
       this.mainStreamManager = stream;
       console.log("이후:", this.mainStreamManager);
+      console.log("stream", stream);
     },
     async getToken(mySessionId) {
       // Video-call chosen by the user
