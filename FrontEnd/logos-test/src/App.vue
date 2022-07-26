@@ -52,13 +52,13 @@
           value="Screen Share"
         />
       </b-row>
-      <div class="row panel panel-default">
-        <div class="panel-heading">User Screens</div>
-        <div id="screen-share-container">
-          <!--여기에 스크린 쉐어가 들어감-->
-        </div>
-      </div>
       <b-row class="row">
+        <div class="row panel panel-default">
+          <div class="panel-heading">User Screens</div>
+          <div id="screen-share-container">
+            <!--여기에 스크린 쉐어가 들어감-->
+          </div>
+        </div>
         <b-col
           cols="12"
           md="8"
@@ -207,7 +207,11 @@ import ChatMessage from "./components/ChatMessage";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
+<<<<<<< HEAD
   "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4NzMyNjI2OTY2LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg3MzYyMjYsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.YoJrFpFwxG4ce515XP7dBz8Fa1_r10HrAHSC_5_q3TmQOatON0lt18F3EKAT6RU-NaXUnja4IPWKmapUjfTBDA";
+=======
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4ODExMDI1MTI3LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg4MTQ2MjUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.aw2r_Q-e2dIBFb-EX4k1vDu7X5NFSrbVFkl5JvqOZz_b9B9GL5LzTPmn4KVwLhgrlZ223nuD1hDaMWNvMDza9A";
+>>>>>>> a332f688ebef46f0bb8df31a597fd32aa3ed36d0
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
@@ -238,12 +242,13 @@ export default {
   },
   methods: {
     screenShare() {
-      var publisherScreen = this.OVScreen.initPublisher(
-        "screen-share-container",
-        {
-          videoSource: "screen",
-        }
-      );
+      var el = document.createElement("div");
+      el.id = "screen-mine";
+      document.getElementById("screen-share-container").appendChild(el);
+      var publisherScreen = this.OVScreen.initPublisher(el, {
+        videoSource: "screen",
+        resolution: "1280x720",
+      });
 
       publisherScreen.once("accessAllowed", () => {
         document.getElementById("buttonScreenShare").style.visibility =
@@ -255,10 +260,10 @@ export default {
           .getVideoTracks()[0]
           .addEventListener("ended", () => {
             console.log('User pressed the "Stop sharing" button');
+            document.getElementById("screen-mine").remove();
             this.sessionScreen.unpublish(publisherScreen);
             document.getElementById("buttonScreenShare").style.visibility =
               "visible";
-
             this.screensharing = false;
           });
         this.sessionScreen.publish(publisherScreen);
@@ -309,7 +314,7 @@ export default {
       // On every new Stream received...
       this.sessionCamera.on("streamCreated", (event) => {
         // Subscribe to the Stream to receive it. HTML video will be appended to element with 'container-cameras' id
-        if (event.stream.typeOfVideo == "CAMERA") {
+        if (event.stream.typeOfVideo === "CAMERA") {
           var subscriber = this.sessionCamera.subscribe(
             event.stream,
             undefined
@@ -319,14 +324,23 @@ export default {
       });
 
       this.sessionScreen.on("streamCreated", (event) => {
-        // Subscribe to the Stream to receive it. HTML video will be appended to element with 'container-cameras' id
-        if (event.stream.typeOfVideo == "SCREEN") {
-          this.sessionScreen.subscribe(event.stream, "screen-share-container");
+        if (event.stream.typeOfVideo === "SCREEN") {
+          var el = document.createElement("div");
+          el.id = "screen-" + event.stream.connection.connectionId;
+          var div = document
+            .getElementById("screen-share-container")
+            .appendChild(el);
+          this.sessionScreen.subscribe(event.stream, div);
         }
       });
 
       // On every Stream destroyed...
       this.sessionCamera.on("streamDestroyed", ({ stream }) => {
+        if (stream.typeOfVideo === "SCREEN") {
+          document
+            .getElementById("screen-" + stream.connection.connectionId)
+            .remove();
+        }
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
           this.subscribers.splice(index, 1);
@@ -340,8 +354,6 @@ export default {
       // 'getToken' method is simulating what your server-side should do.
       // 'token' parameter should be retrieved and returned by your own backend
       this.getToken(this.mySessionId).then(() => {
-        console.log("getCameraToken Successful", this.webCamToken);
-        console.log("getScreenToken Successful", this.screenToken);
         this.sessionCamera
           .connect(this.webCamToken, { clientData: this.myUserName })
           .then(() => {
@@ -520,10 +532,20 @@ export default {
 a:-webkit-any-link {
   color: #1a73e8;
 }
+
+#screen-share-container {
+  max-height: 300px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+#screen-share-container div {
+  display: inline-block;
+  margin: 10px;
+}
 #screen-share-container video {
-  position: relative;
   float: left;
-  width: 50%;
+  width: 300px;
   cursor: pointer;
 }
 
