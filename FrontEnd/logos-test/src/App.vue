@@ -207,7 +207,7 @@ import ChatMessage from "./components/ChatMessage";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4NzMxNzY1NzkzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg3MzUzNjUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ._Xze71ercVgRePCGPkU6_rZ0O4_IxBWGONg3Xweh93PcTDD6ewPGoHoe3N5flgxWTFWbnCBol6mUOPuqrREW1g";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4NzMyNjI2OTY2LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg3MzYyMjYsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.YoJrFpFwxG4ce515XP7dBz8Fa1_r10HrAHSC_5_q3TmQOatON0lt18F3EKAT6RU-NaXUnja4IPWKmapUjfTBDA";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
@@ -525,5 +525,18 @@ a:-webkit-any-link {
   float: left;
   width: 50%;
   cursor: pointer;
+}
+
+.subvideo {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.subvideo > .subcol {
+  display: inline-block;
+  width: 300px;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 </style>
