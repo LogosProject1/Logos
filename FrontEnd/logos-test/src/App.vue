@@ -209,7 +209,15 @@ import ChatMessage from "./components/ChatMessage";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
+<<<<<<< HEAD
   "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4ODE4NDY1NzIwLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg4MjIwNjUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.J-L_mqKrwRDZAbrN57FPI8cdYcR8RLyzHSAkkQ1_vgnh-Oa6PliyFVE3tlYcI3j8RuDISJkws2Vl4CE3q8sk5w";
+=======
+<<<<<<< HEAD
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4NzMyNjI2OTY2LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg3MzYyMjYsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.YoJrFpFwxG4ce515XP7dBz8Fa1_r10HrAHSC_5_q3TmQOatON0lt18F3EKAT6RU-NaXUnja4IPWKmapUjfTBDA";
+=======
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4ODExMDI1MTI3LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg4MTQ2MjUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.aw2r_Q-e2dIBFb-EX4k1vDu7X5NFSrbVFkl5JvqOZz_b9B9GL5LzTPmn4KVwLhgrlZ223nuD1hDaMWNvMDza9A";
+>>>>>>> a332f688ebef46f0bb8df31a597fd32aa3ed36d0
+>>>>>>> 8ddfeb9b726f0a48a2e40261093e0c117c6af7e0
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
