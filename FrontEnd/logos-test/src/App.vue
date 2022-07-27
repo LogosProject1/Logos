@@ -36,21 +36,25 @@
 
     <b-container id="session" v-if="sessionCamera">
       <b-row id="session-header">
-        <h1 id="session-title">{{ mySessionId }}</h1>
-        <input
-          class="btn btn-large btn-danger"
-          type="button"
-          id="buttonLeaveSession"
-          @click="leaveSession"
-          value="Leave session"
-        />
-        <input
-          class="btn btn-large btn-primary"
-          type="button"
-          id="buttonScreenShare"
-          @click="screenShare"
-          value="Screen Share"
-        />
+        <b-col cols="12" md="8"
+          ><h1 id="session-title">{{ mySessionId }}</h1></b-col
+        >
+        <b-col cols="6" md="4"
+          ><input
+            class="btn btn-large btn-danger"
+            type="button"
+            id="buttonLeaveSession"
+            @click="leaveSession"
+            value="Leave session"
+          />
+          <input
+            class="btn btn-large btn-primary"
+            type="button"
+            id="buttonScreenShare"
+            @click="screenShare"
+            value="Screen Share"
+          />
+        </b-col>
       </b-row>
       <b-row class="row">
         <b-col
@@ -209,7 +213,7 @@ import ChatMessage from "./components/ChatMessage";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4ODE5NjU3MzI5LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg4MjMyNTcsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.iisYDC87YR_x486tF1KLy6sifKpLdL4tbxy4CxVoQtPTlFauScWMV5s37LKoMF3lLlMrBRHG4aiAHekJVqzaeA";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4OTAwNjA0ODAzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg5MDQyMDQsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.4I_Pm_dDOAr4SGY206S72M1nDX45PBMR-vFMhIh4hFX2V7Di6EEGN_nbY1S4Y65NmrwZFyGqWwvM1ilftNhiiA";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
@@ -436,11 +440,16 @@ export default {
           this.screenToken = data.screenToken;
         });
     },
-    addClickListener(event) {
-      event.element.addEventListener("click", () => {
+    addClickListener(videoElement) {
+      videoElement.addEventListener("click", () => {
         console.log("click event listener ON");
-        console.log(event);
-        this.updateMainVideoStreamManager(event.target);
+        var main = document.getElementById("main-screen");
+        var userVideo = main.getElementsByClassName("user-video")[0];
+        var mainVideo = userVideo.children[0];
+
+        if (mainVideo.srcObject !== videoElement.srcObject) {
+          mainVideo.srcObject = videoElement.srcObject;
+        }
       });
     },
   },
@@ -568,5 +577,17 @@ a:-webkit-any-link {
   margin-top: 10px;
   margin-right: 10px;
   margin-bottom: 10px;
+}
+#session-header {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#buttonLeaveSession {
+  margin-right: 10px;
+}
+
+#session-header input {
+  font-size: 15px;
 }
 </style>

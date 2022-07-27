@@ -4,8 +4,6 @@
     ref="myWebCam"
     :class="{
       webcam: true,
-      'selected-border': isSelected,
-      'died-user': isDead,
     }"
     autoplay
     playsinline

@@ -34,7 +34,8 @@ export default {
           connection.data.split("%/%")[0]
         ).clientData;
         console.log(
-          "Test: " + JSON.parse(connection.data.split("%/%")[0]).clientData
+          "Test: ",
+          JSON.parse(connection.data.split("%/%")[0]).clientData
         );
         return clientData;
       }),
