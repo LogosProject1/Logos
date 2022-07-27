@@ -76,17 +76,12 @@
             >
               <user-video
                 :stream-manager="sub"
-                @click.native="updateMainVideoStreamManager(sub)"
+                @click.native="cameraClickListener($event.target)"
               />
             </div>
           </div>
 
-          <user-video
-            :stream-manager="publisher"
-            id="main-screen"
-            @click.native="updateMainVideoStreamManager(publisher)"
-          />
-          <user-video :stream-manager="mainStreamManager" id="test" />
+          <user-video :stream-manager="mainStreamManager" id="main-screen" />
         </b-col>
         <b-col
           cols="6"
@@ -272,7 +267,7 @@ export default {
       });
 
       publisherScreen.on("videoElementCreated", (event) => {
-        this.addClickListener(event);
+        this.addClickListener(event.element);
         event.element["muted"] = true;
       });
 
@@ -320,6 +315,10 @@ export default {
             undefined
           );
           this.subscribers.push(subscriber);
+
+          subscriber.on("videoElementCreated", (event) => {
+            this.addClickListener(event.element);
+          });
         }
       });
 
@@ -330,7 +329,12 @@ export default {
           var div = document
             .getElementById("screen-share-container")
             .appendChild(el);
-          this.sessionScreen.subscribe(event.stream, div);
+          var subscribeScreen = this.sessionScreen.subscribe(event.stream, div);
+
+          subscribeScreen.on("videoElementCreated", (event) => {
+            this.addClickListener(event.element);
+            event.element["muted"] = true;
+          });
         }
       });
 
@@ -421,12 +425,10 @@ export default {
       window.removeEventListener("beforeunload", this.leaveSession);
     },
     updateMainVideoStreamManager(stream) {
-      // if (this.mainStreamManager === stream) return;
-      console.log("mainvideo stream man");
+      if (this.mainStreamManager === stream) return;
       console.log("이전:", this.mainStreamManager);
       this.mainStreamManager = stream;
       console.log("이후:", this.mainStreamManager);
-      console.log("stream", stream);
     },
     async getToken(mySessionId) {
       // Video-call chosen by the user
@@ -442,7 +444,6 @@ export default {
     },
     addClickListener(videoElement) {
       videoElement.addEventListener("click", () => {
-        console.log("click event listener ON");
         var main = document.getElementById("main-screen");
         var userVideo = main.getElementsByClassName("user-video")[0];
         var mainVideo = userVideo.children[0];
@@ -451,6 +452,18 @@ export default {
           mainVideo.srcObject = videoElement.srcObject;
         }
       });
+    },
+    cameraClickListener(videoElement) {
+      var main = document.getElementById("main-screen");
+      var userVideo = main.getElementsByClassName("user-video")[0];
+      var nameTag = userVideo.children[1];
+      var nameTagContent = nameTag.children[0];
+      var mainVideo = userVideo.children[0];
+
+      if (mainVideo.srcObject !== videoElement.srcObject) {
+        nameTagContent.innerHTML = videoElement.id;
+        mainVideo.srcObject = videoElement.srcObject;
+      }
     },
   },
 };
