@@ -72,17 +72,12 @@
             >
               <user-video
                 :stream-manager="sub"
-                @click.native="updateMainVideoStreamManager(sub)"
+                @click.native="cameraClickListener($event.target)"
               />
             </div>
           </div>
 
-          <user-video
-            :stream-manager="publisher"
-            id="main-screen"
-            @click.native="updateMainVideoStreamManager(publisher)"
-          />
-          <user-video :stream-manager="mainStreamManager" id="test" />
+          <user-video :stream-manager="mainStreamManager" id="main-screen" />
         </b-col>
         <b-col
           cols="6"
@@ -209,7 +204,7 @@ import ChatMessage from "./components/ChatMessage";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4ODE5NjU3MzI5LCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg4MjMyNTcsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJhc2RmYXNkIiwidHlwZSI6IlVTRVIifQ.iisYDC87YR_x486tF1KLy6sifKpLdL4tbxy4CxVoQtPTlFauScWMV5s37LKoMF3lLlMrBRHG4aiAHekJVqzaeA";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4OTAwNTM1NDYzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg5MDQxMzUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.fyLl38J0h8kYt8D4jFeEoU4iEqOUP919Xcusho1e9kjVsO0nmnaRc1m0svjsGK8qOQqbdN-XMxZVRJJF5ZUwxg";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
@@ -268,7 +263,7 @@ export default {
       });
 
       publisherScreen.on("videoElementCreated", (event) => {
-        this.addClickListener(event);
+        this.addClickListener(event.element);
         event.element["muted"] = true;
       });
 
@@ -316,6 +311,10 @@ export default {
             undefined
           );
           this.subscribers.push(subscriber);
+
+          subscriber.on("videoElementCreated", (event) => {
+            this.addClickListener(event.element);
+          });
         }
       });
 
@@ -326,7 +325,12 @@ export default {
           var div = document
             .getElementById("screen-share-container")
             .appendChild(el);
-          this.sessionScreen.subscribe(event.stream, div);
+          var subscribeScreen = this.sessionScreen.subscribe(event.stream, div);
+
+          subscribeScreen.on("videoElementCreated", (event) => {
+            this.addClickListener(event.element);
+            event.element["muted"] = true;
+          });
         }
       });
 
@@ -417,12 +421,10 @@ export default {
       window.removeEventListener("beforeunload", this.leaveSession);
     },
     updateMainVideoStreamManager(stream) {
-      // if (this.mainStreamManager === stream) return;
-      console.log("mainvideo stream man");
+      if (this.mainStreamManager === stream) return;
       console.log("이전:", this.mainStreamManager);
       this.mainStreamManager = stream;
       console.log("이후:", this.mainStreamManager);
-      console.log("stream", stream);
     },
     async getToken(mySessionId) {
       // Video-call chosen by the user
@@ -436,12 +438,28 @@ export default {
           this.screenToken = data.screenToken;
         });
     },
-    addClickListener(event) {
-      event.element.addEventListener("click", () => {
-        console.log("click event listener ON");
-        console.log(event);
-        this.updateMainVideoStreamManager(event.target);
+    addClickListener(videoElement) {
+      videoElement.addEventListener("click", () => {
+        var main = document.getElementById("main-screen");
+        var userVideo = main.getElementsByClassName("user-video")[0];
+        var mainVideo = userVideo.children[0];
+
+        if (mainVideo.srcObject !== videoElement.srcObject) {
+          mainVideo.srcObject = videoElement.srcObject;
+        }
       });
+    },
+    cameraClickListener(videoElement) {
+      var main = document.getElementById("main-screen");
+      var userVideo = main.getElementsByClassName("user-video")[0];
+      var nameTag = userVideo.children[1];
+      var nameTagContent = nameTag.children[0];
+      var mainVideo = userVideo.children[0];
+
+      if (mainVideo.srcObject !== videoElement.srcObject) {
+        nameTagContent.innerHTML = videoElement.id;
+        mainVideo.srcObject = videoElement.srcObject;
+      }
     },
   },
 };
