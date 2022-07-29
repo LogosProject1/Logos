@@ -227,7 +227,7 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
         case "kakaopay":
           return "kakaopay";
         case "toss":
-          return "uplus";
+          return "tosspay";
         case "payco":
           return "payco";
         default:
@@ -263,7 +263,7 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
           pg: this.pg,
           pay_method: "card",
           quota: "일시불",
-          merchant_uid: "1212323",
+          merchant_uid: "12123323",
           name: "Logos LP Point " + this.amount,
           amount: this.amount,
           buyer_email: "test@test.com",
