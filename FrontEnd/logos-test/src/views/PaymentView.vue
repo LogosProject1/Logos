@@ -253,7 +253,7 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
     },
     requestPay: function () {
       var IMP = window.IMP; // 생략 가능
-      IMP.init("imp66365401"); // 예: imp00000000
+      IMP.init("imp85880830"); // 예: imp00000000
       // IMP.request_pay(param, callback) 결제창 호출
       // axios로 백엔드에 주문 테이블에 주문 레코드 만들고 ID 받아오기
       // 보낼 정보 amount
@@ -298,6 +298,11 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
 .mid-container {
   margin-bottom: 20px;
 }
+/* .price-point.active {
+  color: #dc0000;
+  border: 2px solid #dc0000;
+} */
+
 .payment-radio {
   padding: 10px;
 }
