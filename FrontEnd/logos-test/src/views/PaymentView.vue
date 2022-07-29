@@ -1,11 +1,11 @@
 <template>
   <b-container>
     <b-row class="mid-container">
-      <b-col cols="6" md="4">
+      <b-col cols="4" md="3">
         <b-row class="process-num">01.</b-row>
         <b-row class="process-tag">결제 금액</b-row>
       </b-col>
-      <b-col cols="12" md="8">
+      <b-col cols="14" md="9">
         <b-row>
           <b-col cols="2">
             <b-form-radio
@@ -86,11 +86,11 @@
       </b-col>
     </b-row>
     <b-row class="mid-container">
-      <b-col cols="6" md="4">
+      <b-col cols="4" md="3">
         <b-row class="process-num">02.</b-row>
         <b-row class="process-tag">결제 수단</b-row>
       </b-col>
-      <b-col cols="12" md="8">
+      <b-col cols="14" md="9">
         <b-row>
           <b-col>
             <label
@@ -137,11 +137,11 @@
       </b-col>
     </b-row>
     <b-row class="mid-container">
-      <b-col cols="6" md="4">
+      <b-col cols="4" md="3">
         <b-row class="process-num">03.</b-row>
         <b-row class="process-tag">정책 동의</b-row>
       </b-col>
-      <b-col cols="12" md="8">
+      <b-col cols="14" md="9">
         <div class="notice-box">
           {{ legal }}
           <div class="controls">
@@ -170,11 +170,11 @@
       </b-col>
     </b-row>
     <b-row class="mid-container">
-      <b-col cols="6" md="4">
+      <b-col cols="4" md="3">
         <b-row class="process-num">04.</b-row>
         <b-row class="process-tag">결제 정보</b-row>
       </b-col>
-      <b-col cols="12" md="8">
+      <b-col cols="14" md="9" class="payment-overall">
         <b-row>결제 항목 : Logos LP POINT {{ amount }} </b-row>
         <b-row>결제 금액 : {{ amount }}</b-row>
         <b-row>결제 수단 : {{ showPayment }}</b-row>
@@ -227,7 +227,7 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
         case "kakaopay":
           return "kakaopay";
         case "toss":
-          return "uplus";
+          return "tosspay";
         case "payco":
           return "payco";
         default:
@@ -263,7 +263,7 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
           pg: this.pg,
           pay_method: "card",
           quota: "일시불",
-          merchant_uid: "1212323",
+          merchant_uid: "121asdfasd2323",
           name: "Logos LP Point " + this.amount,
           amount: this.amount,
           buyer_email: "test@test.com",
@@ -315,6 +315,21 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
 .process-tag {
   font-family: "Black Han Sans", sans-serif;
   font-size: 45px;
+}
+.notice-box {
+  font-size: 15px;
+  font-family: "Do Hyeon", sans-serif;
+  padding: 30px;
+}
+.payment-overall {
+  padding: 30px;
+  font-size: 15px;
+  font-family: "Noto Sans KR", sans-serif;
+}
+.title {
+  font-family: "Black Han Sans", sans-serif;
+  font-size: 50px;
+  text-align: "center";
 }
 @import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=Noto+Sans+KR&display=swap");
 </style>
