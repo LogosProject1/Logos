@@ -157,7 +157,7 @@ export default {
   methods: {
     requestPay: function () {
       var IMP = window.IMP; // 생략 가능
-      IMP.init("imp66365401"); // 예: imp00000000
+      IMP.init("imp85880830"); // 예: imp00000000
       // IMP.request_pay(param, callback) 결제창 호출
       // axios로 백엔드에 주문 테이블에 주문 레코드 만들고 ID 받아오기
       // 보낼 정보 amount
@@ -167,7 +167,7 @@ export default {
           pg: "kakaopay",
           pay_method: "card",
           quota: "일시불",
-          merchant_uid: "12223",
+          merchant_uid: "12223123",
           name: "Logos LP Point 1000",
           amount: "1000",
           buyer_email: "test@test.com",
@@ -201,5 +201,9 @@ export default {
 <style>
 .mid-container {
   margin-bottom: 20px;
+}
+.price-point.active {
+  color: #dc0000;
+  border: 2px solid #dc0000;
 }
 </style>
