@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> prepareOrder(HttpServletRequest req, @RequestBody OrderDto orderDto) {
+    public ResponseEntity<Map<String, Object>> prepareOrder(HttpServletRequest req, @RequestBody @Valid OrderDto orderDto) {
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status = null;
 
@@ -40,7 +41,7 @@ public class PaymentController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<Map<String,Object>> verifyOrder(HttpServletRequest req, @RequestBody VerifyDto verifyDto){
+    public ResponseEntity<Map<String,Object>> verifyOrder(HttpServletRequest req, @RequestBody @Valid VerifyDto verifyDto){
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status = null;
 
@@ -58,7 +59,7 @@ public class PaymentController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<Map<String,Object>> verifyOrder(HttpServletRequest req){
+    public ResponseEntity<Map<String,Object>> paymentHistory(HttpServletRequest req){
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status = null;
 
