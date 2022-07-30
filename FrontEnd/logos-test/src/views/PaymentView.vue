@@ -216,6 +216,12 @@
   </b-container>
 </template>
 <script>
+import axios from "axios";
+
+axios.defaults.headers.post["Content-Type"] = "application/json";
+axios.defaults.headers.post["Authorization"] =
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4OTAwNTM1NDYzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg5MDQxMzUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.fyLl38J0h8kYt8D4jFeEoU4iEqOUP919Xcusho1e9kjVsO0nmnaRc1m0svjsGK8qOQqbdN-XMxZVRJJF5ZUwxg";
+
 export default {
   data() {
     return {
@@ -287,7 +293,7 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
           pg: this.pg,
           pay_method: "card",
           quota: "일시불",
-          merchant_uid: "12123323",
+          merchant_uid: "121213323",
           name: "Logos LP Point " + this.amount,
           amount: this.amount,
           buyer_email: "test@test.com",
@@ -305,6 +311,17 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
             console.log(IMP);
             console.log(rsp);
             console.log("결제 성공");
+
+            axios
+              .post("https://localhost:8084/payment", {
+                amount: rsp.amount,
+                paymentType: this.showPayment,
+              })
+              .then((data) => console.log("result: " + data))
+              .catch((error) => {
+                console.log("포인트 충전 에러");
+                console.log(error);
+              });
           } else {
             console.log(IMP);
             console.log(rsp);
@@ -312,6 +329,17 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
             // 안내 후 다시 이전 페이지로 돌려보냄
             console.log("결제 실패");
           }
+          axios
+            .post("https://localhost:8084/payment/verify", {
+              amount: rsp.amount,
+              merchant_uid: rsp.merchant_uid,
+              result: rsp.success,
+            })
+            .then((data) => console.log("result: " + data))
+            .catch((error) => {
+              console.log("포인트 충전 에러");
+              console.log(error);
+            });
         }
       );
     },
