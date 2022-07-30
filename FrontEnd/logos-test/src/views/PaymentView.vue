@@ -287,11 +287,7 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
           pg: this.pg,
           pay_method: "card",
           quota: "일시불",
-<<<<<<< HEAD
           merchant_uid: "12123323",
-=======
-          merchant_uid: "121asdfasd2323",
->>>>>>> 4aa4c10eb833782892de29a6c357866a1458bd38
           name: "Logos LP Point " + this.amount,
           amount: this.amount,
           buyer_email: "test@test.com",
