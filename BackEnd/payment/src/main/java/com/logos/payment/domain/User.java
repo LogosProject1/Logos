@@ -34,18 +34,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserType type;
 
-    public static User createUser(String name, String email, String password, String phone){
-        User user = User.buildUser(name, email, password, phone);
-        user.setType(UserType.USER);
-        return user;
+    public void pointIncrease(Long amount){
+        this.point += amount;
     }
-
-    public static User createAdmin(String name, String email, String password, String phone){
-        User user = User.buildUser(name, email, password, phone);
-        user.setType(UserType.ADMIN);
-        return user;
-    }
-
     private static User buildUser(String name, String email, String password, String phone){
         return User.builder()
                 .name(name)

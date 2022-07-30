@@ -26,6 +26,8 @@ public class User {
 
     private String phone;
 
+    private Long point;
+
     private LocalDateTime created_at;
 
     private LocalDateTime updated_at;
@@ -51,6 +53,7 @@ public class User {
                 .email(email)
                 .password(password)
                 .phone(phone)
+                .point(0L)
                 .created_at(LocalDateTime.now())
                 .updated_at(LocalDateTime.now())
                 .build();

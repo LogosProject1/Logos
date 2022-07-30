@@ -220,7 +220,7 @@ import axios from "axios";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU4OTAwNTM1NDYzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTg5MDQxMzUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.fyLl38J0h8kYt8D4jFeEoU4iEqOUP919Xcusho1e9kjVsO0nmnaRc1m0svjsGK8qOQqbdN-XMxZVRJJF5ZUwxg";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU5MTU4NTA0NDMzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTk1MTg1MDQsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.-PadaHS6SjXxGTaolGYeJS0La9CYcEMKjWoYAB2NOlseAzZmNwohpSKyxIMWgmIuLsWhLMOnoQpM3iHObJLwnw";
 
 export default {
   data() {
@@ -228,6 +228,7 @@ export default {
       amount: "1000",
       payment: "kakaopay",
       pg: "kakaopay",
+      merchant_uid: undefined,
       showPayment: "카카오페이",
       legal: `결제를 위해서는 카카오톡 또는 카카오페이 모바일 앱이 필요합니다.<br><br>
       카카오페이 고객센터 : 1644-7405<br><br><br>`,
@@ -281,19 +282,32 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
       this.showPayment = this.setPayment(event.target.value);
       this.legal = this.setLegal(event.target.value);
     },
-    requestPay: function () {
+    requestPay: async function () {
       var IMP = window.IMP; // 생략 가능
       IMP.init("imp85880830"); // 예: imp00000000
       // IMP.request_pay(param, callback) 결제창 호출
       // axios로 백엔드에 주문 테이블에 주문 레코드 만들고 ID 받아오기
       // 보낼 정보 amount
+
+      await axios
+        .post("http://localhost:8084/payment", {
+          amount: this.amount,
+          paymentType: this.showPayment,
+        })
+        .then((res) => {
+          this.merchant_uid = res.data.merchant_uid;
+        })
+        .catch((error) => {
+          console.log("포인트 충전 에러");
+          console.log(error);
+        });
       IMP.request_pay(
         {
           // param
           pg: this.pg,
           pay_method: "card",
           quota: "일시불",
-          merchant_uid: "12123323",
+          merchant_uid: this.merchant_uid,
           name: "Logos LP Point " + this.amount,
           amount: this.amount,
           buyer_email: "test@test.com",
@@ -311,17 +325,6 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
             console.log(IMP);
             console.log(rsp);
             console.log("결제 성공");
-
-            axios
-              .post("https://localhost:8084/payment", {
-                amount: rsp.amount,
-                paymentType: this.showPayment,
-              })
-              .then((data) => console.log("result: " + data))
-              .catch((error) => {
-                console.log("포인트 충전 에러");
-                console.log(error);
-              });
           } else {
             console.log(IMP);
             console.log(rsp);
@@ -330,9 +333,9 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
             console.log("결제 실패");
           }
           axios
-            .post("https://localhost:8084/payment/verify", {
-              amount: rsp.amount,
-              merchant_uid: rsp.merchant_uid,
+            .post("http://localhost:8084/payment/verify", {
+              amount: rsp.paid_amount,
+              merchant_uid: this.merchant_uid,
               result: rsp.success,
             })
             .then((data) => console.log("result: " + data))
