@@ -1,12 +1,11 @@
 package com.logos.payment.service;
 
-import com.logos.payment.domain.Payment;
-import com.logos.payment.domain.ResultType;
-import com.logos.payment.domain.User;
+import com.logos.payment.domain.*;
 import com.logos.payment.dto.OrderDto;
 import com.logos.payment.dto.PaymentHistoryDto;
 import com.logos.payment.dto.VerifyDto;
 import com.logos.payment.repository.PaymentRepository;
+import com.logos.payment.repository.PointHistoryRepository;
 import com.logos.payment.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +25,7 @@ import java.util.UUID;
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
+    private final PointHistoryRepository pointHistoryRepository;
 
     @Transactional
     public String makeOrder(String email, OrderDto orderDto) {
@@ -66,10 +66,16 @@ public class PaymentService {
             User byEmail = userRepository.findByEmail(email);
             byEmail.pointIncrease(payment.getAmount());
             userRepository.save(byEmail);
+
+            PointHistory pointHistory = PointHistory.createPointHistory(email, payment.getAmount(), byEmail.getPoint(), PointHistoryType.INC);
+            pointHistoryRepository.save(pointHistory);
+
             result = "결제 검증 성공";
         }
         
         paymentRepository.save(payment);
+
+
         log.info("결제 검증 결과 : 주문 ID - {}, 결과 - {}",payment.getId(),result);
         return result;
     }
