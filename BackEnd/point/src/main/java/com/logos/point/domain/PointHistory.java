@@ -3,8 +3,11 @@ package com.logos.point.domain;
 import lombok.*;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -20,8 +23,21 @@ public class PointHistory {
 
     private Long amount;
 
-    private LocalDateTime modifyTime;
+    private Long remain;
 
-    private String type;
+    private LocalDateTime modified_at;
 
+    @Enumerated(EnumType.STRING)
+    private PointHistoryType type;
+
+    public static PointHistory createPointHistory(String userEmail, Long amount, Long remain, PointHistoryType type){
+        return PointHistory.builder()
+                .id(UUID.randomUUID().toString())
+                .userEmail(userEmail)
+                .amount(amount)
+                .remain(remain)
+                .modified_at(LocalDateTime.now())
+                .type(type)
+                .build();
+    }
 }
