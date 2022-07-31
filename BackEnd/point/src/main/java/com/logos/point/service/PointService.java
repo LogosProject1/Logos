@@ -1,13 +1,8 @@
 package com.logos.point.service;
 
-import com.logos.payment.domain.Payment;
-import com.logos.payment.domain.ResultType;
-import com.logos.payment.domain.User;
-import com.logos.payment.dto.OrderDto;
-import com.logos.payment.dto.PaymentHistoryDto;
-import com.logos.payment.dto.VerifyDto;
-import com.logos.payment.repository.PaymentRepository;
-import com.logos.payment.repository.UserRepository;
+import com.logos.point.domain.PointHistory;
+import com.logos.point.dto.PointHistoryDto;
+import com.logos.point.repository.PointRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,68 +19,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PointService {
-    private final PaymentRepository paymentRepository;
-    private final UserRepository userRepository;
+    private final PointRepository pointRepository;
 
-    @Transactional
-    public String makeOrder(String email, OrderDto orderDto) {
-        //주문 레코드 만들고 ID 반환
-        Payment payment = Payment.builder()
-                .id(UUID.randomUUID().toString())
-                .amount(Long.valueOf(orderDto.getAmount()))
-                .userEmail(email)
-                .startTime(LocalDateTime.now())
-                .paymentType(orderDto.getPaymentType())
-                .result(ResultType.PENDING)
-                .build();
+    public List<PointHistoryDto> getPointHistory(String email) {
+        List<PointHistory> byUserEmail = pointRepository.findByUserEmail(email);
+        List<PointHistoryDto> result = new ArrayList<>();
 
-        log.info("주문 생성 됨 : 주문 ID - {}, 주문 EMAIL - {}, 주문 금액 -{}",payment.getId(),payment.getUserEmail(),payment.getAmount());
-        paymentRepository.save(payment);
-
-        return payment.getId();
-    }
-
-    @Transactional
-    public String verifyOrder(String email, VerifyDto verifyDto) {
-        Optional<Payment> byId = paymentRepository.findById(verifyDto.getMerchant_uid());
-        String result = "결제 검증 실패";
-        if(byId.isEmpty()){
-            return result;
-        }
-        Payment payment = byId.get();
-        
-        payment.setEndTime(LocalDateTime.now());
-        
-        payment.setResult(ResultType.FAILURE);
-
-        if(verifyDto.getResult().equals("true")
-                && email.equals(payment.getUserEmail()) 
-                && payment.getAmount().equals(Long.valueOf(verifyDto.getAmount()))){
-            payment.setResult(ResultType.SUCCESS);
-            //포인트 충전
-            User byEmail = userRepository.findByEmail(email);
-            byEmail.pointIncrease(payment.getAmount());
-            userRepository.save(byEmail);
-            result = "결제 검증 성공";
-        }
-        
-        paymentRepository.save(payment);
-        log.info("결제 검증 결과 : 주문 ID - {}, 결과 - {}",payment.getId(),result);
-        return result;
-    }
-
-    public List<PaymentHistoryDto> getPaymentHistory(String email) {
-        List<Payment> byUserEmail = paymentRepository.findByUserEmail(email);
-        List<PaymentHistoryDto> result = new ArrayList<>();
-
-        for(Payment payment : byUserEmail){
-            result.add(PaymentHistoryDto.builder()
-                    .id(payment.getId())
-                    .amount(payment.getAmount())
-                    .startTime(payment.getStartTime())
-                    .endTime(payment.getEndTime())
-                    .result(payment.getResult())
-                    .paymentType(payment.getPaymentType())
+        for(PointHistory point : byUserEmail){
+            result.add(PointHistoryDto.builder()
+                    .id(point.getId())
+                    .amount(point.getAmount())
+                    .modifyTime(point.getModifyTime())
+                    .type(point.getType())
                     .build());
         }
         return result;
