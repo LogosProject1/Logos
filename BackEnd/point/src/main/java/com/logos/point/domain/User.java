@@ -37,6 +37,7 @@ public class User {
     public void pointIncrease(Long amount){
         this.point += amount;
     }
+    public void pointDecrease(Long amount) { this.point -= amount;}
     private static User buildUser(String name, String email, String password, String phone){
         return User.builder()
                 .name(name)

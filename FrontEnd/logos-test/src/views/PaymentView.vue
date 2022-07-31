@@ -220,7 +220,7 @@ import axios from "axios";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU5MTU4NTA0NDMzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTk1MTg1MDQsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.-PadaHS6SjXxGTaolGYeJS0La9CYcEMKjWoYAB2NOlseAzZmNwohpSKyxIMWgmIuLsWhLMOnoQpM3iHObJLwnw";
+  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU5MjQ2MzQ0MzQzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTk2MDYzNDQsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.V3bDfmN-1eLxRnpwGrSRWq0mk6nuF2J_iHJ-dA82sqat6Od7UwKb6Zo1nLLTMgNq-AcXPn0eHUMD5G4xOwZMSw";
 
 export default {
   data() {

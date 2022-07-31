@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 public class PointHistoryDto {
     private String id;
 
-    private String userEmail;
-
     private Long amount;
+
+    private Long remain;
 
     private LocalDateTime modifyTime;
 

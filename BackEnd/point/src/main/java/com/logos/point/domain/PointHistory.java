@@ -2,10 +2,7 @@ package com.logos.point.domain;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,7 +22,8 @@ public class PointHistory {
 
     private Long remain;
 
-    private LocalDateTime modified_at;
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
 
     @Enumerated(EnumType.STRING)
     private PointHistoryType type;
@@ -36,7 +34,7 @@ public class PointHistory {
                 .userEmail(userEmail)
                 .amount(amount)
                 .remain(remain)
-                .modified_at(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
                 .type(type)
                 .build();
     }

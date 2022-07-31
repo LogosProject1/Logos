@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -22,4 +23,13 @@ public class Enrollment {
     private String userEmail;
 
     private LocalDateTime modified_at;
+
+    public static Enrollment createEnrollment(String knowledgeId,String userEmail){
+        return Enrollment.builder()
+                .id(UUID.randomUUID().toString())
+                .knowledgeId(knowledgeId)
+                .userEmail(userEmail)
+                .modified_at(LocalDateTime.now())
+                .build();
+    }
 }
