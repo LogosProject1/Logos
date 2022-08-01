@@ -74,4 +74,17 @@ public class PointService {
 
         return true;
     }
+
+    @Transactional
+    public boolean refundKnowledge(String email, String knowledgeId) {
+        Enrollment enrollment = enrollmentRepository.findByUserEmailAndKnowledgeId(email, knowledgeId);
+
+        if(enrollment == null){
+            return false;
+        }
+
+        enrollmentRepository.delete(enrollment);
+
+        return true;
+    }
 }

@@ -66,6 +66,17 @@ public class PointController {
 
         String email = (String) req.getAttribute("Email");
 
+        try{
+            boolean result = pointService.refundKnowledge(email, knowledgeId);
+            if(result) resultMap.put("result","정상적으로 환불되었습니다.");
+            else resultMap.put("result","환불 중 문제가 발생하였습니다.");
+            status = HttpStatus.OK;
+        }
+        catch(Exception e) {
+            resultMap.put("message", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
         return new ResponseEntity<>(resultMap, status);
     }
 
