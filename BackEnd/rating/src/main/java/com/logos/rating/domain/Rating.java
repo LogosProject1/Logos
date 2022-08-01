@@ -1,9 +1,9 @@
-package com.logos.point.domain;
+package com.logos.rating.domain;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Enrollment {
+public class Rating {
     @Id
     private String id;
 
@@ -22,17 +22,21 @@ public class Enrollment {
 
     private String userEmail;
 
-    private Long purchasePrice;
+    private int rate;
 
-    private LocalDateTime modified_at;
+    private String content;
 
-    public static Enrollment createEnrollment(String knowledgeId,String userEmail,Long purchasePrice){
-        return Enrollment.builder()
+    @Column(name="modified_at")
+    private LocalDateTime modifiedAt;
+
+    public static Rating createRating(String knowledgeId,String userEmail,int rate,String content){
+        return Rating.builder()
                 .id(UUID.randomUUID().toString())
                 .knowledgeId(knowledgeId)
                 .userEmail(userEmail)
-                .purchasePrice(purchasePrice)
-                .modified_at(LocalDateTime.now())
+                .rate(rate)
+                .content(content)
+                .modifiedAt(LocalDateTime.now())
                 .build();
     }
 }

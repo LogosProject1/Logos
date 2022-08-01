@@ -60,7 +60,7 @@ public class PointService {
             return false;
         }
         // enrollment 레코드
-        Enrollment enrollment = Enrollment.createEnrollment(knowledgeId, email);
+        Enrollment enrollment = Enrollment.createEnrollment(knowledgeId, email, knowledge.getPrice());
 
         // 유저 포인트 감소
         byEmail.pointDecrease(knowledge.getPrice());
