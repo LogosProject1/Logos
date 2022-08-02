@@ -53,11 +53,13 @@ public class RatingController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Map<String,Object>> getFilteredRating(HttpServletRequest req, @RequestBody RatingFilterDto ratingFilterDto){
+    public ResponseEntity<Map<String,Object>> getFilteredRating(HttpServletRequest req, @RequestParam RatingFilterDto ratingFilterDto){
         Map<String,Object> resultMap = new HashMap<>();
         String email = (String) req.getAttribute("Email");
 
         try{
+            List<RatingResultDto> ratingResultDtoList = ratingService.getFilteredRating(ratingFilterDto);
+            resultMap.put("result", ratingResultDtoList);
         }
         catch (Exception e){
             resultMap.put("message",e.getMessage());

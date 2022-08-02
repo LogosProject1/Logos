@@ -9,4 +9,14 @@ public interface RatingRepository extends JpaRepository<Rating,String> {
     Rating findByUserEmailAndKnowledgeId(String email, String knowledgeId);
 
     List<Rating> findByKnowledgeIdOrderByModifiedAt(String knowledgeId);
+
+    List<Rating> findByKnowledgeIdAndRate(String knowledgeId, int rate);
+
+    List<Rating> findByRate(int rate);
+
+    List<Rating> findByUserEmail(String userEmail);
+
+    List<Rating> findByUserEmailAndRate(String userEmail, int rate);
+
+    List<Rating> findByUserEmailAndKnowledgeIdAndRate(String userEmail, String knowledgeId, int rate);
 }
