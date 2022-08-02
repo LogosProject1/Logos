@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,7 +85,77 @@ public class RatingService {
         List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeIdOrderByModifiedAt(knowledgeId);
         List<RatingResultDto> ratingResultDtoList = new ArrayList<>();
 
-        for(Rating rating : byKnowledgeId){
+        makeRatingResultList(ratingResultDtoList, byKnowledgeId);
+        return ratingResultDtoList;
+    }
+
+    public List<RatingResultDto> getFilteredRating(RatingFilterDto ratingFilterDto) {
+        List<RatingResultDto> ratingResultDtoList = new ArrayList<>();
+
+        if (ratingFilterDto.getUserEmail() == null) {
+            if (ratingFilterDto.getRate() == null) {
+                if (ratingFilterDto.getKnowledgeId() == null) {
+                    // 모두 null
+                } else {
+                    // knowledgeId에 해당하는 모든 리턴
+                    List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeIdOrderByModifiedAt(ratingFilterDto.getKnowledgeId());
+                    makeRatingResultList(ratingResultDtoList, byKnowledgeId);
+                }
+            } else {
+                List<Rating> byRate;
+                if (ratingFilterDto.getKnowledgeId() == null) {
+                    // 평점 필터링, 전체 지식에 대한
+                    byRate = ratingRepository.findByRate(Integer.parseInt(ratingFilterDto.getRate()));
+
+                } else {
+                    // 해당 지식에 대한 평점 필터링
+                    byRate = ratingRepository.findByKnowledgeIdAndRate(ratingFilterDto.getKnowledgeId(),
+                            Integer.parseInt(ratingFilterDto.getRate()));
+
+                }
+                makeRatingResultList(ratingResultDtoList, byRate);
+            }
+        }
+        else {
+            // userEmail이 들어가있다
+            if (ratingFilterDto.getRate() == null) {
+                if (ratingFilterDto.getKnowledgeId() == null) {
+                    // 해당 유저의 전체 평점
+                    List<Rating> byEmail = ratingRepository.findByUserEmail(ratingFilterDto.getUserEmail());
+
+                    makeRatingResultList(ratingResultDtoList, byEmail);
+                } else {
+                    // 해당 유저의 해당하는 지식의 평점
+                    Rating byEmail = ratingRepository.findByUserEmailAndKnowledgeId(ratingFilterDto.getUserEmail(),
+                            ratingFilterDto.getKnowledgeId());
+
+                    makeRatingResultList(ratingResultDtoList, Arrays.asList(byEmail));
+                }
+            } else {
+                // 목표 점수가 들어가있다
+                if (ratingFilterDto.getKnowledgeId() == null) {
+                    // 해당 유저의 목표 점수에 해당하는 모든 평점
+                    List<Rating> byEmail = ratingRepository.findByUserEmailAndRate(ratingFilterDto.getUserEmail(),
+                            Integer.parseInt(ratingFilterDto.getRate()));
+
+                    makeRatingResultList(ratingResultDtoList, byEmail);
+                } else {
+                    // 해당 유저의 해당 지식의 목표 점수에 해당하는 평점
+                    List<Rating> byEmailKnowledgeRate = ratingRepository.findByUserEmailAndKnowledgeIdAndRate(
+                            ratingFilterDto.getUserEmail(),
+                            ratingFilterDto.getKnowledgeId(),
+                            Integer.parseInt(ratingFilterDto.getRate()));
+
+                    makeRatingResultList(ratingResultDtoList, byEmailKnowledgeRate);
+                }
+            }
+        }
+
+        return ratingResultDtoList;
+    }
+
+    private void makeRatingResultList(List<RatingResultDto> ratingResultDtoList, List<Rating> ratingList) {
+        for (Rating rating : ratingList) {
             ratingResultDtoList.add(
                     RatingResultDto.builder()
                             .rate(rating.getRate())
@@ -94,121 +165,5 @@ public class RatingService {
                             .build()
             );
         }
-        return ratingResultDtoList;
-    }
-
-    public List<RatingResultDto> getFilteredRating(RatingFilterDto ratingFilterDto) {
-        List<RatingResultDto> ratingResultDtoList = new ArrayList<>();
-
-        if (ratingFilterDto.getUserEmail() == null) {
-            if (ratingFilterDto.getRate() == null) {
-                // 모두 null
-                if (ratingFilterDto.getKnowledgeId() == null) {
-
-                } else { // knowledgeId에 해당하느 모든 리턴
-                    List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeIdOrderByModifiedAt(ratingFilterDto.getKnowledgeId());
-                    for(Rating rating : byKnowledgeId){
-                        ratingResultDtoList.add(
-                                RatingResultDto.builder()
-                                        .rate(rating.getRate())
-                                        .userEmail(rating.getUserEmail())
-                                        .content(rating.getContent())
-                                        .modifiedAt(rating.getModifiedAt())
-                                        .build()
-                        );
-                    }
-                }
-            } else {
-                // 평점 필터링, 전체 지식에 대한
-                if (ratingFilterDto.getKnowledgeId() == null) {
-                    List<Rating> byRate = ratingRepository.findByRate(Integer.parseInt(ratingFilterDto.getRate()));
-
-                    for (Rating rating : byRate) {
-                        ratingResultDtoList.add(
-                                RatingResultDto.builder()
-                                        .rate(rating.getRate())
-                                        .userEmail(rating.getUserEmail())
-                                        .content(rating.getContent())
-                                        .modifiedAt(rating.getModifiedAt())
-                                        .build()
-                        );
-                    }
-                } else { // 해당 지식에 대한 평점 필터링
-                    List<Rating> byRate = ratingRepository.findByKnowledgeIdAndRate(ratingFilterDto.getKnowledgeId(), Integer.parseInt(ratingFilterDto.getRate()));
-
-                    for (Rating rating : byRate) {
-                        ratingResultDtoList.add(
-                                RatingResultDto.builder()
-                                        .rate(rating.getRate())
-                                        .userEmail(rating.getUserEmail())
-                                        .content(rating.getContent())
-                                        .modifiedAt(rating.getModifiedAt())
-                                        .build()
-                        );
-                    }
-                }
-
-            }
-        } else { // userEmail이 들어가있다
-            if (ratingFilterDto.getRate() == null) {
-                // 해당 유저의 전체 평점
-                if (ratingFilterDto.getKnowledgeId() == null) {
-                    List<Rating> byEmail = ratingRepository.findByUserEmail(ratingFilterDto.getUserEmail());
-
-                    for (Rating rating : byEmail) {
-                        ratingResultDtoList.add(
-                                RatingResultDto.builder()
-                                        .rate(rating.getRate())
-                                        .userEmail(rating.getUserEmail())
-                                        .content(rating.getContent())
-                                        .modifiedAt(rating.getModifiedAt())
-                                        .build()
-                        );
-                    }
-                } else { // 해당 유저의 해당하는 지식의 평점
-                    Rating byEmail = ratingRepository.findByUserEmailAndKnowledgeId(ratingFilterDto.getUserEmail(), ratingFilterDto.getKnowledgeId());
-
-                    ratingResultDtoList.add(
-                            RatingResultDto.builder()
-                                    .rate(byEmail.getRate())
-                                    .userEmail(byEmail.getUserEmail())
-                                    .content(byEmail.getContent())
-                                    .modifiedAt(byEmail.getModifiedAt())
-                                    .build()
-                    );
-                }
-            } else { // 목표 점수가 들어가있다
-                // 해당 유저의 목표 점수에 해당하는 모든 평점
-                if (ratingFilterDto.getKnowledgeId() == null) {
-                    List<Rating> byEmail = ratingRepository.findByUserEmailAndRate(ratingFilterDto.getUserEmail(), Integer.parseInt(ratingFilterDto.getRate()));
-
-                    for (Rating rating : byEmail) {
-                        ratingResultDtoList.add(
-                                RatingResultDto.builder()
-                                        .rate(rating.getRate())
-                                        .userEmail(rating.getUserEmail())
-                                        .content(rating.getContent())
-                                        .modifiedAt(rating.getModifiedAt())
-                                        .build()
-                        );
-                    }
-                } else { // 해당 유저의 해당 지식의 목표 점수에 해당하는 평점
-                    List<Rating> byEmailKnowledgeRate = ratingRepository.findByUserEmailAndKnowledgeIdAndRate(ratingFilterDto.getUserEmail(), ratingFilterDto.getKnowledgeId(), Integer.parseInt(ratingFilterDto.getRate()));
-
-                    for (Rating rating : byEmailKnowledgeRate) {
-                        ratingResultDtoList.add(
-                                RatingResultDto.builder()
-                                        .rate(rating.getRate())
-                                        .userEmail(rating.getUserEmail())
-                                        .content(rating.getContent())
-                                        .modifiedAt(rating.getModifiedAt())
-                                        .build()
-                        );
-                    }
-                }
-            }
-        }
-
-        return ratingResultDtoList;
     }
 }

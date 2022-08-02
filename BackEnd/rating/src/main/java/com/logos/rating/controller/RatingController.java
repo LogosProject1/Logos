@@ -53,7 +53,7 @@ public class RatingController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Map<String,Object>> getFilteredRating(HttpServletRequest req, @RequestParam RatingFilterDto ratingFilterDto){
+    public ResponseEntity<Map<String,Object>> getFilteredRating(HttpServletRequest req, @ModelAttribute RatingFilterDto ratingFilterDto){
         Map<String,Object> resultMap = new HashMap<>();
         String email = (String) req.getAttribute("Email");
 
