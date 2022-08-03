@@ -21,5 +21,6 @@ module.exports = {
         useTabs: false,
       },
     ],
+    "vue/no-unused-components": "off",
   },
 };
