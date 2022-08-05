@@ -6,7 +6,7 @@
       <b-col cols="12">
         <b-card class="text-center mt-3" style="max-width: 40rem" align="left">
           <img width="150" height="150" src="../../assets/logo.png" />
-          <b-form class="text-left" @submit.prevent="confirm">
+          <b-form class="text-left" @submit="confirm">
             <b-alert show variant="danger" v-if="isLoginError"
               >아이디 또는 비밀번호를 확인하세요.</b-alert
             >
@@ -69,11 +69,12 @@ export default {
   methods: {
     ...mapActions(memberStore, ["userConfirm", "getUserInfo"]),
     async confirm() {
+      event.preventDefault();
       await this.userConfirm(this.user);
       let token = "Bearer " + sessionStorage.getItem("access-token");
       if (this.isLogin) {
         await this.getUserInfo(token);
-        this.$router.push({ name: "signUp" });
+        this.$router.push({ name: "home" });
       }
     },
   },
