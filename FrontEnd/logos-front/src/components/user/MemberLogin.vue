@@ -65,6 +65,17 @@ export default {
       msg: "회원가입",
     };
   },
+  methods: {
+    onSubmit() {
+      console.log("temp function!");
+    },
+    onReset() {
+      console.log("temp function!");
+    },
+    memberIdDuplicatedCheck() {
+      console.log("temp function!");
+    },
+  },
   //   components: { HeadTextArea },
   //   methods: {
   //     onSubmit(event) {

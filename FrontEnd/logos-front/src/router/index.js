@@ -15,13 +15,13 @@ const routes = [
     component: () => import("@/views/MemberView.vue"),
     children: [
       {
-        path: "signup",
-        name: "signup",
+        path: "signUp",
+        name: "signUp",
         component: () => import("@/components/user/MemberRegister.vue"),
       },
       {
-        path: "signin",
-        name: "signin",
+        path: "signIn",
+        name: "signIn",
         component: () => import("@/components/user/MemberLogin.vue"),
       },
     ],
