@@ -16,28 +16,52 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item href="#"
-            ><router-link :to="{ name: 'home' }" class="link"
-              >Home
+            ><router-link :to="{ name: 'home' }" class="link span1">
+              <span class="span1">카테고리</span>
             </router-link></b-nav-item
           >
           <b-nav-item href="#"
-            ><router-link :to="{ name: 'introduce' }" class="link">
-              서비스 소개</router-link
+            ><router-link :to="{ name: 'knowledge' }" class="link span1">
+              지식</router-link
             ></b-nav-item
           >
           <b-nav-item href="#"
-            ><router-link :to="{ name: 'knowledge' }" class="link">
-              지식</router-link
+            ><router-link :to="{ name: 'introduce' }" class="link span1">
+              서비스 소개</router-link
             ></b-nav-item
           >
         </b-navbar-nav>
 
-        <b-nav-form class="col-8">
-          <b-form-input class="col-md-12" placeholder="Search"></b-form-input>
-          <b-button size="sm" class="my-2 my-sm-0" type="submit"
-            >Search</b-button
-          >
-        </b-nav-form>
+        <form
+          class="col-md-5 justify-content-center"
+          action="/search"
+          method="get"
+          style="
+            float: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          "
+        >
+          <div class="input-group">
+            <input
+              name="keyword"
+              type="search"
+              class="form-control"
+              placeholder="원하는 컨텐츠를 검색해보세요."
+              aria-label="Search"
+            />
+            <b-button
+              class="btn"
+              style="background-color: #764ba2"
+              type="submit"
+              id="button-addon2"
+            >
+              검색
+            </b-button>
+          </div>
+        </form>
 
         <b-navbar-nav class="ml-auto">
           <b-nav-item right v-if="userInfo"
@@ -49,7 +73,7 @@
               {{ userInfo.memberId }}님 환영합니다.
             </span></b-nav-item
           >
-          <b-nav-item-dropdown right>
+          <b-nav-item right>
             <template #button-content>
               <b-icon icon="people" font-scale="2" variant="dark"></b-icon>
             </template>
@@ -64,18 +88,18 @@
               </b-dropdown-item>
             </div>
             <div v-else>
-              <b-dropdown-item href="#"
-                ><router-link :to="{ name: 'signUp' }" class="link"
-                  ><b-icon icon="person-circle"></b-icon> 회원가입</router-link
-                ></b-dropdown-item
+              <router-link :to="{ name: 'signUp' }" class="link">
+                <b-button pill variant="outline-dark"
+                  >회원가입</b-button
+                ></router-link
               >
-              <b-dropdown-item href="#"
-                ><router-link :to="{ name: 'signIn' }" class="link"
-                  ><b-icon icon="key"></b-icon> 로그인
-                </router-link></b-dropdown-item
-              >
+              <router-link :to="{ name: 'signIn' }" class="link">
+                <b-button class="ml-2" pill style="background-color: #764ba2"
+                  >로그인</b-button
+                >
+              </router-link>
             </div>
-          </b-nav-item-dropdown>
+          </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
