@@ -69,11 +69,12 @@ export default {
   methods: {
     ...mapActions(memberStore, ["userConfirm", "getUserInfo"]),
     async confirm() {
+      event.preventDefault();
       await this.userConfirm(this.user);
       let token = "Bearer " + sessionStorage.getItem("access-token");
       if (this.isLogin) {
         await this.getUserInfo(token);
-        // this.$router.push({ name: "home" });
+        this.$router.push({ name: "home" });
       }
     },
   },
