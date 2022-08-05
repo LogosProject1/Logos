@@ -1,6 +1,6 @@
 import { loginInstance } from "./index.js";
 
-const api = loginInstance;
+const api = loginInstance();
 
 async function login(user, success, fail) {
   await api.post(`/login`, JSON.stringify(user)).then(success).catch(fail);
