@@ -32,8 +32,8 @@
           >
         </b-navbar-nav>
 
-        <b-nav-form class="col-8">
-          <b-form-input class="col-md-12" placeholder="Search"></b-form-input>
+        <b-nav-form>
+          <b-form-input class="" placeholder="Search"></b-form-input>
           <b-button size="sm" class="my-2 my-sm-0" type="submit"
             >Search</b-button
           >
@@ -49,33 +49,38 @@
               {{ userInfo.memberId }}님 환영합니다.
             </span></b-nav-item
           >
-          <b-nav-item-dropdown right>
-            <template #button-content>
-              <b-icon icon="people" font-scale="2" variant="dark"></b-icon>
-            </template>
-            <div v-if="userInfo">
-              <b-dropdown-item href="#"
-                ><router-link :to="{ name: 'myPage' }" class="link"
-                  ><b-icon icon="person-circle"></b-icon> 마이페이지
-                </router-link></b-dropdown-item
+          <div v-if="userInfo">
+            <b-nav-item href="#"
+              ><router-link :to="{ name: 'myPage' }" class="link">
+                마이페이지
+              </router-link></b-nav-item
+            >
+            <b-nav-item href="#" @click.prevent="onClickLogout">
+              로그아웃
+            </b-nav-item>
+          </div>
+          <div v-else>
+            <b-nav-item href="#"
+              ><b-button
+                :to="{ name: 'signUp' }"
+                class="link"
+                pill
+                variant="dark"
               >
-              <b-dropdown-item href="#" @click.prevent="onClickLogout"
-                ><b-icon icon="key"></b-icon> 로그아웃
-              </b-dropdown-item>
-            </div>
-            <div v-else>
-              <b-dropdown-item href="#"
-                ><router-link :to="{ name: 'signUp' }" class="link"
-                  ><b-icon icon="person-circle"></b-icon> 회원가입</router-link
-                ></b-dropdown-item
+                회원가입</b-button
+              ></b-nav-item
+            >
+            <b-nav-item href="#"
+              ><b-button
+                :to="{ name: 'signIn' }"
+                class="link"
+                pill
+                variant="light"
               >
-              <b-dropdown-item href="#"
-                ><router-link :to="{ name: 'signIn' }" class="link"
-                  ><b-icon icon="key"></b-icon> 로그인
-                </router-link></b-dropdown-item
-              >
-            </div>
-          </b-nav-item-dropdown>
+                로그인
+              </b-button></b-nav-item
+            >
+          </div>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
