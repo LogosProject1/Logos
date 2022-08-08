@@ -11,21 +11,22 @@
               <b-form-input
                 id="userEmail"
                 v-model="user.email"
-                @blur="memberIdDuplicatedCheck"
+                @blur="userEmailDuplicatedCheck"
                 required
                 placeholder="이메일 입력"
               ></b-form-input>
-              <div v-if="isMemberIdDuplicated">
-                <b-alert variant="success" show>
-                  가입 가능한 이메일 입니다.
-                </b-alert>
-              </div>
-              <div v-else-if="user.email == null && !isMemberIdDuplicated">
+              <div v-if="user.email == null && !flag">
                 <b-alert variant="warning" show>
                   이메일를 입력 해주세요.
                 </b-alert>
               </div>
-              <div v-else>
+              <div v-else-if="!isMemberIdDuplicated">
+                <b-alert variant="success" show>
+                  가입 가능한 이메일 입니다.
+                </b-alert>
+              </div>
+
+              <div v-else-if="isMemberIdDuplicated">
                 <b-alert variant="danger" show>
                   이미 사용중인 이메일 입니다.
                 </b-alert>
@@ -71,81 +72,68 @@
 </template>
 
 <script>
-// import { checkId, register } from "@/api/member";
-// import HeadTextArea from "@/components/layout/HeadTextArea.vue";
+import { checkId, register } from "@/api/auth";
 
 export default {
   name: "MemberRegister",
   data() {
     return {
       user: {
-        memberId: null,
+        email: null,
         password: null,
         name: null,
-        email: null,
         age: null,
       },
       isMemberIdDuplicated: false,
       msg: "회원가입",
+      flag: false,
     };
   },
   methods: {
-    onSubmit() {
-      console.log("temp function!");
+    onSubmit(event) {
+      event.preventDefault();
+
+      if (this.isMemberIdDuplicated) {
+        register(
+          this.user,
+          (response) => {
+            console.log(response);
+            alert("가입이 완료되었습니다.");
+            this.$router.push({ name: "home" });
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }
+      return;
     },
-    onReset() {
-      console.log("temp function!");
+    onReset(event) {
+      event.preventDefault();
+      this.user.email = null;
+      this.user.password = null;
+      this.user.name = null;
+      this.user.age = null;
+      this.$router.push({ name: "home" });
     },
-    memberIdDuplicatedCheck() {
-      console.log("temp function!");
+    userEmailDuplicatedCheck() {
+      checkId(
+        this.user.email,
+        (response) => {
+          console.log(response);
+          if (response.data.message === "SUCCESS") {
+            this.isMemberIdDuplicated = true;
+          } else {
+            this.isMemberIdDuplicated = false;
+          }
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+      this.flag = true;
     },
   },
-  //   components: { HeadTextArea },
-  //   methods: {
-  //     onSubmit(event) {
-  //       event.preventDefault();
-
-  //       if (this.isMemberIdDuplicated) {
-  //         register(
-  //           this.user,
-  //           (response) => {
-  //             console.log(response);
-  //             alert("가입이 완료되었습니다.");
-  //             this.$router.push({ name: "home" });
-  //           },
-  //           (error) => {
-  //             console.log(error);
-  //           }
-  //         );
-  //       }
-  //       return;
-  //     },
-  //     onReset(event) {
-  //       event.preventDefault();
-  //       this.user.memberId = null;
-  //       this.user.password = null;
-  //       this.user.name = null;
-  //       this.user.email = null;
-  //       this.user.age = null;
-  //       this.$router.push({ name: "home" });
-  //     },
-  //     memberIdDuplicatedCheck() {
-  //       checkId(
-  //         this.user.memberId,
-  //         (response) => {
-  //           console.log(response);
-  //           if (response.data.message === "success") {
-  //             this.isMemberIdDuplicated = true;
-  //           } else {
-  //             this.isMemberIdDuplicated = false;
-  //           }
-  //         },
-  //         (error) => {
-  //           console.log(error);
-  //         }
-  //       );
-  //     },
-  //   },
 };
 </script>
 

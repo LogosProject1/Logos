@@ -9,10 +9,7 @@ async function login(user, success, fail) {
 async function register(user, success, fail) {
   api.defaults.headers["Authorization"] =
     "Bearer " + sessionStorage.getItem("access-token");
-  await api
-    .post(`/members/register`, JSON.stringify(user))
-    .then(success)
-    .catch(fail);
+  await api.post(`/register`, JSON.stringify(user)).then(success).catch(fail);
 }
 
 async function findById(userid, success, fail) {
@@ -21,8 +18,8 @@ async function findById(userid, success, fail) {
   await api.get(`/members/info/${userid}`).then(success).catch(fail);
 }
 
-async function checkId(memberId, success, fail) {
-  await api.get(`/members/check/${memberId}`).then(success).catch(fail);
+async function checkId(userEmail, success, fail) {
+  await api.get(`/check/${userEmail}`).then(success).catch(fail);
 }
 
 async function modify(modifyUser, success, fail) {
