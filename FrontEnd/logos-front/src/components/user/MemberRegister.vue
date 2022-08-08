@@ -6,29 +6,30 @@
       <b-col cols="12">
         <b-card class="text-center mt-3" style="max-width: 40rem" align="left">
           <img width="150" height="150" src="../../assets/logo.png" />
-          <b-form class="text-left" @submit="onSubmit" @reset="onReset">
+          <b-form class="text-left" @submit="onSubmit">
             <b-form-group label="이메일:" label-for="userEmail">
               <b-form-input
                 id="userEmail"
                 v-model="user.email"
                 @blur="userEmailDuplicatedCheck"
+                @focus="changeFlag"
                 required
                 placeholder="이메일 입력"
               ></b-form-input>
-              <div v-if="user.email == null && !flag">
-                <b-alert variant="warning" show>
-                  이메일를 입력 해주세요.
+
+              <div v-if="isMemberIdDuplicated && flag">
+                <b-alert variant="danger" show>
+                  이미 사용중인 이메일 입니다.
                 </b-alert>
               </div>
-              <div v-else-if="!isMemberIdDuplicated">
+              <div v-else-if="!isMemberIdDuplicated && flag">
                 <b-alert variant="success" show>
                   가입 가능한 이메일 입니다.
                 </b-alert>
               </div>
-
-              <div v-else-if="isMemberIdDuplicated">
-                <b-alert variant="danger" show>
-                  이미 사용중인 이메일 입니다.
+              <div v-else-if="!flag">
+                <b-alert variant="warning" show>
+                  이메일를 입력 해주세요.
                 </b-alert>
               </div>
             </b-form-group>
@@ -60,9 +61,6 @@
             <b-button type="submit" variant="primary" class="m-1"
               >회원가입 등록</b-button
             >
-            <b-button type="reset" variant="danger" class="m-1"
-              >초기화</b-button
-            >
           </b-form>
         </b-card>
       </b-col>
@@ -93,7 +91,7 @@ export default {
     onSubmit(event) {
       event.preventDefault();
 
-      if (this.isMemberIdDuplicated) {
+      if (!this.isMemberIdDuplicated) {
         register(
           this.user,
           (response) => {
@@ -121,17 +119,22 @@ export default {
         this.user.email,
         (response) => {
           console.log(response);
-          if (response.data.message === "SUCCESS") {
+          if (response.data.message === "success") {
             this.isMemberIdDuplicated = true;
+            console.log("이미 존재하는 이메일입니다.");
           } else {
             this.isMemberIdDuplicated = false;
+            console.log("가입 가능한 이메일입니다.");
           }
+          this.flag = true;
         },
         (error) => {
           console.log(error);
         }
       );
-      this.flag = true;
+    },
+    changeFlag() {
+      this.flag = false;
     },
   },
 };
