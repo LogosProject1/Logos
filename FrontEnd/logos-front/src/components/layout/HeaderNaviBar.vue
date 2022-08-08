@@ -74,21 +74,22 @@
             </span></b-nav-item
           > -->
           <b-nav-item right>
-            <template #button-content>
-              <b-icon icon="people" font-scale="2" variant="dark"></b-icon>
-            </template>
-            <!-- <div v-if="userInfo">
-              <b-dropdown-item href="#"
-                ><router-link :to="{ name: 'myPage' }" class="link"
-                  ><b-icon icon="person-circle"></b-icon> 마이페이지
-                </router-link></b-dropdown-item
+            <div v-if="userInfo">
+              <router-link :to="{ name: 'myPage' }" class="link"
+                ><b-button pill variant="outline-dark"> 마이페이지</b-button>
+              </router-link>
+              <!-- <b-dropdown-item href="#" @click.prevent="onClickLogout"
+                > 로그아웃
+              </b-dropdown-item> -->
+              <b-button
+                pill
+                variant="outline-dark"
+                @click.prevent="onClickLogout"
               >
-              <b-dropdown-item href="#" @click.prevent="onClickLogout"
-                ><b-icon icon="key"></b-icon> 로그아웃
-              </b-dropdown-item>
+                로그아웃</b-button
+              >
             </div>
-            <div v-else> -->
-            <div>
+            <div v-else>
               <router-link :to="{ name: 'signUp' }" class="link">
                 <b-button pill variant="outline-dark"
                   >회원가입</b-button
@@ -107,7 +108,7 @@
   </div>
 </template>
 
-<!-- <script>
+<script>
 import { mapState, mapMutations } from "vuex";
 // import ms from "@/store/modules/memberStore";
 
@@ -130,7 +131,7 @@ export default {
     },
   },
 };
-</script> -->
+</script>
 
 <style>
 .span1 {
