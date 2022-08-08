@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar toggleable="lg" type="dark" variant="white">
+    <b-navbar class="header" toggleable="lg" type="dark" variant="white">
       <b-navbar-brand href="#">
         <router-link to="/">
           <img
@@ -134,5 +134,8 @@ export default {
 <style>
 .span1 {
   color: black;
+}
+.header {
+  height: 100px;
 }
 </style>
