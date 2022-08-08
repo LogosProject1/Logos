@@ -64,31 +64,30 @@
         </form>
 
         <b-navbar-nav class="ml-auto">
-          <!-- <b-nav-item right v-if="userInfo"
+          <b-nav-item right v-if="userInfo"
             ><b-avatar
               variant="dark"
-              v-text="userInfo ? userInfo.memberId.charAt(0).toUpperCase() : ''"
+              v-text="userInfo ? userInfo.name.charAt(0).toUpperCase() : ''"
             ></b-avatar
             ><span class="span1">
-              {{ userInfo.memberId }}님 환영합니다.
+              {{ userInfo.name }}님 환영합니다.
             </span></b-nav-item
-          > -->
+          >
           <b-nav-item right>
             <template #button-content>
               <b-icon icon="people" font-scale="2" variant="dark"></b-icon>
             </template>
-            <!-- <div v-if="userInfo">
-              <b-dropdown-item href="#"
-                ><router-link :to="{ name: 'myPage' }" class="link"
-                  ><b-icon icon="person-circle"></b-icon> 마이페이지
-                </router-link></b-dropdown-item
+            <div v-if="userInfo">
+              <b-button pill variant="outline-dark">마이페이지</b-button>
+              <b-button
+                class="ml-2"
+                pill
+                style="background-color: #764ba2"
+                @click="onClickLogout"
+                >로그아웃</b-button
               >
-              <b-dropdown-item href="#" @click.prevent="onClickLogout"
-                ><b-icon icon="key"></b-icon> 로그아웃
-              </b-dropdown-item>
             </div>
-            <div v-else> -->
-            <div>
+            <div v-else>
               <router-link :to="{ name: 'signUp' }" class="link">
                 <b-button pill variant="outline-dark"
                   >회원가입</b-button
@@ -107,7 +106,7 @@
   </div>
 </template>
 
-<!-- <script>
+<script>
 import { mapState, mapMutations } from "vuex";
 // import ms from "@/store/modules/memberStore";
 
@@ -130,7 +129,7 @@ export default {
     },
   },
 };
-</script> -->
+</script>
 
 <style>
 .span1 {

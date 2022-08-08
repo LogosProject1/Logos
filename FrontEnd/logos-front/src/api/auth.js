@@ -15,7 +15,7 @@ async function register(user, success, fail) {
 async function findById(userid, success, fail) {
   api.defaults.headers["Authorization"] =
     "Bearer " + sessionStorage.getItem("access-token");
-  await api.get(`/members/info/${userid}`).then(success).catch(fail);
+  await api.get(`/info/${userid}`).then(success).catch(fail);
 }
 
 async function checkId(userEmail, success, fail) {
