@@ -26,6 +26,39 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/profile",
+    name: "profile",
+    redirect: "/profile/knowledgeHistory",
+    component: () => import("@/views/ProfileView.vue"),
+    children: [
+      {
+        path: "myPage",
+        name: "myPage",
+        component: () => import("@/components/profile/MemberProfile.vue"),
+      },
+      {
+        path: "pointHistory",
+        name: "pointHistory",
+        component: () => import("@/components/profile/PointHistory.vue"),
+      },
+      {
+        path: "paymentHistory",
+        name: "paymentHistory",
+        component: () => import("@/components/profile/PaymentHistory.vue"),
+      },
+      {
+        path: "payment",
+        name: "payment",
+        component: () => import("@/components/profile/PaymentComponent.vue"),
+      },
+      {
+        path: "knowledgeHistory",
+        name: "knowledgeHistory",
+        component: () => import("@/components/profile/KnowledgeHistory.vue"),
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
