@@ -78,7 +78,11 @@
               <b-icon icon="people" font-scale="2" variant="dark"></b-icon>
             </template>
             <div v-if="userInfo">
-              <b-button pill variant="outline-dark">마이페이지</b-button>
+              <router-link :to="{ name: 'profile' }" class="link"
+                ><b-button pill variant="outline-dark"
+                  >마이페이지</b-button
+                ></router-link
+              >
               <b-button
                 class="ml-2"
                 pill

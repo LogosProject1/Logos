@@ -76,7 +76,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import http from "@/api/http";
+import { modify } from "@/api/auth";
 
 const memberStore = "memberStore";
 
@@ -120,13 +120,11 @@ export default {
 
       this.modifyUser.email = this.user.email;
       this.modifyUser.name = this.user.name;
-      this.modifyUser.age = this.user.age;
+      this.modifyUser.phone = this.user.phone;
 
-      http.defaults.headers["Authorization"] =
-        "Bearer " + sessionStorage.getItem("access-token");
-      http
-        .put(`/update`, JSON.stringify(this.modifyUser))
-        .then((response) => {
+      modify(
+        this.modifyUser,
+        (response) => {
           if (response.data.message === "success") {
             alert("회원 정보를 수정 했습니다.");
             this.$router.push({ name: "myPage" });
@@ -134,10 +132,11 @@ export default {
             alert("기존 비밀번호가 다릅니다. 다시 확인 해 주세요.");
             return;
           }
-        })
-        .catch((error) => {
+        },
+        (error) => {
           console.log(error);
-        });
+        }
+      );
     },
     onReset(event) {
       event.preventDefault();
