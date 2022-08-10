@@ -26,7 +26,7 @@ async function modify(modifyUser, success, fail) {
   api.defaults.headers["Authorization"] =
     "Bearer " + sessionStorage.getItem("access-token");
   await api
-    .post(`/update`, JSON.stringify(modifyUser))
+    .put(`/update`, JSON.stringify(modifyUser))
     .then(success)
     .catch(fail);
 }
