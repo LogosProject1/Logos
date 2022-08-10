@@ -33,6 +33,11 @@
                 v-model="modifyUser.originPassword"
                 required
               ></b-form-input>
+              <div v-if="originPasswordErrorFlag">
+                <b-alert variant="danger" show>
+                  <div v-html="originPasswordErrorMessage" />
+                </b-alert>
+              </div>
             </b-form-group>
             <b-form-group label="새 비밀번호:" label-for="usernewpwd">
               <b-form-input
@@ -41,6 +46,11 @@
                 v-model="modifyUser.newPassword"
                 required
               ></b-form-input>
+              <div v-if="newPasswordErrorFlag">
+                <b-alert variant="danger" show>
+                  <div v-html="newPasswordErrorMessage"
+                /></b-alert>
+              </div>
             </b-form-group>
             <b-form-group
               label="새 비밀번호 확인:"
@@ -100,6 +110,10 @@ export default {
         phone: "",
       },
       msg: "회원 정보 수정",
+      newPasswordErrorFlag: false,
+      originPasswordErrorFlag: false,
+      newPasswordErrorMessage: "",
+      originPasswordErrorMessage: "",
     };
   },
   computed: {
@@ -113,10 +127,10 @@ export default {
     onSubmit(event) {
       event.preventDefault();
 
-      if (!this.passwordCheckFlag) {
-        alert("변경할 비밀 번호를 확인 해주세요.");
-        return;
-      }
+      // if (!this.passwordCheckFlag) {
+      //   alert("변경할 비밀 번호를 확인 해주세요.");
+      //   return;
+      // }
 
       this.modifyUser.email = this.user.email;
       this.modifyUser.name = this.user.name;
@@ -126,10 +140,21 @@ export default {
         this.modifyUser,
         (response) => {
           if (response.data.message === "success") {
+            this.resetError();
             alert("회원 정보를 수정 했습니다.");
             this.$router.push({ name: "myPage" });
           } else if (response.data.message === "fail") {
-            alert("기존 비밀번호가 다릅니다. 다시 확인 해 주세요.");
+            //Error
+            this.resetError();
+            response.data.errors.map((error) => {
+              if (error.field === "newPassword") {
+                this.newPasswordErrorFlag = true;
+                this.newPasswordErrorMessage += error.errorMessage + "<br/>";
+              } else if (error.field === "originPassword") {
+                this.originPasswordErrorFlag = true;
+                this.originPasswordErrorMessage += error.errorMessage + "<br/>";
+              }
+            });
             return;
           }
         },
@@ -151,6 +176,12 @@ export default {
       } else {
         this.passwordCheckFlag = false;
       }
+    },
+    resetError() {
+      this.newPasswordErrorFlag = false;
+      this.originPasswordErrorFlag = false;
+      this.newPasswordErrorMessage = "";
+      this.originPasswordErrorMessage = "";
     },
   },
 };
