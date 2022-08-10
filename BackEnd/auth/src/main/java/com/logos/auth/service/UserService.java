@@ -72,12 +72,20 @@ public class UserService {
     }
 
     @Transactional
-    public void update(UserUpdateDto member, String email) {
+    public User update(UserUpdateDto member, String email) {
         User user = userRepository.findByEmail(email);
-        user.setName(member.getName());
-        user.setPassword(member.getPassword());
-        user.setPhone(member.getPhone());
-        userRepository.save(user);
+
+        if(user != null && passwordEncoder.matches(member.getOriginPassword(),user.getPassword())){
+            user.setName(member.getName());
+            user.setPassword(passwordEncoder.encode(member.getNewPassword()));
+            user.setPhone(member.getPhone());
+            userRepository.save(user);
+            return user;
+        }
+        else{
+            //기존 패스워드 불일치
+            return null;
+        }
     }
 
     @Transactional

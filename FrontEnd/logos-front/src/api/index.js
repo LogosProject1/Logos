@@ -1,9 +1,18 @@
 import axios from "axios";
-import { API_LOGIN_URL } from "@/config";
+import { API_LOGIN_URL, API_POINT_URL } from "@/config";
 
 export function loginInstance() {
   const instance = axios.create({
     baseURL: API_LOGIN_URL,
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+  return instance;
+}
+export function pointInstance() {
+  const instance = axios.create({
+    baseURL: API_POINT_URL,
     headers: {
       "Content-type": "application/json",
     },

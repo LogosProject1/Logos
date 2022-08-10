@@ -3,7 +3,7 @@
     <div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
     >
-      <h1 class="h2">지식</h1>
+      <h1 class="h2">나의 지식</h1>
     </div>
     <b-tabs content-class="mt-3" justified>
       <b-tab title="내가 구매한 지식" active>

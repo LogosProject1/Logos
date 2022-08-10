@@ -20,9 +20,12 @@ public class UserUpdateDto {
 
     @Length(min=8,max=20)
     @NotBlank
-    private String password;
+    private String originPassword;
+
+    @Length(min=8,max=20)
+    @NotBlank
+    private String newPassword;
 
     @NotBlank
     private String phone;
-
 }
