@@ -33,6 +33,9 @@
             <li class="nav-item">
               <a class="nav-link" href="/profile/payment"> 포인트 결제하기 </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/profile/memberSeccess"> 회원 탈퇴 </a>
+            </li>
           </ul>
         </div>
       </nav>

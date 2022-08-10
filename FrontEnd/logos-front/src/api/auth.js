@@ -31,4 +31,13 @@ async function modify(modifyUser, success, fail) {
     .catch(fail);
 }
 
-export { login, findById, checkId, modify, register };
+async function deleteMember(user, success, fail) {
+  api.defaults.headers["Authorization"] =
+    "Bearer " + sessionStorage.getItem("access-token");
+  await api
+    .delete(`/userDelete`, JSON.stringify(user))
+    .then(success)
+    .catch(fail);
+}
+
+export { login, findById, checkId, modify, register, deleteMember };

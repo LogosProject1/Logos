@@ -57,6 +57,11 @@ const routes = [
         name: "knowledgeHistory",
         component: () => import("@/components/profile/KnowledgeHistory.vue"),
       },
+      {
+        path: "memberSeccess",
+        name: "memberSeccess",
+        component: () => import("@/components/profile/MemberSeccess.vue"),
+      },
     ],
   },
 ];
