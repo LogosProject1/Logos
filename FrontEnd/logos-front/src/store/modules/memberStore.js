@@ -77,16 +77,23 @@ const memberStore = {
         }
       );
     },
-    async userDelete({ commit }, userid) {
+    async userDelete({ commit }) {
       await deleteMember(
-        userid,
         (response) => {
-          console.log(response);
-          commit("SET_IS_LOGIN", false);
-          commit("SET_IS_LOGIN_ERROR", false);
-          commit("SET_USER_INFO", null);
+          if (response.data.message === "success") {
+            alert("회원이 정상적으로 탈퇴 되었습니다.");
+            console.log(response);
+            commit("SET_IS_LOGIN", false);
+            commit("SET_IS_LOGIN_ERROR", false);
+            commit("SET_USER_INFO", null);
+          } else if (response.data.message === "fail") {
+            alert("회원 탈퇴를 실패 했습니다.");
+            return;
+          }
         },
-        () => {}
+        (error) => {
+          console.log(error);
+        }
       );
     },
 

@@ -65,7 +65,7 @@
 
     <div class="seccessContainer">
       <div>
-        <b>보안 위해 회원님의 이름과 계정 이메일 및 비밀번호를 확인 합니다.</b>
+        <b>보안 위해 회원님의 이름과 계정 이메일를 확인 합니다.</b>
       </div>
       <br />
       <div>
@@ -73,8 +73,6 @@
         <input type="text" id="username" v-model="user.name" disabled />
         &nbsp; 이메일:
         <input type="text" id="userEmail" v-model="user.email" disabled />
-        &nbsp; 비밀번호:
-        <input type="password" id="userpwd" v-model="user.password" />
       </div>
       <b-button
         v-on:click="onSubmit"
@@ -87,7 +85,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 const memberStore = "memberStore";
 
@@ -100,6 +98,7 @@ export default {
         name: null,
         password: null,
       },
+      status: "not_accepted",
     };
   },
   computed: {
@@ -110,10 +109,17 @@ export default {
     this.user = this.checkUserInfo;
   },
   methods: {
+    ...mapActions(memberStore, ["userDelete"]),
     onSubmit(event) {
       event.preventDefault();
 
-      console.log("뚜둥");
+      if (this.status !== "accepted") {
+        alert("회원 탈퇴 안내 사항에 동의하셔야 합니다.");
+      } else {
+        this.userDelete();
+        sessionStorage.removeItem("access-token");
+        this.$router.push({ name: "home" });
+      }
     },
   },
 };

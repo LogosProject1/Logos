@@ -11,8 +11,20 @@
           >
             <b-button pill variant="outline-dark">메뉴</b-button>
           </h4>
+          <br />
           <ul class="nav flex-column">
-            <li class="nav-item">
+            <b-nav-item
+              v-for="item in items"
+              :key="item.id"
+              :to="item.href"
+              v-on:click="selectItem(item.id)"
+              v-bind:class="{
+                'item-selection': true,
+                'active-item': item.id === currentItem,
+              }"
+              >{{ item.text }}</b-nav-item
+            >
+            <!-- <li class="nav-item">
               <a
                 class="nav-link active"
                 aria-current="page"
@@ -35,7 +47,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/profile/memberSeccess"> 회원 탈퇴 </a>
-            </li>
+            </li> -->
           </ul>
         </div>
       </nav>
@@ -46,6 +58,53 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      items: [
+        {
+          id: 1,
+          text: "나의 지식",
+          href: "/profile/knowledgeHistory",
+        },
+        {
+          id: 2,
+          text: "개인정보확인/수정",
+          href: "/profile/myPage",
+        },
+        {
+          id: 3,
+          text: "포인트 이력",
+          href: "/profile/pointHistory",
+        },
+        {
+          id: 4,
+          text: "결제 내역",
+          href: "/profile/paymentHistory",
+        },
+        {
+          id: 5,
+          text: "포인트 결제하기",
+          href: "/profile/payment",
+        },
+        {
+          id: 6,
+          text: "회원 탈퇴",
+          href: "/profile/memberSeccess",
+        },
+      ],
+      currentItem: 0,
+    };
+  },
+  methods: {
+    selectItem(id) {
+      this.currentItem = id;
+    },
+  },
+};
+</script>
 
 <style>
 .feather {
@@ -189,5 +248,18 @@
   text-align: center;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
+}
+.item-selection:hover {
+  color: black;
+  cursor: pointer;
+  background: #ebebeb;
+}
+
+.item-selection {
+  background-color: #ffffff;
+}
+
+.active-item {
+  background-color: #bea8c4;
 }
 </style>
