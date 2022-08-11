@@ -220,7 +220,7 @@ import axios from "axios";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjU5MjQ2MzQ0MzQzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTk2MDYzNDQsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoic3NkQGZzLmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.V3bDfmN-1eLxRnpwGrSRWq0mk6nuF2J_iHJ-dA82sqat6Od7UwKb6Zo1nLLTMgNq-AcXPn0eHUMD5G4xOwZMSw";
+  "Bearer " + sessionStorage.getItem("access-token");
 
 export default {
   data() {
@@ -296,55 +296,68 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
         })
         .then((res) => {
           this.merchant_uid = res.data.merchant_uid;
+          IMP.request_pay(
+            {
+              // param
+              pg: this.pg,
+              pay_method: "card",
+              quota: "일시불",
+              merchant_uid: this.merchant_uid,
+              name: "Logos LP Point " + this.amount,
+              amount: this.amount,
+              buyer_email: "test@test.com",
+              buyer_name: "몰루",
+              buyer_tel: "123-123-1231",
+              buyer_addr: "",
+              buyer_postcode: "",
+            },
+            (rsp) => {
+              // callback
+              if (rsp.success) {
+                // 결제 성공 시 로직,
+                // 백엔드에서 받았던 주문 ID 다시 백엔드로 보내서 위변조 검증
+                // 결제번호(imp_uid)와 주문번호(merchant_uid) 보내기
+                console.log(IMP);
+                console.log(rsp);
+                console.log("결제 성공");
+              } else {
+                console.log(IMP);
+                console.log(rsp);
+                // 결제 실패 시 로직,
+                // 안내 후 다시 이전 페이지로 돌려보냄
+                console.log("결제 실패");
+              }
+              axios
+                .post("http://localhost:8084/payment/verify", {
+                  amount: rsp.paid_amount,
+                  merchant_uid: this.merchant_uid,
+                  result: rsp.success,
+                })
+                .then((data) => console.log("result: " + data))
+                .catch((error) => {
+                  console.log("포인트 충전 에러");
+                  console.log(error);
+                });
+            }
+          );
         })
         .catch((error) => {
           console.log("포인트 충전 에러");
           console.log(error);
-        });
-      IMP.request_pay(
-        {
-          // param
-          pg: this.pg,
-          pay_method: "card",
-          quota: "일시불",
-          merchant_uid: this.merchant_uid,
-          name: "Logos LP Point " + this.amount,
-          amount: this.amount,
-          buyer_email: "test@test.com",
-          buyer_name: "몰루",
-          buyer_tel: "123-123-1231",
-          buyer_addr: "",
-          buyer_postcode: "",
-        },
-        (rsp) => {
-          // callback
-          if (rsp.success) {
-            // 결제 성공 시 로직,
-            // 백엔드에서 받았던 주문 ID 다시 백엔드로 보내서 위변조 검증
-            // 결제번호(imp_uid)와 주문번호(merchant_uid) 보내기
-            console.log(IMP);
-            console.log(rsp);
-            console.log("결제 성공");
-          } else {
-            console.log(IMP);
-            console.log(rsp);
-            // 결제 실패 시 로직,
-            // 안내 후 다시 이전 페이지로 돌려보냄
-            console.log("결제 실패");
-          }
           axios
             .post("http://localhost:8084/payment/verify", {
-              amount: rsp.paid_amount,
+              amount: this.paid_amount,
               merchant_uid: this.merchant_uid,
-              result: rsp.success,
+              result: false,
             })
             .then((data) => console.log("result: " + data))
             .catch((error) => {
               console.log("포인트 충전 에러");
               console.log(error);
             });
-        }
-      );
+          alert("포인트 충전 에러");
+          return;
+        });
     },
   },
 };

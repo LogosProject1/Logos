@@ -256,7 +256,6 @@ export default {
 }
 
 .item-selection {
-  background-color: #ffffff;
 }
 
 .active-item {

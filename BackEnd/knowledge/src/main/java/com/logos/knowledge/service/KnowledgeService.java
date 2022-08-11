@@ -4,10 +4,7 @@ import com.logos.knowledge.domain.Category;
 import com.logos.knowledge.domain.Enrollment;
 import com.logos.knowledge.domain.Knowledge;
 import com.logos.knowledge.domain.User;
-import com.logos.knowledge.dto.KnowledgeBriefDto;
-import com.logos.knowledge.dto.KnowledgeDto;
-import com.logos.knowledge.dto.KnowledgeFilterDto;
-import com.logos.knowledge.dto.KnowledgeUpdateDto;
+import com.logos.knowledge.dto.*;
 import com.logos.knowledge.repository.CategoryRepository;
 import com.logos.knowledge.repository.EnrollmentRepository;
 import com.logos.knowledge.repository.KnowledgeRepository;
@@ -174,8 +171,41 @@ public class KnowledgeService{
         return false;
     }
 
-    public void subscribedKnowledge(String email, Pageable pageable) {
+    public SubscribedKnowledgeDto subscribedKnowledge(String email, Pageable pageable) {
+        Page<Enrollment> enrollments = enrollmentRepository.findSubscribedUsingFetchJoin(email, pageable);
 
+        List<KnowledgeBriefDto> knowledgeBriefDtoList = new ArrayList<>();
+        for(Enrollment enrollment : enrollments.getContent()){
+            knowledgeBriefDtoList.add(KnowledgeBriefDto.builder()
+                            .title(enrollment.getKnowledge().getTitle())
+                            .price(String.valueOf(enrollment.getPurchasePrice()))
+                            .startTime(enrollment.getKnowledge().getStartTime().toString())
+                            .endTime(enrollment.getKnowledge().getEndTime().toString())
+                            .build());
+        }
+        return SubscribedKnowledgeDto.builder()
+                        .subscribeList(knowledgeBriefDtoList)
+                        .totalPage(enrollments.getTotalPages())
+                        .build();
+    }
 
+    public PublishedKnowledgeDto publishedKnowledge(String email, Pageable pageable) {
+        User byEmail = userRepository.findByEmail(email);
+        Page<Knowledge> byWriter = knowledgeRepository.findByWriter(byEmail,pageable);
+        List<KnowledgeBriefDto> knowledgeBriefDtoList = new ArrayList<>();
+
+        for(Knowledge knowledge : byWriter.getContent()){
+            knowledgeBriefDtoList.add(KnowledgeBriefDto.builder()
+                    .title(knowledge.getTitle())
+                    .price(String.valueOf(knowledge.getPrice()))
+                    .startTime(knowledge.getStartTime().toString())
+                    .endTime(knowledge.getEndTime().toString())
+                    .build());
+        }
+
+        return PublishedKnowledgeDto.builder()
+                .publishList(knowledgeBriefDtoList)
+                .totalPage(byWriter.getTotalPages())
+                .build();
     }
 }
