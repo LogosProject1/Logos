@@ -28,6 +28,17 @@
         </b-list-group-item>
       </b-list-group>
     </b-container>
+
+    <div class="mt-3">
+      <b-pagination
+        v-model="currentPage"
+        pills
+        align="center"
+        :total-rows="rows"
+        :per-page="perPage"
+        @page-click="pageClicked"
+      ></b-pagination>
+    </div>
   </div>
 </template>
 
@@ -38,21 +49,38 @@ export default {
   name: "PointHistory",
   data() {
     return {
+      currentPage: 0,
+      perPage: 10,
+      rows: 0,
       history_list: [],
     };
   },
   computed: {},
   created() {
     getHistory(
+      this.currentPage,
       (response) => {
-        console.log("fasdf");
-        this.history_list = response.data.result;
+        this.history_list = response.data.result.pointHistory;
+        this.rows = this.perPage * response.data.result.totalPage;
       },
       (error) => {
         console.log(error);
       }
     );
   },
-  methods: {},
+  methods: {
+    pageClicked(bvEvent, page) {
+      getHistory(
+        page - 1,
+        (response) => {
+          this.history_list = response.data.result.pointHistory;
+          this.rows = this.perPage * response.data.result.totalPage;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
+  },
 };
 </script>
