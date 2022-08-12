@@ -209,6 +209,10 @@ public class KnowledgeService{
                 .build();
     }
 
-    public boolean deleteByUser(String email) {
+    @Transactional
+    public void deleteByUser(String email) {
+        User user = userRepository.findByEmail(email);
+
+       knowledgeRepository.deleteByWriter(user);
     }
 }

@@ -205,12 +205,8 @@ public class KnowledgeController {
         HttpStatus status = null;
 
         try {
-            if(knowledgeService.deleteByUser(email)){
-                resultMap.put("message", SUCCESS);
-            }
-            else {
-                resultMap.put("message", FAIL);
-            }
+            knowledgeService.deleteByUser(email);
+            resultMap.put("message", SUCCESS);
             status = HttpStatus.OK;
         } catch (Exception e) {
             resultMap.put("message", e.getMessage());

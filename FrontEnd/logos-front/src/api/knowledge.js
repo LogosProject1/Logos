@@ -20,4 +20,10 @@ async function getPublished(page, success, fail) {
     .catch(fail);
 }
 
-export { getSubscribed, getPublished };
+async function deleteKnowledge(success, fail) {
+  api.defaults.headers["Authorization"] =
+    "Bearer " + sessionStorage.getItem("access-token");
+  await api.delete(`/knowledge/deleteByUser`).then(success).catch(fail);
+}
+
+export { getSubscribed, getPublished, deleteKnowledge };
