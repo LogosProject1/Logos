@@ -16,6 +16,8 @@ import java.util.List;
 public interface KnowledgeRepository extends JpaRepository<Knowledge,String> {
     List<Knowledge> findByTitleContains(String keyword);
 
+    Long deleteByWriter(User user);
+
     @Query("select k from Knowledge k "+
            "where k.category.id = :category and k.startTime >= :startTime and k.endTime <= :endTime "+
            "and k.price between :minPrice and :maxPrice")

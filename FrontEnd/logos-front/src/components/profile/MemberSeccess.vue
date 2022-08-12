@@ -86,6 +86,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import { deleteKnowledge } from "@/api/knowledge";
 
 const memberStore = "memberStore";
 
@@ -116,6 +117,8 @@ export default {
       if (this.status !== "accepted") {
         alert("회원 탈퇴 안내 사항에 동의하셔야 합니다.");
       } else {
+        deleteKnowledge();
+
         this.userDelete();
         sessionStorage.removeItem("access-token");
         this.$router.push({ name: "home" });

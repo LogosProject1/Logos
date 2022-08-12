@@ -173,8 +173,7 @@ public class KnowledgeController {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-
-        return new ResponseEntity<>(resultMap,status);
+        return new ResponseEntity<>(resultMap, status);
     }
 
     @GetMapping("/published")
@@ -193,6 +192,26 @@ public class KnowledgeController {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
+
+        return new ResponseEntity<>(resultMap,status);
+    }
+
+
+    @DeleteMapping("/deleteByUser")
+    public ResponseEntity<Map<String, Object>> deleteByUser(HttpServletRequest req) {
+        Map<String, Object> resultMap = new HashMap<>();
+        String email = (String) req.getAttribute("Email");
+
+        HttpStatus status = null;
+
+        try {
+            knowledgeService.deleteByUser(email);
+            resultMap.put("message", SUCCESS);
+            status = HttpStatus.OK;
+        } catch (Exception e) {
+            resultMap.put("message", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
 
         return new ResponseEntity<>(resultMap,status);
     }
