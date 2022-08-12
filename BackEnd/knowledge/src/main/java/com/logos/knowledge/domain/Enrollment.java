@@ -1,11 +1,9 @@
-package com.logos.rating.domain;
+package com.logos.knowledge.domain;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -17,7 +15,8 @@ public class Enrollment {
     @Id
     private String id;
 
-    private String knowledgeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Knowledge knowledge;
 
     private String userEmail;
 

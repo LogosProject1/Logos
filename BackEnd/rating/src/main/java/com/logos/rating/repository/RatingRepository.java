@@ -8,7 +8,7 @@ import java.util.List;
 public interface RatingRepository extends JpaRepository<Rating,String> {
     Rating findByUserEmailAndKnowledgeId(String email, String knowledgeId);
 
-    List<Rating> findByKnowledgeIdOrderByModifiedAt(String knowledgeId);
+    List<Rating> findByKnowledgeOrderByModifiedAt(String knowledgeId);
 
     List<Rating> findByKnowledgeIdAndRate(String knowledgeId, int rate);
 

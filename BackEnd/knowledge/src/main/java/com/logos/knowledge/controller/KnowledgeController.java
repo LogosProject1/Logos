@@ -1,14 +1,12 @@
 package com.logos.knowledge.controller;
 
 import com.logos.knowledge.domain.Knowledge;
-import com.logos.knowledge.dto.KnowledgeBriefDto;
-import com.logos.knowledge.dto.KnowledgeDto;
-import com.logos.knowledge.dto.KnowledgeFilterDto;
-import com.logos.knowledge.dto.KnowledgeUpdateDto;
+import com.logos.knowledge.dto.*;
 import com.logos.knowledge.resolver.KnowledgeFilter;
 import com.logos.knowledge.service.JwtService;
 import com.logos.knowledge.service.KnowledgeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -159,4 +157,43 @@ public class KnowledgeController {
         return new ResponseEntity<>(resultMap, status);
     }
 
+    @GetMapping("/subscribed")
+    public ResponseEntity<Map<String, Object>> subscribedKnowledge(HttpServletRequest req, Pageable pageable) {
+        Map<String, Object> resultMap = new HashMap<>();
+        String email = (String) req.getAttribute("Email");
+        HttpStatus status = HttpStatus.OK;
+
+        try{
+            SubscribedKnowledgeDto subscribedKnowledgeDto = knowledgeService.subscribedKnowledge(email, pageable);
+            resultMap.put("result",subscribedKnowledgeDto);
+            resultMap.put("message", SUCCESS);
+        }
+        catch (Exception e){
+            resultMap.put("message", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+
+        return new ResponseEntity<>(resultMap,status);
+    }
+
+    @GetMapping("/published")
+    public ResponseEntity<Map<String,Object>> publishedKnowledge(HttpServletRequest req, Pageable pageable){
+        Map<String, Object> resultMap = new HashMap<>();
+        String email = (String) req.getAttribute("Email");
+        HttpStatus status = HttpStatus.OK;
+
+        try{
+            PublishedKnowledgeDto publishedKnowledgeDto = knowledgeService.publishedKnowledge(email, pageable);
+            resultMap.put("result",publishedKnowledgeDto);
+            resultMap.put("message", SUCCESS);
+        }
+        catch (Exception e){
+            resultMap.put("message", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+
+        return new ResponseEntity<>(resultMap,status);
+    }
 }

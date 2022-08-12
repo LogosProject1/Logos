@@ -6,19 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PointHistoryDto {
-    private String id;
+    private List<PointDto> pointHistory;
 
-    private Long amount;
-
-    private Long remain;
-
-    private LocalDateTime modifyTime;
-
-    private String type;
+    private int totalPage;
 }

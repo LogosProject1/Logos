@@ -1,6 +1,9 @@
 package com.logos.knowledge.repository;
 
 import com.logos.knowledge.domain.Knowledge;
+import com.logos.knowledge.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +24,6 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge,String> {
                                  @Param("endTime") LocalDateTime endTime,
                                  @Param("minPrice") Long minPrice,
                                  @Param("maxPrice") Long maxPrice);
+
+    Page<Knowledge> findByWriter(User byEmail, Pageable pageable);
 }

@@ -3,6 +3,7 @@ package com.logos.point.controller;
 import com.logos.point.dto.PointHistoryDto;
 import com.logos.point.service.PointService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +21,13 @@ public class PointController {
     private final PointService pointService;
 
     @GetMapping("/history")
-    public ResponseEntity<Map<String, Object>> pointHistory(HttpServletRequest req) {
+    public ResponseEntity<Map<String, Object>> pointHistory(HttpServletRequest req, Pageable pageable) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
 
         String email = (String) req.getAttribute("Email");
         try {
-            List<PointHistoryDto> result = pointService.getPointHistory(email);
+            PointHistoryDto result = pointService.getPointHistory(email,pageable);
             resultMap.put("result", result);
             status = HttpStatus.OK;
         } catch (Exception e) {
