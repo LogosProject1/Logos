@@ -10,22 +10,13 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentHistoryDto {
-    private String id;
-
-    private Long amount;
-
-    private LocalDateTime startTime;
-
-    private LocalDateTime endTime;
-
-    @Enumerated(EnumType.STRING)
-    private ResultType result;
-
-    private String paymentType;
+    private List<PaymentDto> paymentHistory;
+    private int totalPage;
 }

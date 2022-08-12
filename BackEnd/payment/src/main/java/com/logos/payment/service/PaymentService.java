@@ -2,6 +2,7 @@ package com.logos.payment.service;
 
 import com.logos.payment.domain.*;
 import com.logos.payment.dto.OrderDto;
+import com.logos.payment.dto.PaymentDto;
 import com.logos.payment.dto.PaymentHistoryDto;
 import com.logos.payment.dto.VerifyDto;
 import com.logos.payment.repository.PaymentRepository;
@@ -9,6 +10,8 @@ import com.logos.payment.repository.PointHistoryRepository;
 import com.logos.payment.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,12 +83,12 @@ public class PaymentService {
         return result;
     }
 
-    public List<PaymentHistoryDto> getPaymentHistory(String email) {
-        List<Payment> byUserEmail = paymentRepository.findByUserEmail(email);
-        List<PaymentHistoryDto> result = new ArrayList<>();
+    public PaymentHistoryDto getPaymentHistory(String email, Pageable pageable) {
+        Page<Payment> byUserEmail = paymentRepository.findByUserEmail(email,pageable);
+        List<PaymentDto> result = new ArrayList<>();
 
-        for(Payment payment : byUserEmail){
-            result.add(PaymentHistoryDto.builder()
+        for(Payment payment : byUserEmail.getContent()){
+            result.add(PaymentDto.builder()
                     .id(payment.getId())
                     .amount(payment.getAmount())
                     .startTime(payment.getStartTime())
@@ -94,6 +97,9 @@ public class PaymentService {
                     .paymentType(payment.getPaymentType())
                     .build());
         }
-        return result;
+        return PaymentHistoryDto.builder()
+                .paymentHistory(result)
+                .totalPage(byUserEmail.getTotalPages())
+                .build();
     }
 }

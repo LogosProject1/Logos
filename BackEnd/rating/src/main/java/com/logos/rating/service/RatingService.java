@@ -82,7 +82,7 @@ public class RatingService {
     }
 
     public List<RatingResultDto> getKnowledgeRating(String knowledgeId) {
-        List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeIdOrderByModifiedAt(knowledgeId);
+        List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeOrderByModifiedAt(knowledgeId);
         List<RatingResultDto> ratingResultDtoList = new ArrayList<>();
 
         makeRatingResultList(ratingResultDtoList, byKnowledgeId);
@@ -98,7 +98,7 @@ public class RatingService {
                     // 모두 null
                 } else {
                     // knowledgeId에 해당하는 모든 리턴
-                    List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeIdOrderByModifiedAt(ratingFilterDto.getKnowledgeId());
+                    List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeOrderByModifiedAt(ratingFilterDto.getKnowledgeId());
                     makeRatingResultList(ratingResultDtoList, byKnowledgeId);
                 }
             } else {
