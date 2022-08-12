@@ -162,7 +162,7 @@
           <div v-html="legal" />
           <div class="controls">
             <div>
-              <input type="checkbox" id="agreeBtn" />
+              <input type="checkbox" id="agreeBtn" v-model="agreement" />
               <span class="legal-checkbox">
                 <label for="agreeBtn"
                   ><a href="#/">상품,가격 및 유효기간</a
@@ -208,7 +208,9 @@
       <b-col md="4" offset-md="4">
         <div class="button-row">
           <div class="btn-pay">
-            <button class="btn btn-danger" @click="requestPay">결제하기</button>
+            <button class="btn btn-danger" @click="processPayment">
+              결제하기
+            </button>
           </div>
         </div>
       </b-col>
@@ -216,15 +218,11 @@
   </b-container>
 </template>
 <script>
-import axios from "axios";
-
-axios.defaults.headers.post["Content-Type"] = "application/json";
-axios.defaults.headers.post["Authorization"] =
-  "Bearer " + sessionStorage.getItem("access-token");
-
+import { requestPayment, verifyPayment } from "@/api/payment";
 export default {
   data() {
     return {
+      agreement: false,
       amount: "1000",
       payment: "kakaopay",
       pg: "kakaopay",
@@ -239,16 +237,15 @@ export default {
       switch (payment) {
         case "kakaopay":
           return `결제를 위해서는 카카오톡 또는 카카오페이 모바일 앱이 필요합니다.<br><br>
-      카카오페이 고객센터 : 1644-7405<br><br><br>`;
+                  카카오페이 고객센터 : 1644-7405<br><br><br>`;
         case "toss":
           return `RP충전은 Toss 앱이 설치되어 있어야만 결제 가능합니다.<br><br>
-Toss서비스 이용을 위해서는 해당 서비스의 회원가입이 필요합니다.<br><br>
-Toss는 휴대폰에서 간편하게 송금할 수 있는 (주)비바리퍼블리카의 서비스 입니다.<br><br><br>`;
+                  Toss서비스 이용을 위해서는 해당 서비스의 회원가입이 필요합니다.<br><br>
+                  Toss는 휴대폰에서 간편하게 송금할 수 있는 (주)비바리퍼블리카의 서비스 입니다.<br><br><br>`;
         case "payco":
           return `휴대폰과 카드 명의자가 동일해야 결제 가능하며, 결제금액 제한은 각 카드사 정책을 따릅니다.<br><br>
-사용 가능한 결제 수단은 결제화면 하단에서 확인할 수 있습니다.<br><br>
-PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시기 바랍니다.<br><br><br>
-`;
+                  사용 가능한 결제 수단은 결제화면 하단에서 확인할 수 있습니다.<br><br>
+                  PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시기 바랍니다.<br><br><br>`;
         default:
           return "";
       }
@@ -282,19 +279,20 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
       this.showPayment = this.setPayment(event.target.value);
       this.legal = this.setLegal(event.target.value);
     },
-    requestPay: async function () {
+    processPayment() {
+      if (!this.agreement) {
+        alert("결제 전 약관에 동의해주세요.");
+        return;
+      }
       var IMP = window.IMP; // 생략 가능
       IMP.init("imp85880830"); // 예: imp00000000
       // IMP.request_pay(param, callback) 결제창 호출
-      // axios로 백엔드에 주문 테이블에 주문 레코드 만들고 ID 받아오기
-      // 보낼 정보 amount
-
-      await axios
-        .post("http://localhost:8084/payment", {
+      requestPayment(
+        {
           amount: this.amount,
           paymentType: this.showPayment,
-        })
-        .then((res) => {
+        },
+        (res) => {
           this.merchant_uid = res.data.merchant_uid;
           IMP.request_pay(
             {
@@ -311,7 +309,7 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
               buyer_addr: "",
               buyer_postcode: "",
             },
-            (rsp) => {
+            async (rsp) => {
               // callback
               if (rsp.success) {
                 // 결제 성공 시 로직,
@@ -327,37 +325,40 @@ PAYCO 관련 혜택은 PAYCO 결제화면 내 안내를 통해 확인해주시�
                 // 안내 후 다시 이전 페이지로 돌려보냄
                 console.log("결제 실패");
               }
-              axios
-                .post("http://localhost:8084/payment/verify", {
+              verifyPayment(
+                {
                   amount: rsp.paid_amount,
                   merchant_uid: this.merchant_uid,
                   result: rsp.success,
-                })
-                .then((data) => console.log("result: " + data))
-                .catch((error) => {
+                },
+                (data) => console.log("result: " + data),
+                (error) => {
                   console.log("포인트 충전 에러");
                   console.log(error);
-                });
+                }
+              );
             }
           );
-        })
-        .catch((error) => {
+        },
+        async (error) => {
           console.log("포인트 충전 에러");
           console.log(error);
-          axios
-            .post("http://localhost:8084/payment/verify", {
+          verifyPayment(
+            {
               amount: this.paid_amount,
               merchant_uid: this.merchant_uid,
               result: false,
-            })
-            .then((data) => console.log("result: " + data))
-            .catch((error) => {
+            },
+            (data) => console.log("result: " + data),
+            (error) => {
               console.log("포인트 충전 에러");
               console.log(error);
-            });
+            }
+          );
           alert("포인트 충전 에러");
           return;
-        });
+        }
+      );
     },
   },
 };

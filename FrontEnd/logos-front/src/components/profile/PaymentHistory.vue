@@ -13,7 +13,7 @@
           button
         >
           <b-row>
-            <b-col>증감량 : {{ payment.amount }} </b-col>
+            <b-col>결제 금액 : {{ payment.amount }} </b-col>
             <b-col
               >결제 시작 시간 : {{ payment.startTime | moment("LLLL") }}</b-col
             >
@@ -21,14 +21,17 @@
               >결제 완료 시간 :{{ payment.endTime | moment("LLLL") }}
             </b-col>
             <b-col>
-              <b-badge v-if="history.type === `INC`" variant="primary"
-                >포인트 증가</b-badge
+              <b-badge v-if="payment.result === `SUCCESS`" variant="primary"
+                >결제 성공</b-badge
               >
-              <b-badge v-if="history.type === `DESC`" variant="danger"
-                >포인트 감소</b-badge
-              ></b-col
-            >
-            <b-col> </b-col>
+              <b-badge v-if="payment.result === `FAILURE`" variant="danger"
+                >결제 실패</b-badge
+              >
+              <b-badge v-if="payment.result === `PENDING`" variant="success"
+                >처리중</b-badge
+              >
+            </b-col>
+            <b-col> 결제 수단 : {{ payment.paymentType }} </b-col>
           </b-row>
         </b-list-group-item>
       </b-list-group>
@@ -48,7 +51,7 @@
 </template>
 
 <script>
-import { getPointHistory } from "@/api/point";
+import { getPaymentHistory } from "@/api/payment";
 
 export default {
   name: "PointHistory",
@@ -62,7 +65,7 @@ export default {
   },
   computed: {},
   created() {
-    getPointHistory(
+    getPaymentHistory(
       this.currentPage,
       (response) => {
         this.payment_history = response.data.result.paymentHistory;
@@ -75,7 +78,7 @@ export default {
   },
   methods: {
     pageClicked(bvEvent, page) {
-      getPointHistory(
+      getPaymentHistory(
         page - 1,
         (response) => {
           this.payment_history = response.data.result.paymentHistory;

@@ -84,7 +84,7 @@ public class PaymentService {
     }
 
     public PaymentHistoryDto getPaymentHistory(String email, Pageable pageable) {
-        Page<Payment> byUserEmail = paymentRepository.findByUserEmail(email,pageable);
+        Page<Payment> byUserEmail = paymentRepository.findByUserEmailOrderByStartTimeDesc(email,pageable);
         List<PaymentDto> result = new ArrayList<>();
 
         for(Payment payment : byUserEmail.getContent()){

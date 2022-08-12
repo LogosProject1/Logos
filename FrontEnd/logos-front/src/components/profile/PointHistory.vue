@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getHistory } from "@/api/point";
+import { getPointHistory } from "@/api/point";
 
 export default {
   name: "PointHistory",
@@ -57,7 +57,7 @@ export default {
   },
   computed: {},
   created() {
-    getHistory(
+    getPointHistory(
       this.currentPage,
       (response) => {
         this.history_list = response.data.result.pointHistory;
@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     pageClicked(bvEvent, page) {
-      getHistory(
+      getPointHistory(
         page - 1,
         (response) => {
           this.history_list = response.data.result.pointHistory;

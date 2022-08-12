@@ -2,7 +2,7 @@ import { pointInstance } from "./index.js";
 
 const api = pointInstance();
 
-async function getHistory(page, success, fail) {
+async function getPointHistory(page, success, fail) {
   api.defaults.headers["Authorization"] =
     "Bearer " + sessionStorage.getItem("access-token");
   await api
@@ -11,4 +11,4 @@ async function getHistory(page, success, fail) {
     .catch(fail);
 }
 
-export { getHistory };
+export { getPointHistory };
