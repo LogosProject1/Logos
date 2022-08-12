@@ -1,4 +1,4 @@
-package com.logos.rating.domain;
+package com.logos.knowledge.domain;
 
 import lombok.*;
 

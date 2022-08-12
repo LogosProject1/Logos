@@ -208,4 +208,7 @@ public class KnowledgeService{
                 .totalPage(byWriter.getTotalPages())
                 .build();
     }
+
+    public boolean deleteByUser(String email) {
+    }
 }
