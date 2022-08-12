@@ -98,6 +98,12 @@ export default {
       currentItem: 0,
     };
   },
+  created() {
+    if (sessionStorage.getItem("access-token") === null) {
+      alert("로그인을 해주세요.");
+      this.$router.push({ name: "signIn" });
+    }
+  },
   methods: {
     selectItem(id) {
       this.currentItem = id;

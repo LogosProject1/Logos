@@ -15,20 +15,60 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="#"
-            ><router-link :to="{ name: 'home' }" class="link span1">
-              <span class="span1">카테고리</span>
-            </router-link></b-nav-item
-          >
-          <b-nav-item href="#"
-            ><router-link :to="{ name: 'knowledge' }" class="link span1">
-              지식</router-link
-            ></b-nav-item
-          >
+          <b-nav-item href="#">
+            <router-link :to="{ name: 'home' }" class="link span1">
+              <b-dropdown
+                variant="link"
+                toggle-class="text-decoration-none"
+                no-caret
+              >
+                <template #button-content>
+                  <span class="span1">카테고리 </span
+                  ><span class="sr-only">Search</span>
+                </template>
+                <b-dropdown-item href="#">IT</b-dropdown-item>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item href="#">음악</b-dropdown-item>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item href="#">금융</b-dropdown-item>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item href="#">요리</b-dropdown-item>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item href="#">드로잉</b-dropdown-item>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item href="#">외국어</b-dropdown-item>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item href="#">사진/영상</b-dropdown-item>
+              </b-dropdown>
+            </router-link>
+          </b-nav-item>
+          <b-nav-item href="#">
+            <router-link :to="{ name: 'knowledge' }" class="link span1">
+              <b-dropdown
+                variant="link"
+                toggle-class="text-decoration-none"
+                no-caret
+                disabled
+              >
+                <template #button-content>
+                  <span class="span1">지식 </span>
+                </template>
+              </b-dropdown>
+            </router-link>
+          </b-nav-item>
           <b-nav-item href="#"
             ><router-link :to="{ name: 'introduce' }" class="link span1">
-              서비스 소개</router-link
-            ></b-nav-item
+              <b-dropdown
+                variant="link"
+                toggle-class="text-decoration-none"
+                no-caret
+                disabled
+              >
+                <template #button-content>
+                  <span class="span1">서비스 소개 </span>
+                </template>
+              </b-dropdown>
+            </router-link></b-nav-item
           >
         </b-navbar-nav>
 
