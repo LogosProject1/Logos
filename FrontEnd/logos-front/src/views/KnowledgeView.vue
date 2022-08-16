@@ -1,5 +1,4 @@
 <template>
-  <<<<<<< HEAD
   <div>
     <div class="jb-box" :style="customStyle" style>
       <b-container class="bv-example-row mt-3 text-center">

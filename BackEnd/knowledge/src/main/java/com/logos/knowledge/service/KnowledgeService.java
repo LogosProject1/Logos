@@ -54,7 +54,8 @@ public class KnowledgeService{
         }
     }
     public List<KnowledgeBriefDto> filter(KnowledgeFilterDto knowledgeFilterDto) {
-        String category = "-1";
+        String category = "%";
+        String title = "%";
         LocalDateTime startTime = LocalDateTime.parse("0000-01-01T00:00:00");
         LocalDateTime endTime = LocalDateTime.parse("9999-12-31T23:59:59");
         Long minPrice = 0L;
@@ -76,8 +77,11 @@ public class KnowledgeService{
         if(knowledgeFilterDto.getMaxPrice() != null){
             maxPrice = Long.parseLong(knowledgeFilterDto.getMaxPrice());
         }
+        if(knowledgeFilterDto.getTitle() != null){
+            title = "%"+knowledgeFilterDto.getTitle()+"%";
+        }
 
-        List<Knowledge> byFilter = knowledgeRepository.findByFilter(category, startTime, endTime, minPrice, maxPrice);
+        List<Knowledge> byFilter = knowledgeRepository.findByFilter(category, startTime, endTime, minPrice, maxPrice,title);
 
         List<KnowledgeBriefDto> knowledgeList = new ArrayList<>();
 

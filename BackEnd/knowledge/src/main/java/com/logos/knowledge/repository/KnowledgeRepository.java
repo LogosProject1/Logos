@@ -19,13 +19,14 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge,String> {
     Long deleteByWriter(User user);
 
     @Query("select k from Knowledge k "+
-           "where k.category.id = :category and k.startTime >= :startTime and k.endTime <= :endTime "+
-           "and k.price between :minPrice and :maxPrice")
+           "where k.category.id like :category and k.startTime >= :startTime and k.endTime <= :endTime "+
+           "and k.price between :minPrice and :maxPrice and k.title like :title")
     List<Knowledge> findByFilter(@Param("category") String category,
                                  @Param("startTime") LocalDateTime startTime,
                                  @Param("endTime") LocalDateTime endTime,
                                  @Param("minPrice") Long minPrice,
-                                 @Param("maxPrice") Long maxPrice);
+                                 @Param("maxPrice") Long maxPrice,
+                                 @Param("title") String title);
 
     Page<Knowledge> findByWriter(User byEmail, Pageable pageable);
 }

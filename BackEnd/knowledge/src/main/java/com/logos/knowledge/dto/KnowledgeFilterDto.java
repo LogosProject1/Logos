@@ -6,6 +6,8 @@ import lombok.Data;
 public class KnowledgeFilterDto {
     private String category;
 
+    private String title;
+
     private String startTime;
 
     private String endTime;
