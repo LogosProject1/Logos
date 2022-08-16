@@ -64,6 +64,19 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/knowledge",
+    name: "knowledge",
+    redirect: "/knowledge/mainPage",
+    component: () => import("@/views/KnowledgeView.vue"),
+    children: [
+      {
+        path: "mainPage",
+        name: "mainPage",
+        component: () => import("@/components/knowledge/KnowledgeMain.vue"),
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
