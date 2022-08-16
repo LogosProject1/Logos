@@ -1,4 +1,5 @@
 <template>
+  <<<<<<< HEAD
   <div>
     <div class="jb-box" :style="customStyle" style>
       <b-container class="bv-example-row mt-3 text-center">
@@ -130,7 +131,7 @@ export default {
 </script>
 
 <style>
-.jb-box {
+<<<<<<< HEAD .jb-box {
   width: 100%;
   height: 70vh;
   overflow: hidden;
