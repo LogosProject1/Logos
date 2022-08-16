@@ -130,7 +130,7 @@ export default {
 </script>
 
 <style>
-<<<<<<< HEAD .jb-box {
+.jb-box {
   width: 100%;
   height: 70vh;
   overflow: hidden;
