@@ -25,23 +25,44 @@
                 <span class="span1">카테고리 </span
                 ><span class="sr-only">Search</span>
               </template>
-              <b-dropdown-item to="/category">IT</b-dropdown-item>
+              <b-dropdown-item
+                :to="{ name: 'result', query: { category: 'IT' } }"
+                >IT</b-dropdown-item
+              >
               <b-dropdown-divider></b-dropdown-divider>
-              <b-dropdown-item to="/category">음악</b-dropdown-item>
+              <b-dropdown-item
+                :to="{ name: 'result', query: { category: '음악' } }"
+                >음악</b-dropdown-item
+              >
               <b-dropdown-divider></b-dropdown-divider>
-              <b-dropdown-item to="/category">금융</b-dropdown-item>
+              <b-dropdown-item
+                :to="{ name: 'result', query: { category: '금융' } }"
+                >금융</b-dropdown-item
+              >
               <b-dropdown-divider></b-dropdown-divider>
-              <b-dropdown-item to="/category">요리</b-dropdown-item>
+              <b-dropdown-item
+                :to="{ name: 'result', query: { category: '요리' } }"
+                >요리</b-dropdown-item
+              >
               <b-dropdown-divider></b-dropdown-divider>
-              <b-dropdown-item to="/category">드로잉</b-dropdown-item>
+              <b-dropdown-item
+                :to="{ name: 'result', query: { category: '드로잉' } }"
+                >드로잉</b-dropdown-item
+              >
               <b-dropdown-divider></b-dropdown-divider>
-              <b-dropdown-item to="/category">외국어</b-dropdown-item>
+              <b-dropdown-item
+                :to="{ name: 'result', query: { category: '외국어' } }"
+                >외국어</b-dropdown-item
+              >
               <b-dropdown-divider></b-dropdown-divider>
-              <b-dropdown-item to="/category">사진/영상</b-dropdown-item>
+              <b-dropdown-item
+                :to="{ name: 'result', query: { category: '사진/영상' } }"
+                >사진/영상</b-dropdown-item
+              >
             </b-dropdown>
           </b-nav-item>
           <b-nav-item href="#">
-            <router-link :to="{ name: 'knowledge' }" class="link span1">
+            <router-link :to="{ name: 'search' }" class="link span1">
               <b-dropdown
                 variant="link"
                 toggle-class="text-decoration-none"

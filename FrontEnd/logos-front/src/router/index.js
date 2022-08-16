@@ -69,6 +69,19 @@ const routes = [
     name: "knowledge",
     component: () => import("@/views/KnowledgeView.vue"),
   },
+  {
+    path: "/search",
+    name: "search",
+    redirect: "/search/result",
+    component: () => import("@/views/SearchView.vue"),
+    children: [
+      {
+        path: "result",
+        name: "result",
+        component: () => import("@/components/knowledge/SearchComponent.vue"),
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
