@@ -1,5 +1,6 @@
 import jwt_decode from "jwt-decode";
 import { login, findById, deleteMember, modify } from "@/api/auth.js";
+import { filterKnowledge } from "@/api/knowledge";
 
 const memberStore = {
   namespaced: true,
@@ -7,10 +8,14 @@ const memberStore = {
     isLogin: false,
     isLoginError: false,
     userInfo: null,
+    knowledgeList: [],
   },
   getters: {
     checkUserInfo: function (state) {
       return state.userInfo;
+    },
+    getKnowledgeList: function (state) {
+      return state.getKnowledgeList;
     },
   },
   mutations: {
@@ -23,6 +28,9 @@ const memberStore = {
     SET_USER_INFO: (state, userInfo) => {
       state.isLogin = true;
       state.userInfo = userInfo;
+    },
+    SET_KNOWLEDGE_LIST: (state, knowledgeList) => {
+      state.knowledgeList = knowledgeList;
     },
   },
   actions: {
@@ -96,7 +104,21 @@ const memberStore = {
         }
       );
     },
-
+    async getKnowledgeList({ commit }, category) {
+      await filterKnowledge(
+        category,
+        (response) => {
+          if (response.data.message === "success") {
+            commit("SET_KNOWLEDGE_LIST", response.data.knowledge_list);
+          } else {
+            console.log("유저 정보 없음!!");
+          }
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
     // async userModify()
   },
 };
