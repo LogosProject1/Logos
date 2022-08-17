@@ -37,34 +37,37 @@ export default {
         {
           id: 1,
           text: "IT",
+          href: { name: "result", query: { category: "IT" } },
         },
         {
           id: 2,
           text: "음악",
+          href: { name: "result", query: { category: "음악" } },
         },
         {
           id: 3,
           text: "금융",
+          href: { name: "result", query: { category: "금융" } },
         },
         {
           id: 4,
           text: "요리",
-          href: "/profile/paymentHistory",
+          href: { name: "result", query: { category: "요리" } },
         },
         {
           id: 5,
           text: "드로잉",
-          href: "/profile/payment",
+          href: { name: "result", query: { category: "드로잉" } },
         },
         {
           id: 6,
           text: "외국어",
-          href: "/profile/memberSeccess",
+          href: { name: "result", query: { category: "외국어" } },
         },
         {
           id: 7,
           text: "사진/영상",
-          href: "/profile/memberSeccess",
+          href: { name: "result", query: { category: "사진/영상" } },
         },
       ],
       currentItem: 0,
