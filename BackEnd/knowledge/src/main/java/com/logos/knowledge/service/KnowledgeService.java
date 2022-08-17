@@ -91,6 +91,7 @@ public class KnowledgeService{
                     .price(String.valueOf(knowledge.getPrice()))
                     .startTime(knowledge.getStartTime().toString())
                     .endTime(knowledge.getEndTime().toString())
+                    .updated_at(knowledge.getUpdated_at().toString())
                     .build());
         }
 

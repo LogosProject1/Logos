@@ -17,4 +17,6 @@ public class KnowledgeBriefDto {
     private String startTime;
 
     private String endTime;
+
+    private String updated_at;
 }
