@@ -1,6 +1,9 @@
 <template>
   <b-container class="bv-example-row mt-3 text-center main-container">
-    <h1>카테고리: {{ this.$route.query.category }}</h1>
+    <h1 v-if="this.$route.query.category">
+      카테고리: {{ this.$route.query.category }}
+    </h1>
+    <h1 v-else>카테고리: 전체</h1>
     검색결과
     <b-row>
       <b-card-group columns>
@@ -41,19 +44,22 @@ export default {
     return {
       knowledgeList: [],
       category: this.$route.query.category,
+      title: this.$route.query.title,
     };
   },
   updated() {
     this.$nextTick(function () {
       this.category = this.$route.query.category;
+      this.title = this.$route.query.title;
       console.log("updated 호출 " + this.category);
+      console.log("updated 호출 " + this.title);
     });
   },
   watch: {
     category: function () {
       console.log("watch 호출");
       filterKnowledge(
-        { params: { category: this.category } },
+        { params: { category: this.category, title: this.title } },
         (response) => {
           console.log("카테고리 가져오기 완료");
           this.knowledgeList = response.data.knowledge_list;
@@ -66,7 +72,7 @@ export default {
   },
   mounted() {
     filterKnowledge(
-      { params: { category: this.category } },
+      { params: { category: this.category, title: this.title } },
       (response) => {
         console.log("카테고리 가져오기 완료");
         this.knowledgeList = response.data.knowledge_list;

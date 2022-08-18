@@ -37,37 +37,79 @@ export default {
         {
           id: 1,
           text: "IT",
-          href: { name: "result", query: { category: "IT" } },
+          href: {
+            name: "result",
+            query: {
+              category: "IT",
+              title: this.$route.query.title || undefined,
+            },
+          },
         },
         {
           id: 2,
           text: "음악",
-          href: { name: "result", query: { category: "음악" } },
+          href: {
+            name: "result",
+            query: {
+              category: "음악",
+              title: this.$route.query.title || undefined,
+            },
+          },
         },
         {
           id: 3,
           text: "금융",
-          href: { name: "result", query: { category: "금융" } },
+          href: {
+            name: "result",
+            query: {
+              category: "금융",
+              title: this.$route.query.title || undefined,
+            },
+          },
         },
         {
           id: 4,
           text: "요리",
-          href: { name: "result", query: { category: "요리" } },
+          href: {
+            name: "result",
+            query: {
+              category: "요리",
+              title: this.$route.query.title || undefined,
+            },
+          },
         },
         {
           id: 5,
           text: "드로잉",
-          href: { name: "result", query: { category: "드로잉" } },
+          href: {
+            name: "result",
+            query: {
+              category: "드로잉",
+              title: this.$route.query.title || undefined,
+            },
+          },
         },
         {
           id: 6,
           text: "외국어",
-          href: { name: "result", query: { category: "외국어" } },
+          href: {
+            name: "result",
+            query: {
+              category: "외국어",
+              title: this.$route.query.title || undefined,
+            },
+          },
         },
         {
           id: 7,
           text: "사진/영상",
-          href: { name: "result", query: { category: "사진/영상" } },
+          href: {
+            name: "result",
+            query: {
+              category: "사진/영상",
+              title: this.$route.query.title || undefined,
+            },
+          },
         },
       ],
       currentItem: 0,
@@ -76,6 +118,7 @@ export default {
   methods: {
     selectItem(id) {
       this.currentItem = id;
+      console.log(this.$route.query.title + " select item");
     },
   },
 };

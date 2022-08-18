@@ -27,6 +27,7 @@
               </template>
               <b-dropdown-item
                 :to="{ name: 'result', query: { category: 'IT' } }"
+                @click="onClickCategory"
                 >IT</b-dropdown-item
               >
               <b-dropdown-divider></b-dropdown-divider>
@@ -93,7 +94,7 @@
 
         <form
           class="col-md-5 justify-content-center"
-          action="/search"
+          action="/search/result"
           method="get"
           style="
             float: none;
@@ -105,10 +106,10 @@
         >
           <div class="input-group">
             <input
-              name="keyword"
+              name="title"
               type="search"
               class="form-control"
-              placeholder="원하는 컨텐츠를 검색해보세요."
+              placeholder="원하는 지식을 검색해보세요."
               aria-label="Search"
             />
             <b-button
@@ -189,6 +190,9 @@ export default {
       this.SET_USER_INFO(null);
       sessionStorage.removeItem("access-token");
       if (this.$route.path != "/") this.$router.push({ name: "home" });
+    },
+    onClickCategory() {
+      this.$router.replace("result");
     },
   },
 };
