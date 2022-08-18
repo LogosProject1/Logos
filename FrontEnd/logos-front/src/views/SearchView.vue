@@ -11,7 +11,7 @@
               v-for="item in items"
               :key="item.id"
               :to="item.href"
-              v-on:click="selectItem(item.id)"
+              @click="selectItem(item.id)"
               v-bind:class="{
                 'item-selection': true,
                 'active-item': item.id === currentItem,
