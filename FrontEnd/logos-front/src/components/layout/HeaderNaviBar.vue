@@ -192,7 +192,7 @@ export default {
       if (this.$route.path != "/") this.$router.push({ name: "home" });
     },
     onClickCategory() {
-      this.$router.replace("result");
+      this.$router.replace = { query: { category: "IT" } };
     },
   },
 };

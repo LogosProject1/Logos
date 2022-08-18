@@ -82,6 +82,10 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/introduce",
+    name: "introduce",
+  },
 ];
 
 const router = new VueRouter({

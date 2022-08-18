@@ -10,8 +10,7 @@
             <b-nav-item
               v-for="item in items"
               :key="item.id"
-              :to="item.href"
-              @click="selectItem(item.id)"
+              v-on:click="selectItem(item.id)"
               v-bind:class="{
                 'item-selection': true,
                 'active-item': item.id === currentItem,
@@ -41,7 +40,7 @@ export default {
             name: "result",
             query: {
               category: "IT",
-              title: this.$route.query.title || undefined,
+              title: undefined,
             },
           },
         },
@@ -52,7 +51,7 @@ export default {
             name: "result",
             query: {
               category: "음악",
-              title: this.$route.query.title || undefined,
+              title: undefined,
             },
           },
         },
@@ -63,7 +62,7 @@ export default {
             name: "result",
             query: {
               category: "금융",
-              title: this.$route.query.title || undefined,
+              title: undefined,
             },
           },
         },
@@ -74,7 +73,7 @@ export default {
             name: "result",
             query: {
               category: "요리",
-              title: this.$route.query.title || undefined,
+              title: undefined,
             },
           },
         },
@@ -85,7 +84,7 @@ export default {
             name: "result",
             query: {
               category: "드로잉",
-              title: this.$route.query.title || undefined,
+              title: undefined,
             },
           },
         },
@@ -96,7 +95,7 @@ export default {
             name: "result",
             query: {
               category: "외국어",
-              title: this.$route.query.title || undefined,
+              title: undefined,
             },
           },
         },
@@ -107,7 +106,7 @@ export default {
             name: "result",
             query: {
               category: "사진/영상",
-              title: this.$route.query.title || undefined,
+              title: undefined,
             },
           },
         },
@@ -118,7 +117,8 @@ export default {
   methods: {
     selectItem(id) {
       this.currentItem = id;
-      console.log(this.$route.query.title + " select item");
+      this.items[id - 1].href.query.title = this.$route.query.title;
+      this.$router.push({ query: this.items[id - 1].href.query });
     },
   },
 };
