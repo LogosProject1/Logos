@@ -38,11 +38,12 @@
           <br />
           <label for="date">날짜</label>
           <div id="date">
-            <date-range-picker
-              v-model="dateRange"
-              singleDatePicker="range"
-              opens="right"
-            >
+            <date-range-picker v-model="dateRange" opens="right">
+              <template v-slot:input="picker">
+                <div style="height: 400px">
+                  {{ picker.startDate | date }} - {{ picker.endDate | date }}
+                </div>
+              </template>
             </date-range-picker>
           </div>
         </div>

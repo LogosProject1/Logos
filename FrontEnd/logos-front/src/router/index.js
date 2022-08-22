@@ -86,6 +86,11 @@ const routes = [
     path: "/introduce",
     name: "introduce",
   },
+  {
+    path: "/detail",
+    name: "/detail",
+    component: () => import("@/views/KnowledgeView.vue"),
+  },
 ];
 
 const router = new VueRouter({
