@@ -200,15 +200,6 @@ export default {
       sessionStorage.removeItem("access-token");
       if (this.$route.path != "/") this.$router.push({ name: "home" });
     },
-<<<<<<< HEAD
-    // onClickCategory() {
-    //   this.$router.replace("result");
-    // },
-=======
-    onClickCategory() {
-      this.$router.replace = { query: { category: "IT" } };
-    },
->>>>>>> dc44007e4b96767c71c0d669f88af0c1f49be77f
   },
 };
 </script>
