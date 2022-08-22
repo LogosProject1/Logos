@@ -21,7 +21,9 @@
             <p>종료 시간 : {{ knowledge.endTime | moment("LLLL") }}</p>
             <b-row class="mt-3">
               <div class="col text-center">
-                <b-button variant="primary" float>상세보기</b-button>
+                <b-button variant="primary" float href="/knowledge"
+                  >상세보기</b-button
+                >
               </div>
             </b-row>
           </b-card-text>
