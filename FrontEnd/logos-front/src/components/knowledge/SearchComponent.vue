@@ -45,36 +45,49 @@ export default {
   data() {
     return {
       knowledgeList: [],
-      category: this.$route.query.category,
-      title: this.$route.query.title,
+      params: {
+        category: this.$route.query.category,
+        title: this.$route.query.title,
+        minPrice: this.$route.query.minPrice,
+        maxPrice: this.$route.query.maxPrice,
+        startTime: this.$route.query.startTime,
+        endTime: this.$route.query.endTime,
+      },
     };
   },
   updated() {
     this.$nextTick(function () {
-      this.category = this.$route.query.category;
-      this.title = this.$route.query.title;
-      console.log("updated 호출 " + this.category);
-      console.log("updated 호출 " + this.title);
+      this.params.category = this.$route.query.category;
+      this.params.title = this.$route.query.title;
+      this.params.minPrice = this.$route.query.minPrice;
+      this.params.maxPrice = this.$route.query.maxPrice;
+      this.params.startTime = this.$route.query.startTime;
+      this.params.endTime = this.$route.query.endTime;
+      console.log("updated 호출 ");
+      console.log(this.params);
     });
   },
   watch: {
-    category: function () {
-      console.log("watch 호출");
-      filterKnowledge(
-        { params: { category: this.category, title: this.title } },
-        (response) => {
-          console.log("카테고리 가져오기 완료");
-          this.knowledgeList = response.data.knowledge_list;
-        },
-        () => {
-          console.log("카테고리 가져오기 실패");
-        }
-      );
+    params: {
+      handler: function () {
+        console.log("watch 호출");
+        filterKnowledge(
+          { params: this.params },
+          (response) => {
+            console.log("카테고리 가져오기 완료");
+            this.knowledgeList = response.data.knowledge_list;
+          },
+          () => {
+            console.log("카테고리 가져오기 실패");
+          }
+        );
+      },
+      deep: true,
     },
   },
   mounted() {
     filterKnowledge(
-      { params: { category: this.category, title: this.title } },
+      { params: this.params },
       (response) => {
         console.log("카테고리 가져오기 완료");
         this.knowledgeList = response.data.knowledge_list;

@@ -191,9 +191,6 @@ export default {
       sessionStorage.removeItem("access-token");
       if (this.$route.path != "/") this.$router.push({ name: "home" });
     },
-    // onClickCategory() {
-    //   this.$router.replace("result");
-    // },
   },
 };
 </script>

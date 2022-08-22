@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-useless-template-attributes -->
 <template>
   <div class="container-fluid">
     <div class="row">
@@ -38,19 +39,36 @@
           <br />
           <label for="date">날짜</label>
           <div id="date">
-            <date-range-picker v-model="dateRange" opens="right">
+            <date-range-picker
+              v-model="dateRange"
+              :timePicker="true"
+              :timePicker24Hour="true"
+              opens="right"
+            >
               <template v-slot:input="picker">
-                <div style="height: 400px">
-                  {{ picker.startDate | date }} - {{ picker.endDate | date }}
-                </div>
+                {{ picker.startDate | moment("YYYY-MM-DD HH:mm") }} - <br />{{
+                  picker.endDate | moment("YYYY-MM-DD HH:mm")
+                }}
               </template>
             </date-range-picker>
+          </div>
+
+          <div class="mt-5">
+            <b-button variant="outline-dark" @click="resetFilter"
+              >필터 초기화</b-button
+            >
+            <b-button
+              class="ml-2"
+              style="background-color: #764ba2"
+              @click="applyFilter"
+              >적용</b-button
+            >
           </div>
         </div>
       </nav>
 
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <router-view></router-view>
+        <router-view :key="this.$route.fullPath"></router-view>
       </main>
     </div>
   </div>
@@ -58,6 +76,7 @@
 
 <script>
 import DateRangePicker from "vue2-daterange-picker";
+import moment from "moment";
 import Slider from "@vueform/slider/dist/slider.vue2.js";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import "@vueform/slider/themes/default.css";
@@ -147,16 +166,55 @@ export default {
       ],
       currentItem: 0,
       dateRange: {
-        startDate: "2019-12-26",
-        endDate: "2019-12-28",
+        startDate: undefined,
+        endDate: undefined,
       },
-      priceValue: [30000, 70000],
+      priceValue: [0, 100000],
       format: function (value) {
         return `${Math.round(value)}LP`;
       },
     };
   },
   methods: {
+    resetFilter(e) {
+      e.preventDefault();
+      this.dateRange = {
+        startDate: undefined,
+        endDate: undefined,
+      };
+      this.priceValue = [0, 100000];
+      this.$router.replace({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          startTime: undefined,
+          endTime: undefined,
+          minPrice: undefined,
+          maxPrice: undefined,
+        },
+      });
+    },
+    applyFilter(e) {
+      e.preventDefault();
+      let startTime = undefined;
+      let endTime = undefined;
+      if (this.dateRange.startDate != null) {
+        startTime = moment(this.dateRange.startDate).format("YYYY-MM-DDTHH:mm");
+      }
+      if (this.dateRange.endDate != null) {
+        endTime = moment(this.dateRange.endDate).format("YYYY-MM-DDTHH:mm");
+      }
+      this.$router.replace({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          startTime: startTime,
+          endTime: endTime,
+          minPrice: this.priceValue[0],
+          maxPrice: this.priceValue[1],
+        },
+      });
+    },
     selectItem(id) {
       this.currentItem = id;
       this.items[id - 1].href.query.title = this.$route.query.title;
@@ -167,6 +225,9 @@ export default {
 </script>
 
 <style>
+.form-control {
+  height: 100%;
+}
 .feather {
   width: 16px;
   height: 16px;
@@ -190,12 +251,13 @@ export default {
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
   text-align: left;
   font-size: 1.25rem;
-  height: calc(100vh - 100px);
+  height: 100%;
 }
 
 @media (max-width: 767.98px) {
   .sidebar {
     top: 5rem;
+    height: 100%;
   }
 }
 
