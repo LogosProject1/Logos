@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vueform/slider": "^2.1.2",
     "axios": "^0.27.2",
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.22.0",
@@ -17,6 +18,7 @@
     "vue-jwt-decode": "^0.1.0",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.5.1",
+    "vue2-daterange-picker": "^0.6.8",
     "vuex": "^3.6.2",
     "vuex-persistedstate": "^4.1.0"
   },

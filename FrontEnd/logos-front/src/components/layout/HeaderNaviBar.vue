@@ -26,38 +26,47 @@
                 ><span class="sr-only">Search</span>
               </template>
               <b-dropdown-item
-                :to="{ name: 'result', query: { category: 'IT' } }"
+                :to="{ name: 'result', query: { category: 'IT', title: '' } }"
                 @click="onClickCategory"
                 >IT</b-dropdown-item
               >
               <b-dropdown-divider></b-dropdown-divider>
               <b-dropdown-item
-                :to="{ name: 'result', query: { category: '음악' } }"
+                :to="{ name: 'result', query: { category: '음악', title: '' } }"
                 >음악</b-dropdown-item
               >
               <b-dropdown-divider></b-dropdown-divider>
               <b-dropdown-item
-                :to="{ name: 'result', query: { category: '금융' } }"
+                :to="{ name: 'result', query: { category: '금융', title: '' } }"
                 >금융</b-dropdown-item
               >
               <b-dropdown-divider></b-dropdown-divider>
               <b-dropdown-item
-                :to="{ name: 'result', query: { category: '요리' } }"
+                :to="{ name: 'result', query: { category: '요리', title: '' } }"
                 >요리</b-dropdown-item
               >
               <b-dropdown-divider></b-dropdown-divider>
               <b-dropdown-item
-                :to="{ name: 'result', query: { category: '드로잉' } }"
+                :to="{
+                  name: 'result',
+                  query: { category: '드로잉', title: '' },
+                }"
                 >드로잉</b-dropdown-item
               >
               <b-dropdown-divider></b-dropdown-divider>
               <b-dropdown-item
-                :to="{ name: 'result', query: { category: '외국어' } }"
+                :to="{
+                  name: 'result',
+                  query: { category: '외국어', title: '' },
+                }"
                 >외국어</b-dropdown-item
               >
               <b-dropdown-divider></b-dropdown-divider>
               <b-dropdown-item
-                :to="{ name: 'result', query: { category: '사진/영상' } }"
+                :to="{
+                  name: 'result',
+                  query: { category: '사진/영상', title: '' },
+                }"
                 >사진/영상</b-dropdown-item
               >
             </b-dropdown>
@@ -191,9 +200,9 @@ export default {
       sessionStorage.removeItem("access-token");
       if (this.$route.path != "/") this.$router.push({ name: "home" });
     },
-    onClickCategory() {
-      this.$router.replace("result");
-    },
+    // onClickCategory() {
+    //   this.$router.replace("result");
+    // },
   },
 };
 </script>

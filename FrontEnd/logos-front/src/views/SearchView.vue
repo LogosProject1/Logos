@@ -20,6 +20,33 @@
             >
           </ul>
         </div>
+        <div class="filtering">
+          <div class="pb-4">
+            <b-icon icon="sliders"></b-icon>
+            <b> 추가 필터</b>
+          </div>
+
+          <label for="price">금액</label>
+          <div class="pt-4 pb-3">
+            <Slider
+              v-model="priceValue"
+              :format="format"
+              :max="100000"
+              class="slider-blue"
+            />
+          </div>
+
+          <br />
+          <label for="date">날짜</label>
+          <div id="date">
+            <date-range-picker
+              v-model="dateRange"
+              singleDatePicker="range"
+              opens="right"
+            >
+            </date-range-picker>
+          </div>
+        </div>
       </nav>
 
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -30,7 +57,13 @@
 </template>
 
 <script>
+import DateRangePicker from "vue2-daterange-picker";
+import Slider from "@vueform/slider/dist/slider.vue2.js";
+import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
+import "@vueform/slider/themes/default.css";
+
 export default {
+  components: { DateRangePicker, Slider },
   data() {
     return {
       items: [
@@ -113,6 +146,14 @@ export default {
         },
       ],
       currentItem: 0,
+      dateRange: {
+        startDate: "2019-12-26",
+        endDate: "2019-12-28",
+      },
+      priceValue: [30000, 70000],
+      format: function (value) {
+        return `${Math.round(value)}LP`;
+      },
     };
   },
   methods: {
@@ -148,6 +189,7 @@ export default {
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
   text-align: left;
   font-size: 1.25rem;
+  height: calc(100vh - 100px);
 }
 
 @media (max-width: 767.98px) {
@@ -157,9 +199,10 @@ export default {
 }
 
 .sidebar-sticky {
-  height: calc(100vh - 48px);
+  /* height: calc(100vh - 48px); */
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  padding-bottom: 200px;
 }
 
 .sidebar .nav-link {
@@ -278,5 +321,14 @@ export default {
 
 .active-item {
   background-color: #bea8c4;
+}
+/* .filtering {
+  padding: 20px;
+  background-color: white;
+} */
+.slider-blue {
+  --slider-connect-bg: #902fba;
+  --slider-tooltip-bg: #902fba;
+  --slider-handle-ring-color: #3b82f630;
 }
 </style>
