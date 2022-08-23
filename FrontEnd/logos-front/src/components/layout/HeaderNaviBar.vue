@@ -99,6 +99,20 @@
               </b-dropdown>
             </router-link></b-nav-item
           >
+          <b-nav-item href="#" v-if="userInfo"
+            ><router-link :to="{ name: 'createKnowledge' }" class="link span1">
+              <b-dropdown
+                variant="link"
+                toggle-class="text-decoration-none"
+                no-caret
+                disabled
+              >
+                <template #button-content>
+                  <span class="span1">지식 생성 </span>
+                </template>
+              </b-dropdown>
+            </router-link></b-nav-item
+          >
         </b-navbar-nav>
 
         <form
