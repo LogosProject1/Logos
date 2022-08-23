@@ -87,6 +87,11 @@ const routes = [
     name: "introduce",
   },
   {
+    path: "/createKnowledge",
+    name: "createKnowledge",
+    component: () => import("@/views/KnowledgeCreateView.vue"),
+  },
+  {
     path: "/detail",
     name: "/detail",
     component: () => import("@/views/KnowledgeView.vue"),
