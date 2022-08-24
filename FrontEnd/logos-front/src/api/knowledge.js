@@ -38,10 +38,20 @@ async function createKnowledge(params, success, fail) {
   await api.post(`/knowledge`, params).then(success).catch(fail);
 }
 
+async function readKnowledge(id, success, fail) {
+  api.defaults.headers["Authorization"] =
+    "Bearer " + sessionStorage.getItem("access-token");
+  await api
+    .get(`/knowledge/` + id)
+    .then(success)
+    .catch(fail);
+}
+
 export {
   getSubscribed,
   getPublished,
   deleteKnowledge,
   filterKnowledge,
   createKnowledge,
+  readKnowledge,
 };

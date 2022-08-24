@@ -1,88 +1,52 @@
 <template>
-  <b-card-group columns>
-    <b-card
-      title="Card title that wraps to a new line"
-      img-src="https://placekitten.com/g/400/450"
-      img-alt="Image"
-      img-top
-    >
-      <b-card-text>
-        This is a wider card with supporting text below as a natural lead-in to
-        additional content. This content is a little bit longer.
-      </b-card-text>
-    </b-card>
-
-    <b-card header="Quote">
-      <blockquote class="blockquote mb-0">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-          posuere erat a ante.
-        </p>
-        <footer class="blockquote-footer">
-          Someone famous in <cite title="Source Title">Source Title</cite>
-        </footer>
-      </blockquote>
-    </b-card>
-
-    <b-card
-      title="Title"
-      img-src="https://placekitten.com/500/350"
-      img-alt="Image"
-      img-top
-    >
-      <b-card-text>
-        This card has supporting text below as a natural lead-in to additional
-        content.
-      </b-card-text>
-      <b-card-text class="small text-muted"
-        >Last updated 3 mins ago</b-card-text
-      >
-    </b-card>
-
-    <b-card bg-variant="primary" text-variant="white">
-      <blockquote class="card-blockquote">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-          posuere erat a ante.
-        </p>
-        <footer>
-          <small
-            >Someone famous in
-            <cite title="Source Title">Source Title</cite></small
-          >
-        </footer>
-      </blockquote>
-    </b-card>
-
-    <b-card>
-      <b-card-title>Title</b-card-title>
-      <b-card-text>
-        This card has supporting text below as a natural lead-in to additional
-        content.
-      </b-card-text>
-      <b-card-text class="small text-muted"
-        >Last updated 3 mins ago</b-card-text
-      >
-    </b-card>
-
-    <b-card
-      img-src="https://picsum.photos/400/400/?image=41"
-      img-alt="Image"
-      overlay
-    ></b-card>
-
+  <div>
     <b-card
       img-src="https://picsum.photos/400/200/?image=41"
       img-alt="Image"
       img-top
+      class="jb-writer"
     >
       <b-card-text>
-        This is a wider card with supporting text below as a natural lead-in to
-        additional content. This card has even longer content than the first.
+        <b-row class="justify-content-center">
+          <small class="text-muted mb-3">지식 제공자 : {{ writer }} </small>
+        </b-row>
+        <b-button variant="primary">신청하기</b-button>
       </b-card-text>
       <template #footer>
-        <small class="text-muted">Footer Text</small>
+        <small class="text-muted">신청 포인트 : {{ price }} </small>
       </template>
     </b-card>
-  </b-card-group>
+    <b-card class="jb-content">
+      <b-card-text>
+        <b-container>{{ content }} </b-container>
+      </b-card-text>
+    </b-card>
+  </div>
 </template>
+<script>
+export default {
+  props: {
+    content: String,
+    price: String,
+    writer: String,
+  },
+};
+</script>
+<style>
+.jb-writer {
+  position: absolute;
+  font-size: 20px;
+  color: #ffffff;
+  top: 10%;
+  left: 90%;
+  width: 30%;
+}
+.jb-content {
+  position: absolute;
+  font-size: 20px;
+  top: 10%;
+  right: 35%;
+  width: 75%;
+  min-height: 700px;
+}
+</style>

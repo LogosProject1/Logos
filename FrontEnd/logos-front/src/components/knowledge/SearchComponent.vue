@@ -21,7 +21,10 @@
             <p>종료 시간 : {{ knowledge.endTime | moment("LLLL") }}</p>
             <b-row class="mt-3">
               <div class="col text-center">
-                <b-button variant="primary" float href="/knowledge"
+                <b-button
+                  variant="primary"
+                  float
+                  :to="{ name: 'knowledge', params: { id: knowledge.id } }"
                   >상세보기</b-button
                 >
               </div>

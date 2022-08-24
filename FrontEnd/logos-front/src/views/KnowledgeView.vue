@@ -2,19 +2,26 @@
   <div>
     <div class="jb-box" :style="customStyle" style>
       <b-container class="bv-example-row mt-3 text-center">
-        <div class="jb-date">2022/08/16</div>
-        <div class="jb-title">지식 제목</div>
-        <div></div>
+        <div class="jb-date">
+          {{ knowledgeData.updated_at | moment("LLL") }}
+        </div>
+        <div class="jb-title">{{ knowledgeData.title }}</div>
       </b-container>
     </div>
     <b-container class="content">
-      <knowledge-main></knowledge-main>
+      <knowledge-main
+        :content="knowledgeData.content"
+        :price="knowledgeData.price"
+        :writer="knowledgeData.writer"
+      ></knowledge-main>
     </b-container>
   </div>
 </template>
 
 <script>
 import KnowledgeMain from "@/components/knowledge/KnowledgeMain.vue";
+import { readKnowledge } from "@/api/knowledge";
+
 export default {
   components: { KnowledgeMain },
   name: "KnowledgeView",
@@ -30,6 +37,7 @@ export default {
   },
   data() {
     return {
+      knowledgeData: {},
       backgroundColor: [
         "linear-gradient(90deg, #355c7d 0%, #6c5b7b 50%, #c06c84 100%)",
         "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
@@ -41,6 +49,16 @@ export default {
         "linear-gradient(90deg, #23074d 0%, #cc5333 100%)",
       ],
     };
+  },
+  mounted() {
+    readKnowledge(
+      this.$route.params.id,
+      (res) => {
+        this.knowledgeData = res.data.knowledge;
+        console.log(this.knowledgeData);
+      },
+      () => {}
+    );
   },
 };
 </script>
@@ -59,7 +77,7 @@ export default {
   font-size: 20px;
   color: #ffffff;
   top: 8%;
-  right: 31%;
+  right: 30%;
   width: 100%;
 }
 .jb-title {
@@ -72,7 +90,7 @@ export default {
 }
 .content {
   position: absolute;
-  top: 30%;
+  top: 45%;
   left: 20%;
   /* margin: -64px 24px 0px 24px; */
 }
