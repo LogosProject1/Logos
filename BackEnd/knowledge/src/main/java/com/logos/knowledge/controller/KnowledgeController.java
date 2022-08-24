@@ -29,7 +29,7 @@ public class KnowledgeController {
     @Autowired
     private KnowledgeService knowledgeService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Map<String, Object>> createKnowledge(HttpServletRequest req, @RequestBody KnowledgeDto knowledge) {
         Map<String, Object> resultMap = new HashMap<>();
 
@@ -90,7 +90,7 @@ public class KnowledgeController {
         return new ResponseEntity<>(resultMap,status);
     }
 
-    @GetMapping("/read/{knowledgeId}")
+    @GetMapping("/{knowledgeId}")
     public ResponseEntity<Map<String, Object>> getKnowledge(@PathVariable("knowledgeId") String knowledgeId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;

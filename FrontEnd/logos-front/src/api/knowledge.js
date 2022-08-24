@@ -32,4 +32,16 @@ async function filterKnowledge(params, success, fail) {
   await api.get(`/knowledge/filter`, params).then(success).catch(fail);
 }
 
-export { getSubscribed, getPublished, deleteKnowledge, filterKnowledge };
+async function createKnowledge(params, success, fail) {
+  api.defaults.headers["Authorization"] =
+    "Bearer " + sessionStorage.getItem("access-token");
+  await api.post(`/knowledge`, params).then(success).catch(fail);
+}
+
+export {
+  getSubscribed,
+  getPublished,
+  deleteKnowledge,
+  filterKnowledge,
+  createKnowledge,
+};

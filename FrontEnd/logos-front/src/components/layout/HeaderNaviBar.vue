@@ -27,7 +27,6 @@
               </template>
               <b-dropdown-item
                 :to="{ name: 'result', query: { category: 'IT' } }"
-                @click="onClickCategory"
                 >IT</b-dropdown-item
               >
               <b-dropdown-divider></b-dropdown-divider>
