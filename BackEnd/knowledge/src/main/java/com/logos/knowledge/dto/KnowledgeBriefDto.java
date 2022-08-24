@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KnowledgeBriefDto {
+    private String id;
+
     private String title;
 
     private String price;

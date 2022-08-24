@@ -17,6 +17,8 @@ public class KnowledgeDto {
 
     private String category;
 
+    private String writer;
+
     private String content;
 
     private String price;
@@ -24,4 +26,6 @@ public class KnowledgeDto {
     private String startTime;
 
     private String endTime;
+
+    private String updated_at;
 }

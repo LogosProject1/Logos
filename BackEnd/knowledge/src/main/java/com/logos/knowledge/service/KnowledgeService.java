@@ -87,6 +87,7 @@ public class KnowledgeService{
 
         for(Knowledge knowledge : byFilter){
             knowledgeList.add(KnowledgeBriefDto.builder()
+                    .id(knowledge.getId())
                     .title(knowledge.getTitle())
                     .price(String.valueOf(knowledge.getPrice()))
                     .startTime(knowledge.getStartTime().toString())
@@ -140,11 +141,13 @@ public class KnowledgeService{
             Knowledge knowledge = byId.get();
             return KnowledgeDto.builder()
                     .title(knowledge.getTitle())
+                    .writer(knowledge.getWriter().getName())
                     .category(knowledge.getCategory().getName())
                     .content(knowledge.getContent())
                     .price(knowledge.getPrice().toString())
                     .startTime(knowledge.getStartTime().toString())
                     .endTime(knowledge.getEndTime().toString())
+                    .updated_at(knowledge.getUpdated_at().toString())
                     .build();
         }
         return null;
