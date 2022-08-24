@@ -1,5 +1,7 @@
 <template>
   <b-container>
+    <h2>지식 등록하기</h2>
+    <br />
     <b-input-group prepend="제목" class="mb-2">
       <b-form-input
         v-model="title"
@@ -39,8 +41,8 @@
       </b-input-group>
     </div>
     <editor
-      :options="editorOptions"
       ref="toastuiEditor"
+      :options="editorOptions"
       height="700px"
       initialEditType="wysiwyg"
       previewStyle="vertical"
@@ -59,6 +61,9 @@ import "@toast-ui/editor/dist/toastui-editor.css";
 
 import moment from "moment";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
+import "tui-color-picker/dist/tui-color-picker.css";
+import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
+import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import DateRangePicker from "vue2-daterange-picker";
 import { Editor } from "@toast-ui/vue-editor";
 
@@ -84,6 +89,7 @@ export default {
       },
       editorOptions: {
         hideModeSwitch: true,
+        plugins: [colorSyntax],
       },
     };
   },
