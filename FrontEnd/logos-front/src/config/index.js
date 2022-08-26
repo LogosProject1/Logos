@@ -4,6 +4,7 @@ const API_KNOWLEDGE_URL = "http://localhost:8083";
 const API_PAYMENT_URL = "http://localhost:8084";
 const API_POINT_URL = "http://localhost:8085";
 const API_RATING_URL = "http://localhost:8086";
+const API_S3_URL = "http://localhost:8087";
 
 export {
   API_LOGIN_URL,
@@ -12,4 +13,5 @@ export {
   API_PAYMENT_URL,
   API_POINT_URL,
   API_RATING_URL,
+  API_S3_URL,
 };

@@ -4,6 +4,7 @@ import {
   API_LOGIN_URL,
   API_POINT_URL,
   API_PAYMENT_URL,
+  API_S3_URL,
 } from "@/config";
 
 export function loginInstance() {
@@ -38,6 +39,15 @@ export function knowledgeInstance() {
     baseURL: API_KNOWLEDGE_URL,
     headers: {
       "Content-type": "application/json",
+    },
+  });
+  return instance;
+}
+export function s3Instance() {
+  const instance = axios.create({
+    baseURL: API_S3_URL,
+    headers: {
+      "Content-type": "multipart/form-data",
     },
   });
   return instance;

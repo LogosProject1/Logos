@@ -57,6 +57,7 @@
 </template>
 <script>
 import { createKnowledge } from "@/api/knowledge";
+import { uploadImage } from "@/api/s3";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import moment from "moment";
@@ -74,6 +75,7 @@ export default {
       title: "",
       category: "null",
       point: "",
+      uploadImages: [],
       categoryOptions: [
         { value: "IT", text: "IT" },
         { value: "음악", text: "음악" },
@@ -90,8 +92,22 @@ export default {
       editorOptions: {
         hideModeSwitch: true,
         plugins: [colorSyntax],
+        hooks: {
+          addImageBlobHook: this.addImageBlobHook,
+        },
       },
     };
+  },
+  beforeRouteLeave(to, from, next) {
+    const answer = window.confirm(
+      "저장되지 않은 작업이 있습니다. 정말 나갈까요?"
+    );
+    if (answer) {
+      //이미지 배열 싹다 날리기
+      next();
+    } else {
+      next(false);
+    }
   },
   methods: {
     clickCreateButton() {
@@ -115,6 +131,26 @@ export default {
           alert("지식 생성 실패");
         }
       );
+    },
+    async imageUpload(file) {
+      console.log(file);
+      //우리 api
+      uploadImage(
+        file,
+        (res) => {
+          this.uploadImages.push(res.data.url);
+          return res.data.url;
+        },
+        () => {}
+      );
+    },
+
+    addImageBlobHook(blob, callback) {
+      this.imageUpload(blob)
+        .then((url) => {
+          callback(url, "img");
+        })
+        .catch(console.error);
     },
   },
 };
