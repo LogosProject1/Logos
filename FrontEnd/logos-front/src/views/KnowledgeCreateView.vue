@@ -92,7 +92,7 @@ export default {
       },
       editorOptions: {
         hideModeSwitch: true,
-        plugins: [colorSyntax, this.youtubePlugin],
+        plugins: [colorSyntax],
         hooks: {
           addImageBlobHook: async (blob, callback) => {
             await this.imageUpload(blob);
@@ -148,20 +148,6 @@ export default {
         },
         () => {}
       );
-    },
-    youtubePlugin() {
-      Editor.codeBlockManager.setReplacer("youtube", (youtubeId) => {
-        const wrapperId = `yt${Math.random().toString(36).substr(2, 10)}`;
-
-        setTimeout(this.renderYoutube.bind(null, wrapperId, youtubeId), 0);
-
-        return `<div id="${wrapperId}"></div>`;
-      });
-    },
-
-    renderYoutube(wrapperId, youtubeId) {
-      const el = document.querySelector(`#${wrapperId}`);
-      el.innerHTML = `<iframe width="420" height="315" src="https://www.youtube.com/embed/${youtubeId}"></iframe>`;
     },
   },
 };
