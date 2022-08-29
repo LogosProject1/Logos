@@ -6,6 +6,10 @@
           {{ knowledgeData.updated_at | moment("LLL") }}
         </div>
         <div class="jb-title">{{ knowledgeData.title }}</div>
+        <div class="jb-time">
+          지식전달 시간 : {{ knowledgeData.startTime | moment("LLL") }} ~
+          {{ knowledgeData.endTime | moment("LLL") }}
+        </div>
       </b-container>
     </div>
     <b-container class="content">
@@ -86,6 +90,14 @@ export default {
   color: #ffffff;
   top: 15%;
   right: 30%;
+  width: 100%;
+}
+.jb-time {
+  position: absolute;
+  font-size: 17px;
+  color: #ffffff;
+  top: 25%;
+  right: 22%;
   width: 100%;
 }
 .content {

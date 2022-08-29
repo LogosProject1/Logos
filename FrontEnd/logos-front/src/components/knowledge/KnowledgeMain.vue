@@ -18,7 +18,7 @@
     </b-card>
     <b-card class="jb-content">
       <b-card-text>
-        <viewer />
+        <viewer ref="toastViewer" :options="editorOptions" />
       </b-card-text>
     </b-card>
   </div>
@@ -35,16 +35,45 @@ export default {
     price: String,
     writer: String,
   },
+  data() {
+    return {
+      editorOptions: {
+        customHTMLRenderer: {
+          htmlBlock: {
+            iframe(node) {
+              return [
+                {
+                  type: "openTag",
+                  tagName: "iframe",
+                  outerNewLine: true,
+                  attributes: node.attrs,
+                },
+                { type: "html", content: node.childrenHTML },
+                {
+                  type: "closeTag",
+                  tagName: "iframe",
+                  outerNewLine: true,
+                },
+              ];
+            },
+          },
+        },
+      },
+    };
+  },
+  updated() {
+    this.$refs.toastViewer.invoke("setMarkdown", this.content);
+  },
 };
 </script>
 <style>
 .jb-writer {
-  position: absolute;
+  position: fixed;
   font-size: 20px;
   color: #ffffff;
-  top: 10%;
-  left: 90%;
-  width: 30%;
+  top: 44%;
+  left: 75%;
+  width: 15%;
 }
 .jb-content {
   position: absolute;

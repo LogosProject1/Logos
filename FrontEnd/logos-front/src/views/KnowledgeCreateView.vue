@@ -76,6 +76,8 @@ export default {
       category: "null",
       point: "",
       url: "",
+      youtubeUrl: "",
+      youtubeUrls: [],
       uploadImages: [],
       categoryOptions: [
         { value: "IT", text: "IT" },
@@ -92,7 +94,24 @@ export default {
       },
       editorOptions: {
         hideModeSwitch: true,
-        plugins: [colorSyntax],
+        plugins: [[colorSyntax], [this.youtubePlugin]],
+        customHTMLRenderer: {
+          htmlBlock: {
+            iframe(node) {
+              console.log(node.attrs);
+              return [
+                {
+                  type: "openTag",
+                  tagName: "iframe",
+                  outerNewLine: true,
+                  attributes: node.attrs,
+                },
+                { type: "html", content: node.childrenHTML },
+                { type: "closeTag", tagName: "iframe", outerNewLine: true },
+              ];
+            },
+          },
+        },
         hooks: {
           addImageBlobHook: async (blob, callback) => {
             await this.imageUpload(blob);
@@ -117,6 +136,73 @@ export default {
     }
   },
   methods: {
+    youtubePlugin() {
+      const container = document.createElement("div");
+      container.className = "youtube-div";
+      container.id = "youtube-div";
+
+      const youtubeInput = document.createElement("input");
+      youtubeInput.className = "youtube-input";
+      youtubeInput.id = "youtube-input";
+      youtubeInput.placeholder = "유튜브 링크";
+
+      const youtubeButton = document.createElement("button");
+      youtubeButton.className = "youtube-button";
+      youtubeButton.id = "youtube-button";
+
+      let btnText = document.createTextNode("확인");
+
+      container.appendChild(youtubeInput);
+      container.appendChild(youtubeButton);
+
+      youtubeButton.appendChild(btnText);
+      youtubeButton.onclick = () => {
+        const value = document.getElementById("youtube-input").value;
+
+        if (!value) {
+          youtubeInput.value = "";
+          return;
+        }
+        if (!value.includes("https://youtu.be/")) {
+          alert("'https://youtu.be/' 를 포함한 링크만 가능합니다.");
+          youtubeInput.value = "";
+          return;
+        }
+
+        const youtubeUrl = value.split("/")[3];
+        this.youtubeUrl = youtubeUrl;
+        this.youtubeUrls = [...this.youtubeUrls, this.youtubeUrl];
+
+        const getHTML = this.$refs.toastuiEditor.invoke("getHTML");
+        this.$refs.toastuiEditor.invoke(
+          "setHTML",
+          getHTML +
+            `<iframe width="560" height="315" src='https://www.youtube.com/embed/${this.youtubeUrl}' title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`
+        );
+
+        youtubeInput.value = "";
+      };
+
+      return {
+        toolbarItems: [
+          {
+            groupIndex: 3,
+            itemIndex: 3,
+            item: {
+              name: "youtube",
+              tooltip: "유튜브 링크",
+              className: "youtube",
+              popup: {
+                className: "toastui-editor-popup-add-link-youtube",
+                body: container,
+                style: { width: "400" },
+              },
+            },
+          },
+        ],
+      };
+    },
+
     clickCreateButton() {
       let content = this.$refs.toastuiEditor.invoke("getHTML");
       let params = {
