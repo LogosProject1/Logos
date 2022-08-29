@@ -75,6 +75,7 @@ export default {
       title: "",
       category: "null",
       point: "",
+      url: "",
       uploadImages: [],
       categoryOptions: [
         { value: "IT", text: "IT" },
@@ -93,7 +94,13 @@ export default {
         hideModeSwitch: true,
         plugins: [colorSyntax],
         hooks: {
-          addImageBlobHook: this.addImageBlobHook,
+          addImageBlobHook: async (blob, callback) => {
+            await this.imageUpload(blob);
+            callback(this.url, "img");
+            console.log(this.uploadImages);
+            console.log(this.$refs.toastuiEditor.invoke("getHTML"));
+            return false;
+          },
         },
       },
     };
@@ -111,7 +118,7 @@ export default {
   },
   methods: {
     clickCreateButton() {
-      let content = this.$refs.toastuiEditor.invoke("getMarkdown");
+      let content = this.$refs.toastuiEditor.invoke("getHTML");
       let params = {
         title: this.title,
         category: this.category,
@@ -133,24 +140,14 @@ export default {
       );
     },
     async imageUpload(file) {
-      console.log(file);
-      //우리 api
-      uploadImage(
+      await uploadImage(
         file,
         (res) => {
           this.uploadImages.push(res.data.url);
-          return res.data.url;
+          this.url = res.data.url;
         },
         () => {}
       );
-    },
-
-    addImageBlobHook(blob, callback) {
-      this.imageUpload(blob)
-        .then((url) => {
-          callback(url, "img");
-        })
-        .catch(console.error);
     },
   },
 };

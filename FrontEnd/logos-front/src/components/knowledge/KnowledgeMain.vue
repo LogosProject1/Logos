@@ -18,13 +18,18 @@
     </b-card>
     <b-card class="jb-content">
       <b-card-text>
-        <b-container>{{ content }} </b-container>
+        <viewer />
       </b-card-text>
     </b-card>
   </div>
 </template>
 <script>
+import "@toast-ui/editor/dist/toastui-editor-viewer.css";
+import { Viewer } from "@toast-ui/vue-editor";
 export default {
+  components: {
+    viewer: Viewer,
+  },
   props: {
     content: String,
     price: String,
