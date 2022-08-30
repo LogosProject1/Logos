@@ -4,6 +4,7 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +28,7 @@ public class S3Service {
     private final FileExtensionUtils fileExtensionUtils;
     private final AmazonS3 amazonS3;
 
-    public String uploadPost(MultipartFile media) {
+    public String uploadImage(MultipartFile media) throws UnsupportedEncodingException {
         //원본 미디어 파일 이름 가져오기
         String originalFilename = media.getOriginalFilename();
         log.info("curFile = {}",media.getOriginalFilename());
@@ -45,8 +49,10 @@ public class S3Service {
             return null;
         }
 
-        //url 반환
-        return amazonS3.getUrl(bucketName, fileName).toString();
+        URL url = amazonS3.getUrl(bucketName, fileName);
+
+        String decodedURL = URLDecoder.decode(url.toString(), "UTF-8");
+        return decodedURL;
     }
 
     private boolean uploadToS3(String fileName,String bucketName,MultipartFile media){
@@ -86,5 +92,22 @@ public class S3Service {
         }
 
         return category + fileExtensionUtils.getCATEGORY_SEPARATOR() + LocalDateTime.now() + fileExtensionUtils.getUUID_SEPARATOR() + UUID.randomUUID() + fileExtension;
+    }
+
+    public String deleteImage(List<String> deleteParams) {
+        for(String filePath : deleteParams){
+            try {
+                amazonS3.deleteObject(new DeleteObjectRequest(fileExtensionUtils.getBUCKET(), filePath));
+            } catch (AmazonServiceException e){
+                log.error("delete from AWS AmazonServiceException filePath={}, yyyymm={}, error={}", e.getMessage());
+            }
+            catch (SdkClientException e){
+                log.error("delete from AWS SdkClientException filePath={}, error={}", e.getMessage());
+            }catch (Exception e){
+                log.error("delete from AWS error={}",e.getMessage());
+            }
+        }
+
+        return "Delete Image Successfully";
     }
 }

@@ -4,10 +4,7 @@ import com.logos.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +25,7 @@ public class S3Controller {
         HttpStatus status = HttpStatus.OK;
 
         try{
-            String imageUrl = s3Service.uploadPost(media);
+            String imageUrl = s3Service.uploadImage(media);
             if(imageUrl == null){
                 resultMap.put("message", "업로드 중 문제가 발생하였습니다.");
                 status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -41,6 +38,24 @@ public class S3Controller {
             resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
+
+        return new ResponseEntity<>(resultMap,status);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Map<String,Object>> deleteImage(HttpServletRequest req, @RequestBody List<String> deleteParams){
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.OK;
+
+        try {
+            String message = s3Service.deleteImage(deleteParams);
+            resultMap.put("message", message);
+        }
+        catch (Exception e){
+            resultMap.put("message", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
 
         return new ResponseEntity<>(resultMap,status);
     }
