@@ -57,7 +57,7 @@
 </template>
 <script>
 import { createKnowledge } from "@/api/knowledge";
-import { uploadImage } from "@/api/s3";
+import { uploadImage, deleteImage } from "@/api/s3";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import moment from "moment";
@@ -72,6 +72,7 @@ export default {
   components: { editor: Editor, DateRangePicker },
   data() {
     return {
+      created: false,
       title: "",
       category: "null",
       point: "",
@@ -124,16 +125,33 @@ export default {
       },
     };
   },
-  beforeRouteLeave(to, from, next) {
-    const answer = window.confirm(
-      "저장되지 않은 작업이 있습니다. 정말 나갈까요?"
-    );
-    if (answer) {
-      //이미지 배열 싹다 날리기
-      next();
-    } else {
-      next(false);
+  async beforeRouteLeave(to, from, next) {
+    if (!this.created) {
+      const answer = window.confirm(
+        "저장되지 않은 작업이 있습니다. 정말 나갈까요?"
+      );
+      if (answer) {
+        //이미지 배열 S3 Delete
+        let deleteParams = [];
+        for (let i = 0; i < this.uploadImages.length; i++) {
+          const splited = this.uploadImages[i].split("/");
+          deleteParams.push(splited[4] + "/" + splited[5]);
+        }
+        await deleteImage(
+          deleteParams,
+          () => {
+            console.log("image delete success");
+          },
+          (error) => {
+            console.log("image delete error", error);
+          }
+        );
+        next();
+      } else {
+        next(false);
+      }
     }
+    next();
   },
   methods: {
     youtubePlugin() {
@@ -203,7 +221,7 @@ export default {
       };
     },
 
-    clickCreateButton() {
+    async clickCreateButton() {
       let content = this.$refs.toastuiEditor.invoke("getHTML");
       let params = {
         title: this.title,
@@ -214,13 +232,35 @@ export default {
         endTime: moment(this.dateRange.endDate).format("YYYY-MM-DDTHH:mm"),
       };
 
-      createKnowledge(
+      //1.먼저 uploadImages배열이랑 content를 비교
+      let deleteParams = [];
+      for (let i = 0; i < this.uploadImages.length; i++) {
+        if (!content.includes(this.uploadImages[i])) {
+          const splited = this.uploadImages[i].split("/");
+          deleteParams.push(splited[4] + "/" + splited[5]);
+        }
+      }
+      //없는 uploadImages 요소를 s3 delete
+      await deleteImage(
+        deleteParams,
+        () => {
+          console.log("image delete success");
+        },
+        (error) => {
+          console.log("image delete error", error);
+        }
+      );
+
+      await createKnowledge(
         params,
         () => {
+          //2. knowledge에 post 요청
           alert("지식 생성 성공");
+          this.created = true;
           this.$router.push("/");
         },
-        () => {
+        (err) => {
+          console.log(err);
           alert("지식 생성 실패");
         }
       );
