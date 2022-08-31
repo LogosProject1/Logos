@@ -170,7 +170,7 @@ public class KnowledgeService{
     }
 
     private boolean checkWriter(String email, Optional<Knowledge> knowledge) {
-        if(knowledge.isPresent()) {
+        if(knowledge.isPresent() && knowledge.isPresent()) {
             //작성자인지 확인
             User writer = knowledge.get().getWriter();
             if (!writer.getEmail().equals(email)) return false;
@@ -185,6 +185,7 @@ public class KnowledgeService{
         List<KnowledgeBriefDto> knowledgeBriefDtoList = new ArrayList<>();
         for(Enrollment enrollment : enrollments.getContent()){
             knowledgeBriefDtoList.add(KnowledgeBriefDto.builder()
+                            .id(enrollment.getId())
                             .title(enrollment.getKnowledge().getTitle())
                             .price(String.valueOf(enrollment.getPurchasePrice()))
                             .startTime(enrollment.getKnowledge().getStartTime().toString())
@@ -204,6 +205,7 @@ public class KnowledgeService{
 
         for(Knowledge knowledge : byWriter.getContent()){
             knowledgeBriefDtoList.add(KnowledgeBriefDto.builder()
+                    .id(knowledge.getId())
                     .title(knowledge.getTitle())
                     .price(String.valueOf(knowledge.getPrice()))
                     .startTime(knowledge.getStartTime().toString())
