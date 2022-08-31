@@ -3,27 +3,14 @@
     <h2>지식 수정하기</h2>
     <br />
     <b-input-group prepend="제목" class="mb-2">
-      <b-form-input
-        v-model="title"
-        aria-label="title"
-        placeholder="제목을 입력해주세요."
-      ></b-form-input>
+      <b-form-input v-model="title" aria-label="title"></b-form-input>
     </b-input-group>
     <b-input-group prepend="카테고리" class="mb-2">
-      <b-form-select v-model="category" :options="categoryOptions"
-        ><template #first>
-          <b-form-select-option :value="null" disabled>
-            카테고리를 선택해주세요.
-          </b-form-select-option>
-        </template>
+      <b-form-select v-model="category" :options="categoryOptions">
       </b-form-select>
     </b-input-group>
     <b-input-group prepend="포인트" class="mb-2">
-      <b-form-input
-        v-model="point"
-        aria-label="point"
-        placeholder="받고 싶은 포인트 양을 입력해주세요."
-      ></b-form-input>
+      <b-form-input v-model="point" aria-label="point"></b-form-input>
     </b-input-group>
     <div id="date">
       <b-input-group prepend="시작 날짜" class="mb-2">
@@ -50,13 +37,13 @@
     <b-button
       class="mt-3 mb-3 float-right"
       variant="primary"
-      @click="clickCreateButton"
-      >생성하기</b-button
+      @click="clickUpdateButton"
+      >수정하기</b-button
     >
   </b-container>
 </template>
 <script>
-import { createKnowledge } from "@/api/knowledge";
+import { updateKnowledge } from "@/api/knowledge";
 import { uploadImage, deleteImage } from "@/api/s3";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
@@ -73,7 +60,7 @@ export default {
   components: { editor: Editor, DateRangePicker },
   data() {
     return {
-      created: false,
+      updated: false,
       title: "",
       category: "null",
       point: "",
@@ -128,7 +115,7 @@ export default {
     };
   },
   async beforeRouteLeave(to, from, next) {
-    if (!this.created) {
+    if (!this.updated) {
       const answer = window.confirm(
         "저장되지 않은 작업이 있습니다. 정말 나갈까요?"
       );
@@ -161,6 +148,12 @@ export default {
       (res) => {
         this.knowledgeData = res.data.knowledge;
         console.log(this.knowledgeData);
+        this.title = this.knowledgeData.title;
+        this.category = this.knowledgeData.category;
+        this.point = this.knowledgeData.price;
+        this.dateRange.startDate = this.knowledgeData.startTime;
+        this.dateRange.endDate = this.knowledgeData.endTime;
+        this.$refs.toastuiEditor.invoke("setHTML", this.knowledgeData.content);
       },
       () => {}
     );
@@ -233,9 +226,10 @@ export default {
       };
     },
 
-    async clickCreateButton() {
+    async clickUpdateButton() {
       let content = this.$refs.toastuiEditor.invoke("getHTML");
       let params = {
+        knowledgeId: this.$route.params.id,
         title: this.title,
         category: this.category,
         price: this.point,
@@ -263,17 +257,17 @@ export default {
         }
       );
 
-      await createKnowledge(
+      await updateKnowledge(
         params,
         () => {
           //2. knowledge에 post 요청
-          alert("지식 생성 성공");
-          this.created = true;
+          alert("지식 수정 성공");
+          this.updated = true;
           this.$router.push("/");
         },
         (err) => {
           console.log(err);
-          alert("지식 생성 실패");
+          alert("지식 수정 실패");
         }
       );
     },

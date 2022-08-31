@@ -70,7 +70,11 @@
               >
                 상세페이지로 이동
               </b-button>
-              <b-button class="btn btn-outline-light mr-2" variant="primary">
+              <b-button
+                class="btn btn-outline-light mr-2"
+                variant="primary"
+                :to="{ name: 'knowledgeUpdate', params: { id: publish.id } }"
+              >
                 수정하기
               </b-button>
 

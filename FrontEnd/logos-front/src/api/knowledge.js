@@ -50,6 +50,12 @@ async function readKnowledge(id, success, fail) {
     .catch(fail);
 }
 
+async function updateKnowledge(params, success, fail) {
+  api.defaults.headers["Authorization"] =
+    "Bearer " + sessionStorage.getItem("access-token");
+  await api.put(`/knowledge/update`, params).then(success).catch(fail);
+}
+
 export {
   getSubscribed,
   getPublished,
@@ -57,4 +63,5 @@ export {
   filterKnowledge,
   createKnowledge,
   readKnowledge,
+  updateKnowledge,
 };
