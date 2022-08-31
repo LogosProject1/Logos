@@ -62,6 +62,13 @@
               <button class="btn btn-outline-light" type="button">
                 상세페이지로 이동
               </button>
+              <b-button
+                class="btn btn-outline-light"
+                type="button"
+                :to="{ name: 'knowledgeUpdate', params: { id: publish.id } }"
+              >
+                지식 수정
+              </b-button>
             </div>
           </div>
         </div>

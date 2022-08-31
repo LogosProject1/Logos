@@ -70,6 +70,11 @@ const routes = [
     component: () => import("@/views/KnowledgeView.vue"),
   },
   {
+    path: "/knowledgeUpdate/:id",
+    name: "knowledgeUpdate",
+    component: () => import("@/components/knowledge/KnowledgeUpdate.vue"),
+  },
+  {
     path: "/search",
     name: "search",
     redirect: "/search/result",
