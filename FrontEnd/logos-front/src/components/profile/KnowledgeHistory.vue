@@ -79,28 +79,12 @@
               </b-button>
 
               <b-button
-                v-b-modal.modal-center
                 class="btn btn-outline-light"
                 variant="danger"
+                :id="publish.id"
+                @click="onDeleteClick"
                 >삭제하기</b-button
               >
-
-              <b-modal id="modal-center" centered title="지식 삭제 확인 창">
-                <p class="my-4">정말로 삭제하시겠습니까?</p>
-                <template #modal-footer>
-                  <b-button variant="primary" class="float-right">
-                    닫기
-                  </b-button>
-                  <b-button
-                    class="btn btn-outline-light"
-                    :id="publish.id"
-                    variant="danger"
-                    @click="onDeleteClick"
-                  >
-                    삭제하기
-                  </b-button>
-                </template>
-              </b-modal>
             </div>
           </div>
         </div>
@@ -119,8 +103,13 @@
   </div>
 </template>
 <script>
-import { getSubscribed, getPublished, deleteKnowledge } from "@/api/knowledge";
-//import { deleteImage } from "@/api/s3";
+import {
+  getSubscribed,
+  getPublished,
+  deleteKnowledge,
+  readKnowledge,
+} from "@/api/knowledge";
+import { deleteImage } from "@/api/s3";
 export default {
   name: "KnowledgeHistory",
   data() {
@@ -161,41 +150,90 @@ export default {
   methods: {
     onDeleteClick(e) {
       e.preventDefault();
-      //img 파싱
+      this.$bvModal
+        .msgBoxConfirm("정말로 지식을 삭제하시겠습니까?", {
+          title: "다시 확인해주세요.",
+          size: "sm",
+          okVariant: "danger",
+          okTitle: "삭제하기",
+          cancelTitle: "아니요",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true,
+        })
+        .then(async (value) => {
+          if (value) {
+            //knowledge read request & img tag parsing
+            let deleteParams = [];
 
-      //s3 delete request
-      //knowledge delete request
-      deleteKnowledge(
-        e.target.id,
-        (res) => {
-          if (res.message === "success") {
-            this.$bvModal.msgBoxOk("성공적으로 삭제 되었습니다.", {
-              title: "삭제 결과",
-              size: "sm",
-              okVariant: "primary",
-              headerClass: "p-2 border-bottom-0",
-              footerClass: "p-2 border-top-0",
-              centered: true,
-            });
-          } else {
-            this.$bvModal.msgBoxOk(
-              "삭제에 실패하였습니다. 다시 시도해주세요.",
-              {
-                title: "삭제 결과",
-                size: "sm",
-                okVariant: "primary",
-                headerClass: "p-2 border-bottom-0",
-                footerClass: "p-2 border-top-0",
-                centered: true,
+            await readKnowledge(
+              e.target.id,
+              (res) => {
+                const regex =
+                  // eslint-disable-next-line no-useless-escape
+                  /(<img[^>]*src\s*=\s*[\"']?([^>\"']+)[\"']?[^>]*>)/g;
+                while (regex.test(res.data.knowledge.content)) {
+                  const splited = RegExp.$2.trim().split("/");
+                  deleteParams.push(splited[4] + "/" + splited[5]);
+                }
+              },
+              (err) => {
+                console.log("지식 가져오기 중 오류 발생", err);
+              }
+            );
+
+            //s3 delete request
+            if (deleteParams.length > 0) {
+              await deleteImage(
+                deleteParams,
+                () => {
+                  console.log("image delete success");
+                },
+                (error) => {
+                  console.log("image delete error", error);
+                }
+              );
+            }
+
+            //knowledge delete request
+            await deleteKnowledge(
+              e.target.id,
+              (res) => {
+                if (res.data.message === "success") {
+                  this.$bvModal
+                    .msgBoxOk("성공적으로 삭제 되었습니다.", {
+                      title: "삭제 결과",
+                      size: "sm",
+                      okVariant: "primary",
+                      headerClass: "p-2 border-bottom-0",
+                      footerClass: "p-2 border-top-0",
+                      centered: true,
+                    })
+                    .then((value) => {
+                      if (value) {
+                        window.location.reload(true);
+                      }
+                    });
+                } else {
+                  this.$bvModal.msgBoxOk(
+                    "삭제에 실패하였습니다. 다시 시도해주세요.",
+                    {
+                      title: "삭제 결과",
+                      size: "sm",
+                      okVariant: "primary",
+                      headerClass: "p-2 border-bottom-0",
+                      footerClass: "p-2 border-top-0",
+                      centered: true,
+                    }
+                  );
+                }
+              },
+              () => {
+                alert("지식 삭제 중 오류 발생");
               }
             );
           }
-          this.show = false;
-        },
-        () => {
-          alert("지식 삭제 중 오류 발생");
-        }
-      );
+        });
     },
     subscribePageClicked(bvEvent, page) {
       getSubscribed(
