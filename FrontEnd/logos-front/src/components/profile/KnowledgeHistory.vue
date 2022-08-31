@@ -24,11 +24,15 @@
                 <h2>{{ subscribe.title }}</h2>
               </div>
               <p>구매 가격 : {{ subscribe.price }}</p>
-              <p>시작 시간 : {{ subscribe.startTime }}</p>
-              <p>종료 시간 : {{ subscribe.endTime }}</p>
-              <button class="btn btn-outline-light" type="button">
+              <p>시작 시간 : {{ subscribe.startTime | moment("LLL") }}</p>
+              <p>종료 시간 : {{ subscribe.endTime | moment("LLL") }}</p>
+              <b-button
+                class="btn btn-outline-light"
+                variant="outlined"
+                :to="{ name: 'knowledge', params: { id: subscribe.id } }"
+              >
                 상세페이지로 이동
-              </button>
+              </b-button>
             </div>
           </div>
         </div>
@@ -56,12 +60,43 @@
                 />
                 <h2>{{ publish.title }}</h2>
               </div>
-              <p>가격 : {{ publish.price }}</p>
-              <p>시작 시간 : {{ publish.startTime }}</p>
-              <p>종료 시간 : {{ publish.endTime }}</p>
-              <button class="btn btn-outline-light" type="button">
+              <p>판매 가격 : {{ publish.price }}</p>
+              <p>시작 시간 : {{ publish.startTime | moment("LLL") }}</p>
+              <p>종료 시간 : {{ publish.endTime | moment("LLL") }}</p>
+              <b-button
+                class="btn btn-outline-light mr-2"
+                variant="outlined"
+                :to="{ name: 'knowledge', params: { id: publish.id } }"
+              >
                 상세페이지로 이동
-              </button>
+              </b-button>
+              <b-button class="btn btn-outline-light mr-2" variant="primary">
+                수정하기
+              </b-button>
+
+              <b-button
+                v-b-modal.modal-center
+                class="btn btn-outline-light"
+                variant="danger"
+                >삭제하기</b-button
+              >
+
+              <b-modal id="modal-center" centered title="지식 삭제 확인 창">
+                <p class="my-4">정말로 삭제하시겠습니까?</p>
+                <template #modal-footer>
+                  <b-button variant="primary" class="float-right">
+                    닫기
+                  </b-button>
+                  <b-button
+                    class="btn btn-outline-light"
+                    :id="publish.id"
+                    variant="danger"
+                    @click="onDeleteClick"
+                  >
+                    삭제하기
+                  </b-button>
+                </template>
+              </b-modal>
             </div>
           </div>
         </div>
@@ -80,7 +115,8 @@
   </div>
 </template>
 <script>
-import { getSubscribed, getPublished } from "@/api/knowledge";
+import { getSubscribed, getPublished, deleteKnowledge } from "@/api/knowledge";
+//import { deleteImage } from "@/api/s3";
 export default {
   name: "KnowledgeHistory",
   data() {
@@ -119,6 +155,44 @@ export default {
     );
   },
   methods: {
+    onDeleteClick(e) {
+      e.preventDefault();
+      //img 파싱
+
+      //s3 delete request
+      //knowledge delete request
+      deleteKnowledge(
+        e.target.id,
+        (res) => {
+          if (res.message === "success") {
+            this.$bvModal.msgBoxOk("성공적으로 삭제 되었습니다.", {
+              title: "삭제 결과",
+              size: "sm",
+              okVariant: "primary",
+              headerClass: "p-2 border-bottom-0",
+              footerClass: "p-2 border-top-0",
+              centered: true,
+            });
+          } else {
+            this.$bvModal.msgBoxOk(
+              "삭제에 실패하였습니다. 다시 시도해주세요.",
+              {
+                title: "삭제 결과",
+                size: "sm",
+                okVariant: "primary",
+                headerClass: "p-2 border-bottom-0",
+                footerClass: "p-2 border-top-0",
+                centered: true,
+              }
+            );
+          }
+          this.show = false;
+        },
+        () => {
+          alert("지식 삭제 중 오류 발생");
+        }
+      );
+    },
     subscribePageClicked(bvEvent, page) {
       getSubscribed(
         page - 1,
