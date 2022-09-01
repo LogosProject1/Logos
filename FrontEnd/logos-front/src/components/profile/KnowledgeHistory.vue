@@ -16,7 +16,7 @@
             <div class="h-100 p-5 text-white bg-dark rounded-3">
               <div class="row">
                 <img
-                  src="@/assets/logo.png"
+                  :src="subscribe.thumbnail"
                   class="d-inline-block align-middle"
                   width="100px"
                   alt="logos"
@@ -52,12 +52,15 @@
           <div class="col-md-6" v-for="publish in publish_list" :key="publish">
             <div class="h-100 p-5 text-white bg-dark rounded-3">
               <div class="row">
-                <img
-                  src="@/assets/logo.png"
+                <b-img
+                  thumbnail
+                  fluid
+                  :src="publish.thumbnail"
                   class="d-inline-block align-middle"
-                  width="100px"
-                  alt="logos"
-                />
+                  width="150"
+                  height="100"
+                  alt="Image 1"
+                ></b-img>
                 <h2>{{ publish.title }}</h2>
               </div>
               <p>판매 가격 : {{ publish.price }}</p>
@@ -176,6 +179,11 @@ export default {
                   const splited = RegExp.$2.trim().split("/");
                   deleteParams.push(splited[4] + "/" + splited[5]);
                 }
+                const thumbnailSplited =
+                  res.data.knowledge.thumbnail.split("/");
+                deleteParams.push(
+                  thumbnailSplited[4] + "/" + thumbnailSplited[5]
+                );
               },
               (err) => {
                 console.log("지식 가져오기 중 오류 발생", err);

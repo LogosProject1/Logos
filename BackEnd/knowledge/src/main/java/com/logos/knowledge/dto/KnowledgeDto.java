@@ -17,6 +17,8 @@ public class KnowledgeDto {
 
     private String category;
 
+    private String thumbnail;
+
     private String writer;
 
     private String content;

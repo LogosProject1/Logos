@@ -68,6 +68,7 @@ export default {
       youtubeUrl: "",
       youtubeUrls: [],
       uploadImages: [],
+      originImages: [],
       knowledgeData: [],
       categoryOptions: [
         { value: "IT", text: "IT" },
@@ -120,7 +121,7 @@ export default {
         "저장되지 않은 작업이 있습니다. 정말 나갈까요?"
       );
       if (answer) {
-        //이미지 배열 S3 Delete
+        //새로 추가했던 이미지 배열 S3 Delete
         let deleteParams = [];
         for (let i = 0; i < this.uploadImages.length; i++) {
           const splited = this.uploadImages[i].split("/");
@@ -154,6 +155,15 @@ export default {
         this.dateRange.startDate = this.knowledgeData.startTime;
         this.dateRange.endDate = this.knowledgeData.endTime;
         this.$refs.toastuiEditor.invoke("setHTML", this.knowledgeData.content);
+
+        //현재 image src 파싱
+        const regex =
+          // eslint-disable-next-line no-useless-escape
+          /(<img[^>]*src\s*=\s*[\"']?([^>\"']+)[\"']?[^>]*>)/g;
+        while (regex.test(this.knowledgeData.content)) {
+          const srcUrl = RegExp.$2.trim();
+          this.originImages.push(srcUrl);
+        }
       },
       () => {}
     );
@@ -238,7 +248,7 @@ export default {
         endTime: moment(this.dateRange.endDate).format("YYYY-MM-DDTHH:mm"),
       };
 
-      //1.먼저 uploadImages배열이랑 content를 비교
+      //현재 content에 새로 올린 이미지와 이전 이미지가 없다면 s3 delete
       let deleteParams = [];
       for (let i = 0; i < this.uploadImages.length; i++) {
         if (!content.includes(this.uploadImages[i])) {
@@ -246,7 +256,13 @@ export default {
           deleteParams.push(splited[4] + "/" + splited[5]);
         }
       }
-      //없는 uploadImages 요소를 s3 delete
+      for (let i = 0; i < this.originImages.length; i++) {
+        if (!content.includes(this.originImages[i])) {
+          const splited = this.originImages[i].split("/");
+          deleteParams.push(splited[4] + "/" + splited[5]);
+        }
+      }
+      //s3 delete request
       await deleteImage(
         deleteParams,
         () => {

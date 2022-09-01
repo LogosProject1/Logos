@@ -11,10 +11,20 @@
           v-for="knowledge in knowledgeList"
           :key="knowledge.id"
           :title="knowledge.title"
-          img-src="https://picsum.photos/300/200/?image=40"
+          :img-src="knowledge.thumbnail"
           img-alt="Image"
           img-top
         >
+          <template #header v-if="knowledge.thumbnail === null">
+            <img
+              src="@/assets/logo.png"
+              width="300"
+              height="220"
+              alt="Image"
+              top
+            />
+          </template>
+
           <b-card-text>
             <p>가격 : {{ knowledge.price }} 포인트</p>
             <p>시작 시간 : {{ knowledge.startTime | moment("LLLL") }}</p>

@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class KnowledgeBriefDto {
     private String id;
 
+    private String thumbnail;
+
     private String title;
 
     private String price;

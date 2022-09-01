@@ -40,6 +40,44 @@
         </date-range-picker>
       </b-input-group>
     </div>
+    <b-input-group prepend="Thumbnail" class="mb-2">
+      <b-button v-b-modal.modal-center>파일 찾기</b-button>
+      <b-modal
+        id="modal-center"
+        v-model="modalShow"
+        title="드래그해서 이미지를 프레임에 맞춰주세요"
+      >
+        <div class="d-block text-center">
+          <croppa
+            :width="300"
+            :height="200"
+            :zoom-speed="6"
+            v-model="myCroppa"
+            canvas-color="transparent"
+          />
+        </div>
+
+        <template #modal-footer>
+          <b-button id="thumbnail_upload_btn" @click="uploadCroppedImage"
+            >업로드</b-button
+          >
+        </template>
+      </b-modal>
+    </b-input-group>
+    <div v-if="thumbnailBase64Url != ''" class="d-block text-left mb-3">
+      <b-badge pill variant="warning" class="mb-2">Thumbnail 미리보기</b-badge>
+      <div>
+        <b-img
+          thumbnail
+          fluid
+          :src="thumbnailBase64Url"
+          width="300"
+          height="200"
+          alt="Image 1"
+        ></b-img>
+      </div>
+    </div>
+
     <editor
       ref="toastuiEditor"
       :options="editorOptions"
@@ -58,20 +96,30 @@
 <script>
 import { createKnowledge } from "@/api/knowledge";
 import { uploadImage, deleteImage } from "@/api/s3";
-import "@toast-ui/editor/dist/toastui-editor.css";
 
+import Vue from "vue";
 import moment from "moment";
-import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
-import "tui-color-picker/dist/tui-color-picker.css";
-import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import DateRangePicker from "vue2-daterange-picker";
 import { Editor } from "@toast-ui/vue-editor";
+import Croppa from "vue-croppa";
+
+import "vue-croppa/dist/vue-croppa.css";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
+import "tui-color-picker/dist/tui-color-picker.css";
+import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
+
+Vue.use(Croppa);
 
 export default {
   components: { editor: Editor, DateRangePicker },
   data() {
     return {
+      modalShow: false,
+      myCroppa: null,
+      thumbnailBase64Url: "",
+      thumbnailBlob: null,
       created: false,
       title: "",
       category: "null",
@@ -154,6 +202,19 @@ export default {
     next();
   },
   methods: {
+    uploadCroppedImage() {
+      this.modalShow = false;
+      this.myCroppa.generateBlob(
+        (blob) => {
+          console.log(blob);
+          this.thumbnailBlob = blob;
+          // write code to upload the cropped image file (a file is a blob)
+        },
+        "image/png",
+        0.8
+      ); // 80% compressed jpeg file
+      this.thumbnailBase64Url = this.myCroppa.generateDataUrl("image/png", 0.8);
+    },
     youtubePlugin() {
       const container = document.createElement("div");
       container.className = "youtube-div";
@@ -223,10 +284,23 @@ export default {
 
     async clickCreateButton() {
       let content = this.$refs.toastuiEditor.invoke("getHTML");
+      let thumbnail = "";
+      var file = new File([this.thumbnailBlob], "thumbnail.png");
+      //1. Thumbnail 저장
+      if (this.thumbnailBlob != null) {
+        await uploadImage(
+          file,
+          (res) => {
+            thumbnail = res.data.url;
+          },
+          () => {}
+        );
+      }
       let params = {
         title: this.title,
         category: this.category,
         price: this.point,
+        thumbnail: thumbnail,
         content: content,
         startTime: moment(this.dateRange.startDate).format("YYYY-MM-DDTHH:mm"),
         endTime: moment(this.dateRange.endDate).format("YYYY-MM-DDTHH:mm"),
@@ -278,4 +352,66 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.photo_box {
+  margin: 0 auto;
+  max-width: 500px;
+}
+.upload_btn {
+  overflow: hidden;
+  width: 100%;
+}
+.upload_btn #photoBtn {
+  display: none;
+}
+.upload_btn .upload,
+.upload_btn a {
+  float: left;
+  width: calc(50% - 10px);
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  padding: 15px 0;
+}
+.upload_btn .upload {
+  background-color: steelblue;
+}
+.upload_btn a {
+  margin-left: 20px;
+  background: #ccc;
+}
+.photo_them {
+  position: relative;
+  margin-top: 20px;
+  width: 100%;
+  height: 250px;
+  background: #eee;
+}
+.them_img,
+.result_box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.result_box {
+  background: #fff;
+}
+.them_img img,
+.result_box img {
+  display: block;
+  margin: 0 auto;
+  height: 100%;
+}
+#complete {
+  display: block;
+  margin-top: 20px;
+  padding: 15px 0;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  text-decoration: none;
+  background-color: steelblue;
+}
+</style>
