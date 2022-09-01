@@ -24,6 +24,8 @@ public class Knowledge {
 
     private String content;
 
+    private String thumbnail;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User writer;
@@ -46,6 +48,7 @@ public class Knowledge {
         return Knowledge.builder()
                 .id(UUIDGenerateUtils.makeLongUUID())
                 .title(knowledgeDto.getTitle())
+                .thumbnail(knowledgeDto.getThumbnail())
                 .category(category)
                 .writer(writer)
                 .price(Long.parseLong(knowledgeDto.getPrice()))

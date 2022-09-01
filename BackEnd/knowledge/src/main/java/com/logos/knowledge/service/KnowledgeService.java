@@ -89,6 +89,7 @@ public class KnowledgeService{
             knowledgeList.add(KnowledgeBriefDto.builder()
                     .id(knowledge.getId())
                     .title(knowledge.getTitle())
+                    .thumbnail(knowledge.getThumbnail())
                     .price(String.valueOf(knowledge.getPrice()))
                     .startTime(knowledge.getStartTime().toString())
                     .endTime(knowledge.getEndTime().toString())
@@ -120,6 +121,7 @@ public class KnowledgeService{
         for(Knowledge knowledge : byTitleContaining){
             knowledgeList.add(KnowledgeBriefDto.builder()
                     .title(knowledge.getTitle())
+                    .thumbnail(knowledge.getThumbnail())
                     .price(String.valueOf(knowledge.getPrice()))
                     .startTime(knowledge.getStartTime().toString())
                     .endTime(knowledge.getEndTime().toString())
@@ -141,6 +143,7 @@ public class KnowledgeService{
             Knowledge knowledge = byId.get();
             return KnowledgeDto.builder()
                     .title(knowledge.getTitle())
+                    .thumbnail(knowledge.getThumbnail())
                     .writer(knowledge.getWriter().getName())
                     .category(knowledge.getCategory().getName())
                     .content(knowledge.getContent())
@@ -186,6 +189,7 @@ public class KnowledgeService{
         for(Enrollment enrollment : enrollments.getContent()){
             knowledgeBriefDtoList.add(KnowledgeBriefDto.builder()
                             .id(enrollment.getId())
+                            .thumbnail(enrollment.getKnowledge().getThumbnail())
                             .title(enrollment.getKnowledge().getTitle())
                             .price(String.valueOf(enrollment.getPurchasePrice()))
                             .startTime(enrollment.getKnowledge().getStartTime().toString())
@@ -207,6 +211,7 @@ public class KnowledgeService{
             knowledgeBriefDtoList.add(KnowledgeBriefDto.builder()
                     .id(knowledge.getId())
                     .title(knowledge.getTitle())
+                    .thumbnail(knowledge.getThumbnail())
                     .price(String.valueOf(knowledge.getPrice()))
                     .startTime(knowledge.getStartTime().toString())
                     .endTime(knowledge.getEndTime().toString())
