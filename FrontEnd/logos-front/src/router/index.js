@@ -96,6 +96,16 @@ const routes = [
     name: "createKnowledge",
     component: () => import("@/views/KnowledgeCreateView.vue"),
   },
+  {
+    path: "/paymentSuccess",
+    name: "paymentSuccess",
+    component: () => import("@/components/payment/PaymentSuccess.vue"),
+  },
+  {
+    path: "/paymentError",
+    name: "paymentError",
+    component: () => import("@/components/payment/PaymentError.vue"),
+  },
 ];
 
 const router = new VueRouter({

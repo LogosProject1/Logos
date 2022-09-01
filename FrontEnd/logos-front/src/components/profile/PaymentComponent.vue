@@ -167,16 +167,9 @@
                 <label for="agreeBtn"
                   ><a href="#/">상품,가격 및 유효기간</a
                   ><span>을 확인하였으며, </span
-                  ><a
-                    href="https://legal.kr.riotgames.com/league/payment"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >계약 관련 고지 사항</a
+                  ><a href="#/" rel="noopener noreferrer">계약 관련 고지 사항</a
                   ><span>과 </span
-                  ><a
-                    href="https://legal.kr.riotgames.com/league/rp"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  ><a href="#/" rel="noopener noreferrer"
                     >Logos 가상 재화 정책</a
                   ><span> 및 결제 진행에 동의합니다.</span></label
                 >
@@ -331,10 +324,24 @@ export default {
                   merchant_uid: this.merchant_uid,
                   result: rsp.success,
                 },
-                (data) => console.log("result: " + data),
+                (data) => {
+                  console.log("result:", data);
+                  this.$router.push({
+                    name: "paymentSuccess",
+                    params: { amount: this.amount, method: this.showPayment },
+                  });
+                },
                 (error) => {
                   console.log("포인트 충전 에러");
                   console.log(error);
+                  this.$router.push({
+                    name: "paymentError",
+                    params: {
+                      amount: this.amount,
+                      method: this.showPayment,
+                      msg: "포인트 검증에 오류가 발생하였습니다.",
+                    },
+                  });
                 }
               );
             }
@@ -355,7 +362,15 @@ export default {
               console.log(error);
             }
           );
-          alert("포인트 충전 에러");
+          //alert("포인트 충전 에러");
+          this.$router.push({
+            name: "paymentError",
+            params: {
+              amount: this.amount,
+              method: this.showPayment,
+              msg: "결제 과정 중 오류가 발생하였습니다.",
+            },
+          });
           return;
         }
       );
