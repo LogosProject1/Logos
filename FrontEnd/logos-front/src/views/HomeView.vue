@@ -62,7 +62,11 @@
         </b-carousel>
       </div>
     </div>
-    <b-button variant="light" size="lg" class="main_button"
+    <b-button
+      variant="light"
+      size="lg"
+      class="main_button"
+      :to="{ name: 'search' }"
       >지금 찾아보기</b-button
     >
   </div>
