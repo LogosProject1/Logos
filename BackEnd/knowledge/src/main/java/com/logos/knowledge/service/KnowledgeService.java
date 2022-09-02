@@ -93,7 +93,7 @@ public class KnowledgeService{
                     .price(String.valueOf(knowledge.getPrice()))
                     .startTime(knowledge.getStartTime().toString())
                     .endTime(knowledge.getEndTime().toString())
-                    .updated_at(knowledge.getUpdated_at().toString())
+                    .updated_at(knowledge.getUpdatedAt().toString())
                     .build());
         }
 
@@ -150,7 +150,7 @@ public class KnowledgeService{
                     .price(knowledge.getPrice().toString())
                     .startTime(knowledge.getStartTime().toString())
                     .endTime(knowledge.getEndTime().toString())
-                    .updated_at(knowledge.getUpdated_at().toString())
+                    .updated_at(knowledge.getUpdatedAt().toString())
                     .build();
         }
         return null;
@@ -188,7 +188,7 @@ public class KnowledgeService{
         List<KnowledgeBriefDto> knowledgeBriefDtoList = new ArrayList<>();
         for(Enrollment enrollment : enrollments.getContent()){
             knowledgeBriefDtoList.add(KnowledgeBriefDto.builder()
-                            .id(enrollment.getId())
+                            .id(enrollment.getKnowledge().getId())
                             .thumbnail(enrollment.getKnowledge().getThumbnail())
                             .title(enrollment.getKnowledge().getTitle())
                             .price(String.valueOf(enrollment.getPurchasePrice()))
@@ -229,5 +229,22 @@ public class KnowledgeService{
         User user = userRepository.findByEmail(email);
 
        knowledgeRepository.deleteByWriter(user);
+    }
+
+    public List<KnowledgeBriefDto> getRecent() {
+        List<Knowledge> knowledgeList = knowledgeRepository.findTop5ByOrderByCreatedAtDesc();
+        List<KnowledgeBriefDto> knowledgeBriefDtoList = new ArrayList<>();
+        for(Knowledge knowledge : knowledgeList){
+            knowledgeBriefDtoList.add(KnowledgeBriefDto.builder()
+                            .id(knowledge.getId())
+                            .title(knowledge.getTitle())
+                            .thumbnail(knowledge.getThumbnail())
+                            .price(String.valueOf(knowledge.getPrice()))
+                            .startTime(knowledge.getStartTime().toString())
+                            .endTime(knowledge.getEndTime().toString())
+                            .updated_at(knowledge.getUpdatedAt().toString())
+                            .build());
+        }
+        return knowledgeBriefDtoList;
     }
 }

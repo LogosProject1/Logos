@@ -1,6 +1,7 @@
 package com.logos.point.controller;
 
 import com.logos.point.dto.PointHistoryDto;
+import com.logos.point.dto.PointRefundDto;
 import com.logos.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -47,9 +48,9 @@ public class PointController {
         String email = (String) req.getAttribute("Email");
 
         try{
-            boolean result = pointService.purchaseKnowledge(email, knowledgeId);
-            if(result) resultMap.put("result","정상적으로 등록되었습니다.");
-            else resultMap.put("result","등록 중 문제가 발생하였습니다.");
+            Map<String,String> result = pointService.purchaseKnowledge(email, knowledgeId);
+            resultMap.put("result",result.get("result"));
+            resultMap.put("message",result.get("message"));
             status = HttpStatus.OK;
         }
         catch(Exception e) {
@@ -68,9 +69,9 @@ public class PointController {
         String email = (String) req.getAttribute("Email");
 
         try{
-            boolean result = pointService.refundKnowledge(email, knowledgeId);
-            if(result) resultMap.put("result","정상적으로 환불되었습니다.");
-            else resultMap.put("result","환불 중 문제가 발생하였습니다.");
+            PointRefundDto result = pointService.refundKnowledge(email, knowledgeId);
+            resultMap.put("result",result.isResult());
+            resultMap.put("message",result.getMessage());
             status = HttpStatus.OK;
         }
         catch(Exception e) {

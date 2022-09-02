@@ -29,4 +29,6 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge,String> {
                                  @Param("title") String title);
 
     Page<Knowledge> findByWriter(User byEmail, Pageable pageable);
+
+    List<Knowledge> findTop5ByOrderByCreatedAtDesc();
 }

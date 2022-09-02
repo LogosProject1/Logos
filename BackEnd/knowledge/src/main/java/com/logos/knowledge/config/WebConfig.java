@@ -21,6 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/knowledge/read/{knowledgeId}"
                         ,"/knowledge/search"
                         ,"/knowledge/filter"
+                        ,"/knowledge/recent"
                         ,"/error");
     }
 

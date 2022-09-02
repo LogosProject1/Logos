@@ -33,6 +33,13 @@
               >
                 상세페이지로 이동
               </b-button>
+              <b-button
+                class="btn btn-outline-light"
+                variant="danger"
+                :id="subscribe.id"
+                @click="clickRefundButton"
+                >환불받기</b-button
+              >
             </div>
           </div>
         </div>
@@ -113,6 +120,7 @@ import {
   readKnowledge,
 } from "@/api/knowledge";
 import { deleteImage } from "@/api/s3";
+import { refundKnowledge } from "@/api/point";
 export default {
   name: "KnowledgeHistory",
   data() {
@@ -151,6 +159,67 @@ export default {
     );
   },
   methods: {
+    clickRefundButton(e) {
+      e.preventDefault();
+      this.$bvModal
+        .msgBoxConfirm("정말로 지식을 환불받으시겠습니까?", {
+          title: "다시 확인해주세요.",
+          size: "sm",
+          okVariant: "danger",
+          okTitle: "환불받기",
+          cancelTitle: "아니요",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true,
+        })
+        .then(async (value) => {
+          if (value) {
+            await refundKnowledge(
+              e.target.id,
+              (res) => {
+                if (res.data.result) {
+                  this.$bvModal
+                    .msgBoxOk(res.data.message, {
+                      title: "환불 결과",
+                      size: "sm",
+                      okVariant: "primary",
+                      headerClass: "p-2 border-bottom-0",
+                      footerClass: "p-2 border-top-0",
+                      centered: true,
+                    })
+                    .then((value) => {
+                      if (value) {
+                        window.location.reload(true);
+                      }
+                    });
+                } else {
+                  this.$bvModal.msgBoxOk(res.data.message, {
+                    title: "환불 결과",
+                    size: "sm",
+                    okVariant: "primary",
+                    headerClass: "p-2 border-bottom-0",
+                    footerClass: "p-2 border-top-0",
+                    centered: true,
+                  });
+                }
+              },
+              () => {
+                this.$bvModal.msgBoxOk(
+                  "환불에 실패하였습니다. 다시 시도해주세요.",
+                  {
+                    title: "환불 결과",
+                    size: "sm",
+                    okVariant: "primary",
+                    headerClass: "p-2 border-bottom-0",
+                    footerClass: "p-2 border-top-0",
+                    centered: true,
+                  }
+                );
+              }
+            );
+          }
+        });
+    },
     onDeleteClick(e) {
       e.preventDefault();
       this.$bvModal

@@ -17,6 +17,7 @@
         :content="knowledgeData.content"
         :price="knowledgeData.price"
         :writer="knowledgeData.writer"
+        :thumbnail="knowledgeData.thumbnail"
       ></knowledge-main>
     </b-container>
   </div>

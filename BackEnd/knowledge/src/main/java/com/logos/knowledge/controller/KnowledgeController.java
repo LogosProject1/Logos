@@ -215,4 +215,22 @@ public class KnowledgeController {
 
         return new ResponseEntity<>(resultMap,status);
     }
+
+    @GetMapping("/recent")
+    public ResponseEntity<Map<String, Object>> getRecent() {
+        Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        try{
+            List<KnowledgeBriefDto> KnowledgeBriefDtoList = knowledgeService.getRecent();
+            resultMap.put("message",SUCCESS);
+            resultMap.put("knowledge_list",KnowledgeBriefDtoList);
+            status = HttpStatus.OK;
+        } catch (Exception e) {
+            resultMap.put("message",e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(resultMap,status);
+    }
 }

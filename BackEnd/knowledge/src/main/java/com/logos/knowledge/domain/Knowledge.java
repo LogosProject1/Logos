@@ -6,9 +6,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -40,9 +37,11 @@ public class Knowledge {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    private LocalDateTime created_at;
+    @Column(name="created_at")
+    private LocalDateTime createdAt;
 
-    private LocalDateTime updated_at;
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
 
     public static Knowledge buildKnowledge(KnowledgeDto knowledgeDto,Category category, User writer){
         return Knowledge.builder()
@@ -55,8 +54,8 @@ public class Knowledge {
                 .content(knowledgeDto.getContent())
                 .startTime(LocalDateTime.parse(knowledgeDto.getStartTime()))
                 .endTime(LocalDateTime.parse(knowledgeDto.getEndTime()))
-                .created_at(LocalDateTime.now())
-                .updated_at(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 }

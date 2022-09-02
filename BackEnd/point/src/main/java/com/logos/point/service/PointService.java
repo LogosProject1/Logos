@@ -3,6 +3,7 @@ package com.logos.point.service;
 import com.logos.point.domain.*;
 import com.logos.point.dto.PointDto;
 import com.logos.point.dto.PointHistoryDto;
+import com.logos.point.dto.PointRefundDto;
 import com.logos.point.repository.EnrollmentRepository;
 import com.logos.point.repository.KnowledgeRepository;
 import com.logos.point.repository.PointHistoryRepository;
@@ -14,9 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -49,29 +49,46 @@ public class PointService {
     }
 
     @Transactional
-    public boolean purchaseKnowledge(String email, String knowledgeId) {
+    public Map<String,String> purchaseKnowledge(String email, String knowledgeId) {
         User byEmail = userRepository.findByEmail(email);
+        HashMap<String, String> result = new HashMap<>();
         if(byEmail == null){
             log.error("존재하지 않는 유저입니다.");
-            return false;
+            result.put("message","존재하지 않는 유저입니다.");
+            result.put("result","FALSE");
+            return result;
         }
+
 
         Optional<Knowledge> byId = knowledgeRepository.findById(knowledgeId);
         if(byId.isEmpty()){
             log.error("존재하지 않는 지식입니다.");
-            return false;
+            result.put("message","존재하지 않는 지식입니다.");
+            result.put("result","FALSE");
+            return result;
         }
 
         Enrollment byUserEmailAndKnowledgeId = enrollmentRepository.findByUserEmailAndKnowledgeId(email, knowledgeId);
         if(byUserEmailAndKnowledgeId != null){
             log.error("이미 구매한 지식입니다.");
-            return false;
+            result.put("message","이미 구매한 지식입니다.");
+            result.put("result","FALSE");
+            return result;
+        }
+
+        if(byEmail.getEmail().equals(byId.get().getWriter().getEmail())){
+            log.error("회원님이 생성한 지식입니다.");
+            result.put("message","회원님이 생성한 지식입니다.");
+            result.put("result","FALSE");
+            return result;
         }
 
         Knowledge knowledge = byId.get();
         // 유저의 포인트가 충분한지 확인
         if(byEmail.getPoint() < knowledge.getPrice()){
-            return false;
+            result.put("message","등록 중 문제가 발생하였습니다.");
+            result.put("result","FALSE");
+            return result;
         }
         // enrollment 레코드
         Enrollment enrollment = Enrollment.createEnrollment(knowledgeId, email, knowledge.getPrice());
@@ -86,19 +103,47 @@ public class PointService {
         userRepository.save(byEmail);
         pointHistoryRepository.save(pointHistory);
 
-        return true;
+        result.put("message","정상적으로 등록되었습니다.");
+        result.put("result","TRUE");
+        return result;
     }
 
     @Transactional
-    public boolean refundKnowledge(String email, String knowledgeId) {
+    public PointRefundDto refundKnowledge(String email, String knowledgeId) {
         Enrollment enrollment = enrollmentRepository.findByUserEmailAndKnowledgeId(email, knowledgeId);
+        User byEmail = userRepository.findByEmail(email);
 
-        if(enrollment == null){
-            return false;
+        if(byEmail == null){
+            log.error("존재하지 않는 유저입니다.");
+            return PointRefundDto.builder().result(false).message("존재하지 않는 유저입니다.").build();
         }
 
-        enrollmentRepository.delete(enrollment);
+        if(enrollment == null){
+            return PointRefundDto.builder().result(false).message("신청하지 않은 지식입니다.").build();
+        }
 
-        return true;
+        Optional<Knowledge> byId = knowledgeRepository.findById(enrollment.getKnowledgeId());
+
+        if(byId.isEmpty()){
+            log.error("존재하지 않는 지식입니다.");
+            return PointRefundDto.builder().result(false).message("존재하지 않는 지식입니다.").build();
+        }
+        //시작시간 이후이면 환불 불가
+        if(LocalDateTime.now().isAfter(byId.get().getStartTime())){
+            log.error("이미 세션을 시작한 지식입니다.");
+            return PointRefundDto.builder().result(false).message("이미 세션을 시작한 지식입니다.").build();
+        }
+
+        // 유저 포인트 증가
+        byEmail.pointIncrease(enrollment.getPurchasePrice());
+
+        // 포인트 히스토리 생성
+        PointHistory pointHistory = PointHistory.createPointHistory(email, enrollment.getPurchasePrice(), byEmail.getPoint(), PointHistoryType.INC);
+
+        enrollmentRepository.delete(enrollment);
+        userRepository.save(byEmail);
+        pointHistoryRepository.save(pointHistory);
+
+        return PointRefundDto.builder().result(true).message("정상적으로 환불되었습니다.").build();
     }
 }

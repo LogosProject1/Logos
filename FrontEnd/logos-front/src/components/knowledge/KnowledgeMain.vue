@@ -1,16 +1,16 @@
 <template>
   <div>
-    <b-card
-      img-src="https://picsum.photos/400/200/?image=41"
-      img-alt="Image"
-      img-top
-      class="jb-writer"
-    >
+    <b-card :img-src="thumbnail" img-alt="Image" img-top class="jb-writer">
+      <template #header v-if="thumbnail === null">
+        <img src="@/assets/logo.png" height="200" alt="Image" top />
+      </template>
       <b-card-text>
         <b-row class="justify-content-center">
           <small class="text-muted mb-3">지식 제공자 : {{ writer }} </small>
         </b-row>
-        <b-button variant="primary">신청하기</b-button>
+        <b-button @click="clickEnrollButton" variant="primary"
+          >신청하기</b-button
+        >
       </b-card-text>
       <template #footer>
         <small class="text-muted">신청 포인트 : {{ price }} </small>
@@ -26,11 +26,13 @@
 <script>
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import { Viewer } from "@toast-ui/vue-editor";
+import { purchaseKnowledge } from "@/api/point";
 export default {
   components: {
     viewer: Viewer,
   },
   props: {
+    thumbnail: String,
     content: String,
     price: String,
     writer: String,
@@ -63,6 +65,24 @@ export default {
   },
   updated() {
     this.$refs.toastViewer.invoke("setMarkdown", this.content);
+  },
+  methods: {
+    clickEnrollButton() {
+      purchaseKnowledge(
+        this.$route.params.id,
+        (res) => {
+          alert(res.data.message);
+          if (res.data.result === "TRUE") {
+            this.$router.push({
+              name: "profile",
+            });
+          }
+        },
+        (err) => {
+          alert(err);
+        }
+      );
+    },
   },
 };
 </script>
