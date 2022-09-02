@@ -9,13 +9,17 @@ const memberStore = {
     isLoginError: false,
     userInfo: null,
     knowledgeList: [],
+    title: "",
   },
   getters: {
     checkUserInfo: function (state) {
       return state.userInfo;
     },
     getKnowledgeList: function (state) {
-      return state.getKnowledgeList;
+      return state.knowledgeList;
+    },
+    getTitle: function (state) {
+      return state.title;
     },
   },
   mutations: {
@@ -31,6 +35,9 @@ const memberStore = {
     },
     SET_KNOWLEDGE_LIST: (state, knowledgeList) => {
       state.knowledgeList = knowledgeList;
+    },
+    SET_TITLE: (state, title) => {
+      state.title = title;
     },
   },
   actions: {

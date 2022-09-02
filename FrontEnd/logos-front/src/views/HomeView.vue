@@ -21,7 +21,6 @@
         <b-carousel
           id="carousel-1"
           class="jb-carousel"
-          v-model="slide"
           :interval="4000"
           controls
           indicators
@@ -29,8 +28,6 @@
           img-width="1024"
           img-height="480"
           style="text-shadow: 1px 1px 2px #333"
-          @sliding-start="onSlideStart"
-          @sliding-end="onSlideEnd"
         >
           <!-- Text slides with image -->
           <b-carousel-slide
@@ -78,7 +75,11 @@
         </b-carousel>
       </div>
     </div>
-    <b-button variant="light" size="lg" class="main_button"
+    <b-button
+      variant="light"
+      size="lg"
+      class="main_button"
+      :to="{ name: 'search' }"
       >지금 찾아보기</b-button
     >
   </div>

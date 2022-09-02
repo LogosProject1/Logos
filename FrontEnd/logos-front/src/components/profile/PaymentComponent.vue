@@ -401,13 +401,13 @@ export default {
   font-family: "Noto Sans KR", sans-serif;
 }
 .process-num {
-  font-family: "Black Han Sans", sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 20px;
   text-shadow: 2px 2px 2px #efefef;
   color: rgba(136, 136, 136, 0.7);
 }
 .process-tag {
-  font-family: "Black Han Sans", sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 45px;
 }
 .notice-box {

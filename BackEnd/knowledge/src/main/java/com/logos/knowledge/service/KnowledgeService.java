@@ -230,4 +230,5 @@ public class KnowledgeService{
 
        knowledgeRepository.deleteByWriter(user);
     }
+
 }
