@@ -17,7 +17,7 @@
     </div>
     <div class="jb-right">
       <p>최근 등록된 지식</p>
-      <div class="jb-right-row">
+      <div>
         <b-carousel
           id="carousel-1"
           class="jb-carousel"
@@ -25,39 +25,24 @@
           controls
           indicators
           background="#ababab"
-          img-width="1024"
-          img-height="480"
           style="text-shadow: 1px 1px 2px #333"
         >
           <b-carousel-slide
-            class="col-md-6"
+            class="col-md-6 p-0"
             v-for="knowledge in recentKnowledge"
             :key="knowledge.id"
           >
             <template #img>
               <img
-                class="d-block img-fluid w-100"
-                width="1024"
-                height="480"
+                class="d-block"
                 :src="knowledge.thumbnail"
+                width="500"
+                height="300"
                 alt="image slot"
               />
             </template>
-            {{ knowledge.title }}
-          </b-carousel-slide>
 
-          <!-- Slides with img slot -->
-          <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-          <b-carousel-slide>
-            <template #img>
-              <img
-                class="d-block img-fluid w-100"
-                width="1024"
-                height="480"
-                src="https://picsum.photos/1024/480/?image=55"
-                alt="image slot"
-              />
-            </template>
+            <h3 style="width: 420px">{{ knowledge.title }}</h3>
           </b-carousel-slide>
         </b-carousel>
       </div>
@@ -143,6 +128,7 @@ video {
   top: 25%;
   left: 20%;
   width: 100%;
+  margin: auto;
 }
 .jb-right p {
   margin-top: -24px;
@@ -152,8 +138,9 @@ video {
 }
 .jb-carousel {
   margin-top: 30px;
-  width: 30%;
   left: 43%;
+  width: 500px;
+  height: 300px;
 }
 @import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=Noto+Sans+KR&display=swap");
 </style>

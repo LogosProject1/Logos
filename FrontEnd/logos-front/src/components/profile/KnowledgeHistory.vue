@@ -9,6 +9,29 @@
       <b-tab title="내가 구매한 지식" active>
         <div class="row align-items-md-stretch">
           <div
+            v-if="subscribe_list === [] || subscribe_list.length === 0"
+            style="margin: auto"
+          >
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="50"
+                height="50"
+                fill="currentColor"
+                class="bi bi-x-circle"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                />
+                <path
+                  d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                />
+              </svg>
+              <div class="m-3">구매하신 지식이 없습니다.</div>
+            </div>
+          </div>
+          <div
             class="col-md-6"
             v-for="subscribe in subscribe_list"
             :key="subscribe"
@@ -56,6 +79,29 @@
       </b-tab>
       <b-tab title="내가 등록한 지식">
         <div class="row align-items-md-stretch">
+          <div
+            v-if="publish_list === [] || publish_list.length === 0"
+            style="margin: auto"
+          >
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="50"
+                height="50"
+                fill="currentColor"
+                class="bi bi-x-circle"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                />
+                <path
+                  d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                />
+              </svg>
+              <div class="m-3">등록하신 지식이 없습니다.</div>
+            </div>
+          </div>
           <div class="col-md-6" v-for="publish in publish_list" :key="publish">
             <div class="h-100 p-5 text-white bg-dark rounded-3">
               <div class="row">
