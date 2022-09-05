@@ -103,14 +103,23 @@ public class KnowledgeService{
     @Transactional
     public Knowledge update(String email, KnowledgeUpdateDto knowledgeUpdateDto) {
         Optional<Knowledge> knowledge = knowledgeRepository.findById(knowledgeUpdateDto.getKnowledgeId());
+        if(knowledge.isPresent()){
+            List<Enrollment> byKnowledge = enrollmentRepository.findByKnowledge(knowledge.get());
 
-        if(checkWriter(email,knowledge)){
-            //지식 업데이트
-            return updateKnowledge(knowledge.get(), knowledgeUpdateDto);
+            if(!byKnowledge.isEmpty()){
+                //지식에 등록한 사람이 있으면 세션 시간 수정 불가
+                knowledgeUpdateDto.setStartTime(knowledge.get().getStartTime().toString());
+                knowledgeUpdateDto.setEndTime(knowledge.get().getEndTime().toString());
+            }
+            if(checkWriter(email,knowledge)){
+                //지식 업데이트
+                return updateKnowledge(knowledge.get(), knowledgeUpdateDto);
+            }
+            else {
+                return null;
+            }
         }
-        else {
-            return null;
-        }
+        return null;
     }
 
     public List<KnowledgeBriefDto> search(String keyword) {

@@ -83,6 +83,14 @@ public class PointService {
             return result;
         }
 
+
+        if(LocalDateTime.now().isAfter(byId.get().getStartTime())){
+            log.error("이미 세션을 시작한 지식입니다.");
+            result.put("message","이미 세션을 시작한 지식입니다.");
+            result.put("result","FALSE");
+            return result;
+        }
+
         Knowledge knowledge = byId.get();
         // 유저의 포인트가 충분한지 확인
         if(byEmail.getPoint() < knowledge.getPrice()){
