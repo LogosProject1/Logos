@@ -45,7 +45,7 @@ async function readKnowledge(id, success, fail) {
   api.defaults.headers["Authorization"] =
     "Bearer " + sessionStorage.getItem("access-token");
   await api
-    .get(`/knowledge/` + id)
+    .get(`/knowledge/detail/` + id)
     .then(success)
     .catch(fail);
 }

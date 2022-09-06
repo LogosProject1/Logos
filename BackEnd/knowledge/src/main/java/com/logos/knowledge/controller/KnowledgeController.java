@@ -90,7 +90,7 @@ public class KnowledgeController {
         return new ResponseEntity<>(resultMap,status);
     }
 
-    @GetMapping("/{knowledgeId}")
+    @GetMapping("/detail/{knowledgeId}")
     public ResponseEntity<Map<String, Object>> getKnowledge(@PathVariable("knowledgeId") String knowledgeId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;

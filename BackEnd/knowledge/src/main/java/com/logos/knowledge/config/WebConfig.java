@@ -18,7 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .order(1)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
-                        "/knowledge/{knowledgeId}"
+                        "/knowledge/detail/{knowledgeId}"
                         ,"/knowledge/search"
                         ,"/knowledge/filter"
                         ,"/knowledge/recent"
