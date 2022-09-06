@@ -68,20 +68,25 @@ export default {
   },
   methods: {
     clickEnrollButton() {
-      purchaseKnowledge(
-        this.$route.params.id,
-        (res) => {
-          alert(res.data.message);
-          if (res.data.result === "TRUE") {
-            this.$router.push({
-              name: "profile",
-            });
+      if (sessionStorage.getItem("access-token") == null) {
+        alert("로그인을 해주세요.");
+        this.$router.push({ name: "signIn" });
+      } else {
+        purchaseKnowledge(
+          this.$route.params.id,
+          (res) => {
+            alert(res.data.message);
+            if (res.data.result === "TRUE") {
+              this.$router.push({
+                name: "profile",
+              });
+            }
+          },
+          (err) => {
+            alert(err);
           }
-        },
-        (err) => {
-          alert(err);
-        }
-      );
+        );
+      }
     },
   },
 };

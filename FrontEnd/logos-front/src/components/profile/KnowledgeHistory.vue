@@ -50,18 +50,24 @@
               <p>시작 시간 : {{ subscribe.startTime | moment("LLL") }}</p>
               <p>종료 시간 : {{ subscribe.endTime | moment("LLL") }}</p>
               <b-button
-                class="btn btn-outline-light"
+                class="btn btn-outline-light mr-2"
                 variant="outlined"
                 :to="{ name: 'knowledge', params: { id: subscribe.id } }"
               >
                 상세페이지로 이동
               </b-button>
               <b-button
-                class="btn btn-outline-light"
+                class="btn btn-outline-light mr-2"
                 variant="danger"
                 :id="subscribe.id"
                 @click="clickRefundButton"
                 >환불받기</b-button
+              >
+              <b-button
+                class="btn btn-outline-light"
+                variant="success"
+                :id="subscribe.id"
+                >세션 참가</b-button
               >
             </div>
           </div>
