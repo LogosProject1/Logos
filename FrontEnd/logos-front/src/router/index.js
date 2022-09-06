@@ -106,6 +106,11 @@ const routes = [
     name: "paymentError",
     component: () => import("@/components/payment/PaymentError.vue"),
   },
+  {
+    path: "/session",
+    name: "session",
+    component: () => import("@/views/Session.vue"),
+  },
 ];
 
 const router = new VueRouter({
