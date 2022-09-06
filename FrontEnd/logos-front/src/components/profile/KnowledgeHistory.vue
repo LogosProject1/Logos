@@ -34,7 +34,7 @@
           <div
             class="col-md-6"
             v-for="subscribe in subscribe_list"
-            :key="subscribe"
+            :key="subscribe.id"
           >
             <div class="h-100 p-5 text-white bg-dark rounded-3">
               <div class="row">
@@ -67,6 +67,7 @@
                 class="btn btn-outline-light"
                 variant="success"
                 :id="subscribe.id"
+                @click="clickSessionButton"
                 >세션 참가</b-button
               >
             </div>
@@ -108,7 +109,11 @@
               <div class="m-3">등록하신 지식이 없습니다.</div>
             </div>
           </div>
-          <div class="col-md-6" v-for="publish in publish_list" :key="publish">
+          <div
+            class="col-md-6"
+            v-for="publish in publish_list"
+            :key="publish.id"
+          >
             <div class="h-100 p-5 text-white bg-dark rounded-3">
               <div class="row">
                 <b-img
@@ -173,12 +178,13 @@ import {
 } from "@/api/knowledge";
 import { deleteImage } from "@/api/s3";
 import { refundKnowledge } from "@/api/point";
+import moment from "moment";
 export default {
   name: "KnowledgeHistory",
   data() {
     return {
-      subscribeCurrentPage: 0,
-      publishCurrentPage: 0,
+      subscribeCurrentPage: 1,
+      publishCurrentPage: 1,
       perPage: 10,
       subscribeRows: 0,
       publishRows: 0,
@@ -211,6 +217,30 @@ export default {
     );
   },
   methods: {
+    clickSessionButton(e) {
+      e.preventDefault();
+      console.log(moment());
+      this.$router.push({
+        name: "session",
+        params: { knowledgeId: e.target.id },
+      });
+
+      // for (let i = 0; i < this.subscribe_list.length; i++) {
+      //   if (this.subscribe_list[i].id === e.target.id) {
+      //     if (
+      //       moment.isAfter(this.subscribe_list[i].endTime) ||
+      //       moment.isBefore(this.subscribe_list[i].startTime)
+      //     ) {
+      //       alert("세션 참여 시간이 아닙니다.");
+      //     }
+      //   } else {
+      //     this.$router.push({
+      //       name: "session",
+      //       params: { knowledgeId: e.target.id },
+      //     });
+      //   }
+      // }
+    },
     clickRefundButton(e) {
       e.preventDefault();
       this.$bvModal
