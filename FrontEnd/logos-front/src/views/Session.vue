@@ -1,6 +1,6 @@
 <template>
   <div id="main-container" class="container">
-    <!-- <div id="join" v-if="!sessionCamera">
+    <div id="join" v-if="!sessionCamera">
       <div id="img-div">
         <img src="resources/images/openvidu_grey_bg_transp_cropped.png" />
       </div>
@@ -32,9 +32,9 @@
           </p>
         </div>
       </div>
-    </div> -->
+    </div>
 
-    <b-container id="session">
+    <b-container id="session" v-if="sessionCamera">
       <b-row id="session-header">
         <h1 id="session-title">{{ this.$route.params.knowledgeTitle }}</h1>
         <input
@@ -240,7 +240,6 @@ export default {
     if (this.userInfo) {
       this.myUserName = this.userInfo.name;
     }
-    //console.log(this.$route.params.knowledgeId);
     this.mySessionId = this.$route.params.knowledgeId;
   },
   methods: {
