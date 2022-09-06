@@ -1,6 +1,6 @@
 <template>
   <div id="main-container" class="container">
-    <div id="join" v-if="!sessionCamera">
+    <!-- <div id="join" v-if="!sessionCamera">
       <div id="img-div">
         <img src="resources/images/openvidu_grey_bg_transp_cropped.png" />
       </div>
@@ -32,9 +32,9 @@
           </p>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <b-container id="session" v-if="sessionCamera">
+    <b-container id="session">
       <b-row id="session-header">
         <h1 id="session-title">{{ mySessionId }}</h1>
         <input
@@ -201,12 +201,15 @@ import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import UserVideo from "../components/session/UserVideo";
 import ChatMessage from "../components/session/ChatMessage";
+import { mapState } from "vuex";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Authorization"] =
   "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjYxMDkwNzU1MjIzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NjE0NTA3NTUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.YsCOfwptwW98nZo_LwBkZQYaCiql0kd4kLOPV3p94vT4d7cVDvHWgEkYnvm_t2xrfSeRLwFk1XL-7rdgIj3Kcw";
 
 const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
+
+const memberStore = "memberStore";
 
 export default {
   name: "App",
@@ -226,12 +229,22 @@ export default {
       screenToken: undefined,
       subscribers: [],
       screenSubscribers: [],
-      mySessionId: "52552152843524282555",
-      myUserName: "Participant" + Math.floor(Math.random() * 100),
+      mySessionId: "",
+      myUserName: "",
       chatInput: undefined,
       screensharing: false,
       chatMessageList: [],
     };
+  },
+  computed: {
+    ...mapState(memberStore, ["userInfo"]),
+  },
+  mounted() {
+    if (this.userInfo) {
+      this.myUserName = this.userInfo.name;
+    }
+    //console.log(this.$route.params.knowledgeId);
+    this.mySessionId = this.$route.params.knowledgeId;
   },
   methods: {
     screenShare() {
