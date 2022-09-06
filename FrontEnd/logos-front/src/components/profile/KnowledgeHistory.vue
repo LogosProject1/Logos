@@ -178,7 +178,6 @@ import {
 } from "@/api/knowledge";
 import { deleteImage } from "@/api/s3";
 import { refundKnowledge } from "@/api/point";
-import moment from "moment";
 export default {
   name: "KnowledgeHistory",
   data() {
@@ -217,13 +216,21 @@ export default {
     );
   },
   methods: {
-    clickSessionButton(e) {
+    async clickSessionButton(e) {
       e.preventDefault();
-      console.log(moment());
-      this.$router.push({
-        name: "session",
-        params: { knowledgeId: e.target.id },
-      });
+      await readKnowledge(
+        e.target.id,
+        (res) => {
+          this.$router.push({
+            name: "session",
+            params: {
+              knowledgeId: e.target.id,
+              knowledgeTitle: res.data.knowledge.title,
+            },
+          });
+        },
+        () => {}
+      );
 
       // for (let i = 0; i < this.subscribe_list.length; i++) {
       //   if (this.subscribe_list[i].id === e.target.id) {

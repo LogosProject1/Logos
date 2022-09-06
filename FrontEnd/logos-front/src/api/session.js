@@ -8,4 +8,8 @@ async function joinSession(params, success, fail) {
   await api.post(`/session`, params).then(success).catch(fail);
 }
 
-export { joinSession };
+async function removeUser(params, success, fail) {
+  await api.post(`/remove-user`, params).then(success).catch(fail);
+}
+
+export { joinSession, removeUser };

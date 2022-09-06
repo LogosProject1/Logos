@@ -36,7 +36,7 @@
 
     <b-container id="session" v-if="sessionCamera">
       <b-row id="session-header">
-        <h1 id="session-title">{{ mySessionId }}</h1>
+        <h1 id="session-title">{{ this.$route.params.knowledgeTitle }}</h1>
         <input
           class="btn btn-large btn-danger"
           type="button"
@@ -197,17 +197,13 @@
 </template>
 
 <script>
-import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import UserVideo from "../components/session/UserVideo";
 import ChatMessage from "../components/session/ChatMessage";
+
+import { joinSession, removeUser } from "@/api/session";
+
 import { mapState } from "vuex";
-
-axios.defaults.headers.post["Content-Type"] = "application/json";
-axios.defaults.headers.post["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJyZWdEYXRlIjoxNjYxMDkwNzU1MjIzLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NjE0NTA3NTUsInN1YiI6ImFjY2Vzcy10b2tlbiIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwidHlwZSI6IlVTRVIifQ.YsCOfwptwW98nZo_LwBkZQYaCiql0kd4kLOPV3p94vT4d7cVDvHWgEkYnvm_t2xrfSeRLwFk1XL-7rdgIj3Kcw";
-
-const OPENVIDU_API_SERVER_URL = "https://localhost:8082";
 
 const memberStore = "memberStore";
 
@@ -229,13 +225,14 @@ export default {
       screenToken: undefined,
       subscribers: [],
       screenSubscribers: [],
-      mySessionId: "",
-      myUserName: "",
+      mySessionId: null,
+      myUserName: null,
       chatInput: undefined,
       screensharing: false,
       chatMessageList: [],
     };
   },
+
   computed: {
     ...mapState(memberStore, ["userInfo"]),
   },
@@ -243,7 +240,6 @@ export default {
     if (this.userInfo) {
       this.myUserName = this.userInfo.name;
     }
-    //console.log(this.$route.params.knowledgeId);
     this.mySessionId = this.$route.params.knowledgeId;
   },
   methods: {
@@ -422,14 +418,20 @@ export default {
       this.publisher = undefined;
       this.subscribers = [];
       this.OV = undefined;
-      axios.post(
-        `${OPENVIDU_API_SERVER_URL}/remove-user`,
-        JSON.stringify({
+      removeUser(
+        {
           knowledgeId: this.mySessionId,
           webCamToken: this.webCamToken,
           screenToken: this.screenToken,
-        })
+        },
+        () => {
+          console.log("removeUser success");
+        },
+        (err) => {
+          console.log("removeUser error:", err);
+        }
       );
+
       this.chatMessageList = [];
       window.removeEventListener("beforeunload", this.leaveSession);
     },
@@ -439,17 +441,18 @@ export default {
       this.mainStreamManager = stream;
       console.log("이후:", this.mainStreamManager);
     },
-    async getToken(mySessionId) {
+    async getToken() {
       // Video-call chosen by the user
-      await axios
-        .post(`${OPENVIDU_API_SERVER_URL}/session`, {
-          knowledgeId: mySessionId,
-        })
-        .then((response) => response.data)
-        .then((data) => {
-          this.webCamToken = data.webCamToken;
-          this.screenToken = data.screenToken;
-        });
+      joinSession(
+        { knowledgeId: this.$route.params.knowledgeId },
+        (res) => {
+          this.webCamToken = res.data.webCamToken;
+          this.screenToken = res.data.screenToken;
+        },
+        (err) => {
+          console.log("getToken error:", err);
+        }
+      );
     },
     addClickListener(videoElement) {
       videoElement.addEventListener("click", () => {

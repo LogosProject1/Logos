@@ -4,6 +4,7 @@ import {
   API_LOGIN_URL,
   API_POINT_URL,
   API_PAYMENT_URL,
+  API_SESSION_URL,
   API_S3_URL,
 } from "@/config";
 
@@ -48,6 +49,16 @@ export function s3Instance() {
     baseURL: API_S3_URL,
     headers: {
       "Content-type": "multipart/form-data",
+    },
+  });
+  return instance;
+}
+
+export function sessionInstance() {
+  const instance = axios.create({
+    baseURL: API_SESSION_URL,
+    headers: {
+      "Content-type": "application/json",
     },
   });
   return instance;
