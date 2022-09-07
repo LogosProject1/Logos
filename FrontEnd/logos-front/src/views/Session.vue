@@ -36,21 +36,25 @@
 
     <b-container id="session" v-if="sessionCamera">
       <b-row id="session-header">
-        <h1 id="session-title">{{ this.$route.params.knowledgeTitle }}</h1>
-        <input
-          class="btn btn-large btn-danger"
-          type="button"
-          id="buttonLeaveSession"
-          @click="leaveSession"
-          value="Leave session"
-        />
-        <input
-          class="btn btn-large btn-primary"
-          type="button"
-          id="buttonScreenShare"
-          @click="screenShare"
-          value="Screen Share"
-        />
+        <b-col
+          ><h1 id="session-title">
+            {{ this.$route.params.knowledgeTitle }}
+          </h1></b-col
+        >
+        <b-col
+          ><input
+            class="btn btn-large btn-danger"
+            type="button"
+            id="buttonLeaveSession"
+            @click="leaveSession"
+            value="Leave session" />
+          <input
+            class="btn btn-large btn-primary"
+            type="button"
+            id="buttonScreenShare"
+            @click="screenShare"
+            value="Screen Share"
+        /></b-col>
       </b-row>
       <b-row class="row">
         <b-col

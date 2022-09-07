@@ -111,6 +111,11 @@ const routes = [
     name: "session",
     component: () => import("@/views/Session.vue"),
   },
+  {
+    path: "/rating",
+    name: "rating",
+    component: () => import("@/components/rating/RatingDetail.vue"),
+  },
 ];
 
 const router = new VueRouter({
