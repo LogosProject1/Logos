@@ -39,6 +39,11 @@ public class RatingService {
             return null;
         }
 
+        //세션 종료 시간 이전이라면 평가 불가능
+        if(LocalDateTime.now().isBefore(byId.get().getEndTime())){
+            return null;
+        }
+
         Rating rating = ratingRepository.findByUserEmailAndKnowledgeId(email, knowledgeId);
 
         //이전 평가가 있으면 갱신
@@ -82,7 +87,7 @@ public class RatingService {
     }
 
     public List<RatingResultDto> getKnowledgeRating(String knowledgeId) {
-        List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeOrderByModifiedAt(knowledgeId);
+        List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeIdOrderByModifiedAt(knowledgeId);
         List<RatingResultDto> ratingResultDtoList = new ArrayList<>();
 
         makeRatingResultList(ratingResultDtoList, byKnowledgeId);
@@ -98,7 +103,7 @@ public class RatingService {
                     // 모두 null
                 } else {
                     // knowledgeId에 해당하는 모든 리턴
-                    List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeOrderByModifiedAt(ratingFilterDto.getKnowledgeId());
+                    List<Rating> byKnowledgeId = ratingRepository.findByKnowledgeIdOrderByModifiedAt(ratingFilterDto.getKnowledgeId());
                     makeRatingResultList(ratingResultDtoList, byKnowledgeId);
                 }
             } else {
