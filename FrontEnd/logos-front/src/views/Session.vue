@@ -298,7 +298,7 @@ export default {
         });
       this.chatInput = "";
     },
-    joinSession() {
+    async joinSession() {
       // --- Get an OpenVidu object ---
       this.OVCamera = new OpenVidu();
       this.OVScreen = new OpenVidu();
@@ -362,7 +362,7 @@ export default {
       // --- Connect to the session with a valid user token ---
       // 'getToken' method is simulating what your server-side should do.
       // 'token' parameter should be retrieved and returned by your own backend
-      this.getToken(this.mySessionId).then(() => {
+      await this.getToken(this.mySessionId).then(() => {
         this.sessionCamera
           .connect(this.webCamToken, { clientData: this.myUserName })
           .then(() => {
@@ -408,7 +408,7 @@ export default {
       });
       window.addEventListener("beforeunload", this.leaveSession);
     },
-    leaveSession() {
+    async leaveSession() {
       // --- Leave the session by calling 'disconnect' method over the Session object ---
       if (this.sessionCamera) this.sessionCamera.disconnect();
       if (this.sessionScreen) this.sessionScreen.disconnect();
@@ -418,7 +418,7 @@ export default {
       this.publisher = undefined;
       this.subscribers = [];
       this.OV = undefined;
-      removeUser(
+      await removeUser(
         {
           knowledgeId: this.mySessionId,
           webCamToken: this.webCamToken,
@@ -443,7 +443,7 @@ export default {
     },
     async getToken() {
       // Video-call chosen by the user
-      joinSession(
+      await joinSession(
         { knowledgeId: this.$route.params.knowledgeId },
         (res) => {
           this.webCamToken = res.data.webCamToken;

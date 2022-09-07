@@ -110,12 +110,13 @@ public class SessionController {
         Optional<Knowledge> byId = knowledgeRepository.findById(knowledgeId);
         if(byId.isEmpty()) throw new Exception("Not Exists Knowledge");
 
-        if(byId.get().getWriter().getEmail().equals(email)){
-            return OpenViduRole.PUBLISHER;
-        }
-        else{
-            return OpenViduRole.SUBSCRIBER;
-        }
+//        if(byId.get().getWriter().getEmail().equals(email)){
+//            return OpenViduRole.PUBLISHER;
+//        }
+//        else{
+//            return OpenViduRole.SUBSCRIBER;
+//        }
+        return OpenViduRole.PUBLISHER;
     }
 
     @PostMapping("/remove-user")
