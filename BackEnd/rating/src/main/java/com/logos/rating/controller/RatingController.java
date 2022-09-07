@@ -28,7 +28,10 @@ public class RatingController {
 
         try{
             RatingResultDto ratingResultDto = ratingService.ratingKnowledge(email, knowledgeId, ratingDto);
-            resultMap.put("result",ratingResultDto);
+            if(ratingResultDto == null){
+                resultMap.put("message","평가할 수 없습니다.");
+            }
+            else resultMap.put("result",ratingResultDto);
         }
         catch (Exception e){
             resultMap.put("message",e.getMessage());

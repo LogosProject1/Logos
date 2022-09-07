@@ -79,10 +79,11 @@
 <script>
 import { getSubscribed } from "@/api/knowledge";
 import { ratingKnowledge } from "@/api/rating";
+import StarRating from "vue-star-rating";
 export default {
   name: "RatingComponent",
   component: {
-    RatingDetail,
+    StarRating,
   },
   data() {
     return {
@@ -91,7 +92,8 @@ export default {
       subscribeRows: 0,
       publishRows: 0,
       subscribe_list: [],
-      publish_list: [],
+      rating: 0,
+      content: null,
     };
   },
   computed: {},
@@ -111,8 +113,31 @@ export default {
   methods: {
     clickRatingButton(e) {
       e.preventDefault();
+      const h = this.$createElement;
+      const messageVNode = h("div", { class: ["container"] }, [
+        h(StarRating, {
+          props: {
+            increment: 0.5,
+            "show-rating": false,
+          },
+          on: {
+            "rating-selected": this.starClick,
+          },
+        }),
+        h("div", { class: ["textarea"] }, [
+          h("b-form-textarea", {
+            props: {
+              id: "textarea-rows",
+              placeholder: "Tall textarea",
+              rows: "8",
+              "v-model": this.content,
+            },
+          }),
+        ]),
+      ]);
+
       this.$bvModal
-        .msgBoxConfirm("별점과 평가 내용을 입력해주세요", {
+        .msgBoxConfirm([messageVNode], {
           title: "별점과 평가 내용을 입력해주세요",
           size: "md",
           okVariant: "danger",
@@ -126,12 +151,12 @@ export default {
           if (value) {
             await ratingKnowledge(
               e.target.id,
-              { rating: 10, content: "조아요" },
+              { rating: this.rating, content: this.content },
               (res) => {
                 if (res.data.result) {
                   this.$bvModal
                     .msgBoxOk(res.data.message, {
-                      title: "환불 결과",
+                      title: "평가 결과",
                       size: "sm",
                       okVariant: "primary",
                       headerClass: "p-2 border-bottom-0",
@@ -170,6 +195,11 @@ export default {
             );
           }
         });
+    },
+    starClick(value) {
+      this.rating = value;
+      console.log(this.rating);
+      console.log(this.content);
     },
     subscribePageClicked(bvEvent, page) {
       getSubscribed(

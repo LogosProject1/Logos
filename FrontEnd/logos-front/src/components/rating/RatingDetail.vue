@@ -15,6 +15,7 @@
 import StarRating from "vue-star-rating";
 
 export default {
+  name: "RatingDetail",
   components: {
     StarRating,
   },
