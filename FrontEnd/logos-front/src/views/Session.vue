@@ -26,7 +26,7 @@
             />
           </p>
           <p class="text-center">
-            <button class="btn btn-lg btn-success" @click="joinSession()">
+            <button class="btn btn-lg btn-success" @click="clickJoinSession">
               Join!
             </button>
           </p>
@@ -298,7 +298,7 @@ export default {
         });
       this.chatInput = "";
     },
-    async joinSession() {
+    async clickJoinSession() {
       // --- Get an OpenVidu object ---
       this.OVCamera = new OpenVidu();
       this.OVScreen = new OpenVidu();
@@ -315,10 +315,7 @@ export default {
       this.sessionCamera.on("streamCreated", (event) => {
         // Subscribe to the Stream to receive it. HTML video will be appended to element with 'container-cameras' id
         if (event.stream.typeOfVideo === "CAMERA") {
-          var subscriber = this.sessionCamera.subscribe(
-            event.stream,
-            undefined
-          );
+          var subscriber = this.sessionCamera.subscribe(event.stream);
           this.subscribers.push(subscriber);
 
           subscriber.on("videoElementCreated", (event) => {

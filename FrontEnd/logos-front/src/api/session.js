@@ -9,6 +9,8 @@ async function joinSession(params, success, fail) {
 }
 
 async function removeUser(params, success, fail) {
+  api.defaults.headers.post["Authorization"] =
+    "Bearer " + sessionStorage.getItem("access-token");
   await api.post(`/remove-user`, params).then(success).catch(fail);
 }
 
