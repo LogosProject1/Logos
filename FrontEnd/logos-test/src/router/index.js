@@ -19,6 +19,11 @@ const routes = [
     name: "payment",
     component: () => import("@/views/PaymentView.vue"),
   },
+  {
+    path: "/rating",
+    name: "rating",
+    component: () => import("@/views/RatingView.vue"),
+  },
 ];
 
 const router = new VueRouter({

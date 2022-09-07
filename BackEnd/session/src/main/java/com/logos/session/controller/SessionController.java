@@ -110,12 +110,21 @@ public class SessionController {
         Optional<Knowledge> byId = knowledgeRepository.findById(knowledgeId);
         if(byId.isEmpty()) throw new Exception("Not Exists Knowledge");
 
+<<<<<<< HEAD
+//        if(byId.get().getWriter().getEmail().equals(email)){
+//            return OpenViduRole.PUBLISHER;
+//        }
+//        else{
+//            return OpenViduRole.SUBSCRIBER;
+//        }
+=======
        /* if(byId.get().getWriter().getEmail().equals(email)){
             return OpenViduRole.PUBLISHER;
         }
         else{
             return OpenViduRole.SUBSCRIBER;
         }*/
+>>>>>>> 712c488e9492f2833b800c910c08ee6cdf0ba228
         return OpenViduRole.PUBLISHER;
     }
 
