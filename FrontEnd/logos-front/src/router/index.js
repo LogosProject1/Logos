@@ -62,6 +62,11 @@ const routes = [
         name: "memberSeccess",
         component: () => import("@/components/profile/MemberSeccess.vue"),
       },
+      {
+        path: "rating",
+        name: "rating",
+        component: () => import("@/components/profile/RatingComponent.vue"),
+      },
     ],
   },
   {

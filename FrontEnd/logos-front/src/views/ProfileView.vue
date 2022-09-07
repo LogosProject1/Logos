@@ -94,6 +94,11 @@ export default {
           text: "회원 탈퇴",
           href: "/profile/memberSeccess",
         },
+        {
+          id: 7,
+          text: "평가하기",
+          href: "/profile/rating",
+        },
       ],
       currentItem: 0,
     };

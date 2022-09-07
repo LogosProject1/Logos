@@ -49,7 +49,7 @@ export default {
   name: "PointHistory",
   data() {
     return {
-      currentPage: 1,
+      currentPage: 0,
       perPage: 10,
       rows: 0,
       history_list: [],

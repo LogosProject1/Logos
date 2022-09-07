@@ -182,8 +182,8 @@ export default {
   name: "KnowledgeHistory",
   data() {
     return {
-      subscribeCurrentPage: 1,
-      publishCurrentPage: 1,
+      subscribeCurrentPage: 0,
+      publishCurrentPage: 0,
       perPage: 10,
       subscribeRows: 0,
       publishRows: 0,

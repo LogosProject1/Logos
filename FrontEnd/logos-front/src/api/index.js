@@ -6,6 +6,7 @@ import {
   API_PAYMENT_URL,
   API_SESSION_URL,
   API_S3_URL,
+  API_RATING_URL,
 } from "@/config";
 
 export function loginInstance() {
@@ -57,6 +58,16 @@ export function s3Instance() {
 export function sessionInstance() {
   const instance = axios.create({
     baseURL: API_SESSION_URL,
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+  return instance;
+}
+
+export function ratingInstance() {
+  const instance = axios.create({
+    baseURL: API_RATING_URL,
     headers: {
       "Content-type": "application/json",
     },
