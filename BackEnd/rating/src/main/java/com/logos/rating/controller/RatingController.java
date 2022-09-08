@@ -29,7 +29,7 @@ public class RatingController {
         try{
             RatingResultDto ratingResultDto = ratingService.ratingKnowledge(email, knowledgeId, ratingDto);
 
-            resultMap.put("result",ratingResultDto);
+            resultMap.put("ratingResult",ratingResultDto);
         }
         catch (Exception e){
             resultMap.put("message",e.getMessage());

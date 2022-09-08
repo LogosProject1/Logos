@@ -155,9 +155,9 @@ export default {
               e.target.id,
               { rate: this.rating, content: this.content },
               (res) => {
-                if (res.data.result) {
+                if (res.data.ratingResult.result) {
                   this.$bvModal
-                    .msgBoxOk(res.data.message, {
+                    .msgBoxOk(res.data.ratingResult.message, {
                       title: "평가 결과",
                       size: "sm",
                       okVariant: "primary",
@@ -171,7 +171,7 @@ export default {
                       }
                     });
                 } else {
-                  this.$bvModal.msgBoxOk(res.data.message, {
+                  this.$bvModal.msgBoxOk(res.data.ratingResult.message, {
                     title: "평가 결과",
                     size: "sm",
                     okVariant: "primary",
