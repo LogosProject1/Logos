@@ -62,10 +62,13 @@ public class RatingService {
         double refundRate = 1 - (double)rating.getRate()/100;
         Long refundPrice = (long)(purchasePrice * refundRate);
 
-        User user = userRepository.findByEmail(email);
-        user.pointIncrease(refundPrice);
-        PointHistory refundHistory = PointHistory.createPointHistory(user.getEmail(), refundPrice, user.getPoint(), PointHistoryType.INC);
-        pointHistoryRepository.save(refundHistory);
+        //환불 금액이 0 이상일 때 포인트 이력에 저장
+        if(refundPrice != 0){
+            User user = userRepository.findByEmail(email);
+            user.pointIncrease(refundPrice);
+            PointHistory refundHistory = PointHistory.createPointHistory(user.getEmail(), refundPrice, user.getPoint(), PointHistoryType.INC);
+            pointHistoryRepository.save(refundHistory);
+        }
 
         //평가 완료 후 지식 공유자한테 포인트 주기
         Knowledge knowledge = byId.get();

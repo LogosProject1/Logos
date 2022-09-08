@@ -130,7 +130,9 @@ export default {
               id: "textarea-rows",
               placeholder: "Tall textarea",
               rows: "8",
-              "v-model": this.content,
+            },
+            on: {
+              change: this.textAreaChange,
             },
           }),
         ]),
@@ -151,11 +153,11 @@ export default {
           if (value) {
             await ratingKnowledge(
               e.target.id,
-              { rating: this.rating, content: this.content },
+              { rate: this.rating, content: this.content },
               (res) => {
-                if (res.data.result) {
+                if (res.data.result !== null) {
                   this.$bvModal
-                    .msgBoxOk(res.data.message, {
+                    .msgBoxOk("평가가 정상적으로 완료되었습니다.", {
                       title: "평가 결과",
                       size: "sm",
                       okVariant: "primary",
@@ -197,9 +199,12 @@ export default {
         });
     },
     starClick(value) {
-      this.rating = value;
+      this.rating = 50 + value * 10;
       console.log(this.rating);
       console.log(this.content);
+    },
+    textAreaChange(value) {
+      this.content = value;
     },
     subscribePageClicked(bvEvent, page) {
       getSubscribed(
