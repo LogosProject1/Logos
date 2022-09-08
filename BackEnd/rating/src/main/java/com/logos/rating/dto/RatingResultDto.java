@@ -16,4 +16,6 @@ public class RatingResultDto {
     private String userEmail;
     private String content;
     private LocalDateTime modifiedAt;
+    private String message;
+    private boolean result;
 }

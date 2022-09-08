@@ -155,9 +155,9 @@ export default {
               e.target.id,
               { rate: this.rating, content: this.content },
               (res) => {
-                if (res.data.result !== null) {
+                if (res.data.result) {
                   this.$bvModal
-                    .msgBoxOk("평가가 정상적으로 완료되었습니다.", {
+                    .msgBoxOk(res.data.message, {
                       title: "평가 결과",
                       size: "sm",
                       okVariant: "primary",

@@ -30,18 +30,28 @@ public class RatingService {
         Optional<Knowledge> byId = knowledgeRepository.findById(knowledgeId);
         //해당 지식이 있는지 확인
         if(byId.isEmpty()){
-            return null;
+            RatingResultDto.builder()
+                    .message("해당 지식이 없습니다.")
+                    .result(false)
+                    .build();
         }
 
         //해당 지식을 구입했었는지 확인(추후 세션 토큰을 통해 세션도 끝났는지 확인해봐도 됨)
         Enrollment enrollment = enrollmentRepository.findByUserEmailAndKnowledgeId(email, knowledgeId);
         if(enrollment == null){
-            return null;
+            return RatingResultDto.builder()
+                    .message("해당 지식을 구입하지 않았습니다.")
+                    .result(false)
+                    .build();
         }
 
         //세션 종료 시간 이전이라면 평가 불가능
         if(LocalDateTime.now().isBefore(byId.get().getEndTime())){
-            return null;
+
+            return RatingResultDto.builder()
+                    .message("세션 종료 시간 이전이라면 평가할 수 없습니다.")
+                    .result(false)
+                    .build();
         }
 
         Rating rating = ratingRepository.findByUserEmailAndKnowledgeId(email, knowledgeId);
@@ -86,6 +96,8 @@ public class RatingService {
                 .content(rating.getContent())
                 .userEmail(rating.getUserEmail())
                 .modifiedAt(rating.getModifiedAt())
+                .result(true)
+                .message("평가가 정상적으로 완료되었습니다.")
                 .build();
     }
 
