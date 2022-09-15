@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment
+  template:
+    metadata:
+      labels:
+        app: payment
+    spec:
+      containers:
+        - name: payment
+          image: logosapidev/logos_payment_api:latest
+          env:
+            - name: LOGOS_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_URL
+            - name: LOGOS_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_USERNAME
+            - name: LOGOS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_PASSWORD
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: JWT_SECRET_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-srv
+spec:
+  selector:
+    app: payment
+  ports:
+    - nodePort: 30950
+      protocol: TCP
+      port: 8084
+      targetPort: 8084
+  type: LoadBalancer

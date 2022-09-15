@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: session
+  template:
+    metadata:
+      labels:
+        app: session
+    spec:
+      containers:
+        - name: session
+          image: logosapidev/logos_session_api:latest
+          env:
+            - name: LOGOS_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_URL
+            - name: LOGOS_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_USERNAME
+            - name: LOGOS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_PASSWORD
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: JWT_SECRET_KEY
+            - name: OPENVIDU_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: openvidu
+                  key: secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: session-srv
+spec:
+  selector:
+    app: session
+  ports:
+    - nodePort: 30954
+      protocol: TCP
+      port: 8082
+      targetPort: 8082
+  type: LoadBalancer

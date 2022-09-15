@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-vidu-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: open-vidu
+  template:
+    metadata:
+      labels:
+        app: open-vidu
+    spec:
+      containers:
+        - name: open-vidu
+          image: openvidu/openvidu-server-kms:2.22.0
+          env:
+            - name: OPENVIDU_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: openvidu
+                  key: secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: open-vidu
+spec:
+  selector:
+    app: open-vidu
+  ports:
+    - name: open-vidu
+      protocol: TCP
+      port: 4443
+      targetPort: 4443

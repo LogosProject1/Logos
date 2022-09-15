@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3
+  template:
+    metadata:
+      labels:
+        app: s3
+    spec:
+      containers:
+        - name: s3
+          image: logosapidev/logos_s3_api:latest
+          env:
+            - name: LOGOS_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_URL
+            - name: LOGOS_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_USERNAME
+            - name: LOGOS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_PASSWORD
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: JWT_SECRET_KEY
+            - name: logosS3accessKey
+              valueFrom:
+                secretKeyRef:
+                  name: s3
+                  key: accessKey
+            - name: logosS3secretKey
+              valueFrom:
+                secretKeyRef:
+                  name: s3
+                  key: secretKey
+            - name: logosS3region
+              valueFrom:
+                secretKeyRef:
+                  name: s3
+                  key: region
+            - name: logosS3endpoint
+              valueFrom:
+                secretKeyRef:
+                  name: s3
+                  key: endpoint
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3-srv
+spec:
+  selector:
+    app: s3
+  ports:
+    - nodePort: 30953
+      protocol: TCP
+      port: 8087
+      targetPort: 8087
+  type: LoadBalancer

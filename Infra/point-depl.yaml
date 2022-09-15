@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: point-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: point
+  template:
+    metadata:
+      labels:
+        app: point
+    spec:
+      containers:
+        - name: point
+          image: logosapidev/logos_point_api:latest
+          env:
+            - name: LOGOS_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_URL
+            - name: LOGOS_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_USERNAME
+            - name: LOGOS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_PASSWORD
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: JWT_SECRET_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: point-srv
+spec:
+  selector:
+    app: point
+  ports:
+    - nodePort: 30951
+      protocol: TCP
+      port: 8085
+      targetPort: 8085
+  type: LoadBalancer

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: logosapidev/logos_auth_api:latest
+          env:
+            - name: LOGOS_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_URL
+            - name: LOGOS_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_USERNAME
+            - name: LOGOS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: logosdb
+                  key: LOGOS_DB_PASSWORD
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: JWT_SECRET_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+spec:
+  selector:
+    app: auth
+  ports:
+    - nodePort: 30948
+      protocol: TCP
+      port: 8081
+      targetPort: 8081
+  type: LoadBalancer

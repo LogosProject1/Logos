@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("openvidu")
 @RequiredArgsConstructor
 public class AppProperties {
-    private final String OPENVIDU_URL;
+    private final String PROTOCOL;
+    private final String OPENVIDU_HOST;
+    private final String OPENVIDU_PORT;
     private final String SECRET;
 }

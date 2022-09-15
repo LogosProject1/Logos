@@ -11,6 +11,6 @@ public class AppConfig {
     private final AppProperties appProperties;
     @Bean
     public OpenVidu openVidu(){
-        return new OpenVidu(appProperties.getOPENVIDU_URL(), appProperties.getSECRET());
+        return new OpenVidu(appProperties.getPROTOCOL()+appProperties.getOPENVIDU_HOST()+":"+appProperties.getOPENVIDU_PORT(), appProperties.getSECRET());
     }
 }

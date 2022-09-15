@@ -12,7 +12,7 @@ sourceCompatibility = '11'
 jib {
 	to {
 		image = "logosapidev/logos_session_api"
-		tags = ["latest","1.0.0"]
+		tags = ["latest","1.0.1"]
 	}
 	container {
 		jvmFlags = ["-Dspring.profiles.active=prod"]
