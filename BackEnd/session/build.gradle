@@ -1,12 +1,23 @@
 plugins {
 	id 'org.springframework.boot' version '2.7.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'com.google.cloud.tools.jib' version '3.2.1'
 	id 'java'
 }
 
 group = 'com.logos'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+jib {
+	to {
+		image = "logosapidev/logos_session_api"
+		tags = ["latest","1.0.0"]
+	}
+	container {
+		jvmFlags = ["-Dspring.profiles.active=prod"]
+	}
+}
 
 configurations {
 	compileOnly {
